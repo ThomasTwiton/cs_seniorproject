@@ -2,6 +2,6 @@ language: python
 python:
  - "3.5"
 script:
-    echo "Hello!"
+    python -m unittest discover
 notifications:
     slack: luthercs:28A3oEVAuBP0dVDsQWLKAZHh
