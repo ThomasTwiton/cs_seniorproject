@@ -16,7 +16,7 @@ namespace SqlServerSample
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
                 builder.DataSource = "localhost";   // update me
                 builder.UserID = "sa";              // update me
-                builder.Password = "$had0wrunBlu3";      // update me
+                builder.Password = "password";      // update me
                 builder.InitialCatalog = "master";
 
                 // Connect to SQL
