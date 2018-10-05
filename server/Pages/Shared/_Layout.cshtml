@@ -43,12 +43,16 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
+        <div id="like_button_container"></div>
         <footer>
             <p>&copy; 2018 - Tyler Conzett, Mason Donnohue, Thomas Twiton</p>
         </footer>
     </div>
 
     <environment include="Development">
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+        <script src="like_button.js"></script>
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>

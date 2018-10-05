@@ -54,52 +54,14 @@ namespace server
                 app.UseHsts();
             }
 
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
             app.UseMvc();
              
-            string first_name;
-            //string last_name;
-            //string genre;
-            //string instrument;
-            //string message;
-
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-            builder.DataSource = "pluggedindb.database.windows.net";
-            builder.UserID = "sqladmin";
-            builder.Password = "$had0wrunBlu3";
-            builder.InitialCatalog = "pluggedin_db";
-
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-            {
-                connection.Open();
-                StringBuilder sb = new StringBuilder();
-                sb.Append("SELECT first_name ");
-                sb.Append("FROM musicians ");
-                String sql = sb.ToString();
-
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            first_name = reader.GetString(0);
-                            //last_name = reader.GetString(1);
-                            //genre = reader.GetString(2);
-                            //instrument = reader.GetString(3);
-
-                            //message = first_name + last_name + " a " + genre + " musician plays the " + instrument;
-                            Console.WriteLine(first_name);
-                            //The above writes to the App stdout.
-
-                            //await context.Response.WriteAsync("Hello World! \n" + message);
-                        }
-                    }
-                }
-            }
+            
         }
     }
 }

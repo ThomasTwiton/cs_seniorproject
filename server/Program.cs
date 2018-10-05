@@ -21,6 +21,5 @@ namespace server
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
 
-
     }
 }
