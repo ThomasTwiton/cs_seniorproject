@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,10 +28,8 @@ namespace HelloWorldTest.Pages
             string message;
 
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-            builder.DataSource = "pluggedindb.database.windows.net";
-            builder.UserID = "sqladmin";
-            builder.Password = "$had0wrunBlu3";
-            builder.InitialCatalog = "pluggedin_db";
+            builder.DataSource = "(localdb)\\ProjectsV13";
+            builder.InitialCatalog = "pluggedin_localdb";
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
