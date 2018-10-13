@@ -1,7 +1,10 @@
-language: python
-python:
- - "3.5"
+language: csharp
+solution: server/server.sln
+mono: none
+dotnet: 2.1
+install:
+  - dotnet restore server/server.sln
 script:
-    python -m unittest discover
+  - dotnet test PluggedIn_Tests/PluggedIn_Tests.sln
 notifications:
     slack: luthercs:28A3oEVAuBP0dVDsQWLKAZHh
