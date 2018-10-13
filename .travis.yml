@@ -5,7 +5,6 @@ dotnet: 2.1
 install:
   - dotnet restore server/server.sln
 script:
-  - dotnet build
   - dotnet test PluggedIn_Tests/PluggedIn_Tests.sln
 notifications:
     slack: luthercs:28A3oEVAuBP0dVDsQWLKAZHh
