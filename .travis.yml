@@ -1,7 +1,11 @@
-language: python
-python:
- - "3.5"
+language: csharp
+solution: server.sln
+mono: none
+dotnet: 2.1
+install:
+  - nuget restore server.sln
+  - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
 script:
-    python -m unittest discover
+  - dotnet test server/server.sln
 notifications:
     slack: luthercs:28A3oEVAuBP0dVDsQWLKAZHh
