@@ -1,6 +1,5 @@
 language: csharp
 solution: server.sln
-mono: none
 dotnet: 2.1
 before_install:
   - sudo apt-get install nuget
@@ -9,5 +8,3 @@ install:
   - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
 script:
   - dotnet test server/server.sln
-notifications:
-    slack: luthercs:28A3oEVAuBP0dVDsQWLKAZHh
