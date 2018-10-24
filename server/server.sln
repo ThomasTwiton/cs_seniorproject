@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server", "server\server.csproj", "{BE3C8967-84DE-44CE-995B-D2C5A6053764}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "server", "server\server.csproj", "{BE3C8967-84DE-44CE-995B-D2C5A6053764}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluggedIn_Tests", "..\PluggedIn_Tests\PluggedIn_Tests.csproj", "{40F48153-02BF-48D1-B2F3-75EED5193415}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{BE3C8967-84DE-44CE-995B-D2C5A6053764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE3C8967-84DE-44CE-995B-D2C5A6053764}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE3C8967-84DE-44CE-995B-D2C5A6053764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40F48153-02BF-48D1-B2F3-75EED5193415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40F48153-02BF-48D1-B2F3-75EED5193415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40F48153-02BF-48D1-B2F3-75EED5193415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40F48153-02BF-48D1-B2F3-75EED5193415}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
