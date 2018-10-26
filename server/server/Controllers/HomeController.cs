@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using server.Models;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace server.Controllers
 {
@@ -12,6 +14,12 @@ namespace server.Controllers
     {
         public IActionResult Index()
         {
+            return View();
+        }
+
+        public IActionResult Profile(string firstname, string lastname)
+        { //find user with this info and get the rest of their info from DB
+            ViewData["Message"] = firstname + " " + lastname;
             return View();
         }
 
