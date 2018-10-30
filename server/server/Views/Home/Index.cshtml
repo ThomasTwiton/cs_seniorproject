@@ -1,11 +1,18 @@
-﻿@{
+﻿
+@model server.Models.User
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<form asp-action="profile">
+<form asp-action="Create">
     First name:<br>
     <input type="text" name="firstname" value="Mickey"><br>
     Last name:<br>
-    <input type="text" name="lastname" value="Mouse"><br><br>
-    <input type="submit" value="Submit">
+    <input type="text" name="lastname" value="Mouse"><br>
+    Email address:<br>
+    <input type="text" name="email" value="mmouse@yahoo.com"><br>
+    Password:<br>
+    <input type="text" name="password" value="derp1234"><br>
+    <input type="submit" value="Create">
 </form>

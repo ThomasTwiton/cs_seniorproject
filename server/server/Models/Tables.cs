@@ -6,6 +6,10 @@ namespace server.Models
 
     public class PluggedContext : DbContext
     {
+        //public PluggedContext()
+        //{
+        //}
+
         public PluggedContext(DbContextOptions<PluggedContext> options)
             : base(options)
         { }
@@ -26,21 +30,7 @@ namespace server.Models
         public ICollection<Venue> Venue { get; set; }
     }
 
-    public class Profile
-    {
-        public int ProfileId { get; set; }
 
-        public string First_Name { get; set; }
-        public string Last_Name { get; set; }
-        public string Preferred_Name { get; set; }
-        public string Pic_Url { get; set; }
-
-        public int UserId { get; set; }
-        public User User { get; set; }
-
-        public ICollection<Plays_Instrument> Plays_Instrument { get; set; }
-        //public ICollection<Ensemble_Membership> Ensemble_Membership { get; set; }
-    }
 
     public class Ensemble
     {
