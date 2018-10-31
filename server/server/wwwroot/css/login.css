@@ -1,0 +1,30 @@
+﻿#login * {
+    display: block;
+    margin-left: 5px;
+}
+
+#signup {
+    width: 55%;
+    background-color: var(--bkg-grey);
+    border: var(--bkg-teal) solid 2px;
+}
+
+#splash {
+    margin-top: 20px;
+}
+
+#header {
+    height: 30px;
+    background-color: var(--bkg-teal);
+    padding: 10px;
+    align-items: center;
+}
+
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}

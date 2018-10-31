@@ -1,4 +1,12 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
+﻿:root {
+    --bkg-teal: #2EC4B6;
+    --bkg-red: #E71D36;
+    --bkg-dark: #011627;
+    --bkg-gold: #FF9F1C;
+    --bkg-grey: #CCCCCC;
+}
+
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
 body {
     padding-top: 50px;
@@ -12,21 +20,62 @@ body {
     padding-right: 15px;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+/* Teal-Blue: #2EC4B6
+   Red: #E71D36
+   Dark: #011627
+   Gold: #FF9F1C
+   Grey: #CCCCCC */
+
+.btn-primary {
+    background-color: var(--bkg-teal);
+    border-color: #2ABFB1;
+}
+.btn-primary:hover {
+    background-color: #0DB6A4;
+    border-color: #009585;
 }
 
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+.btn-danger {
+    background-color: var(--bkg-red);
+    border-color: #BC081D;
+}
+.btn-danger:hover {
+    background-color: #940011;
+    border-color: #71000D;
 }
 
-/* QR code generator */
-#qrCode {
-    margin: 15px;
+.btn-dark {
+    background-color: var(--bkg-dark);
+    border-color: #000B13;
 }
+.btn-dark:hover {
+    background-color: #000204;
+    border-color: #000;
+}
+
+.btn-warning {
+    background-color: var(--bkg-gold);
+    border-color: #D57B00;
+}
+.btn-warning:hover {
+    background-color: #A76100;
+    border-color: #583300;
+}
+
+.btn-secondary {
+    background-color: var(--bkg-grey);
+    border-color: #A1A1A1;
+}
+.btn-secondary:hover {
+    background-color: #737272;
+    border-color: #3F3E3E;
+}
+
+#search {
+    display: block;
+    text-align: center;
+}
+
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
