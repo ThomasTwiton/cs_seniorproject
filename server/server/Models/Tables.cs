@@ -15,6 +15,11 @@ namespace server.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email).IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Password).IsUnique();
+
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasKey(em => new { em.ProfileId, em.EnsembleId });
 
@@ -62,7 +67,9 @@ namespace server.Models
     {
         public int UserId { get; set; }
 
+        [Key]
         public string Email { get; set; }
+        [Key]
         public string Password { get; set; }
 
         public ICollection<Profile> Profile { get; set; }
