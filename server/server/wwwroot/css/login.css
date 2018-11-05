@@ -1,4 +1,8 @@
-﻿#login * {
+﻿html body {
+    height: 100%;
+}
+
+#login * {
     display: block;
     margin-left: 5px;
 }
