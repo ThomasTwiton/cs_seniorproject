@@ -1,0 +1,99 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/profile.css" />
+}
+
+@section Scripts {
+    <script src="~/js/posts.js" type="text/jsx">
+    </script>
+}
+
+<div class="container">
+    <div class="row">
+        <div id="profile" class="col-sm-3">
+            <img id="profPic" src="@ViewData["ProfPicURL"]" />
+            <div id="bio">
+                @ViewData["Bio"]
+            </div>
+            <div id="location">
+                <span class="glyphicon glyphicon-map-marker"></span>
+                @ViewData["Location"]
+            </div>
+            <hr />
+            <div id="ensembles">
+
+            </div>
+        </div>
+
+        <div id="posts" class="col-sm-9">
+            <div class="row">
+                <div class="col">
+                    <h1 id="name">@ViewData["Name"]</h1>
+
+                    <div id="createPost" class="container">
+                        <form class="row">
+                            <div class="col-xs-1">
+                                <img class="tinyPic" src="@ViewData["ProfPicURL"]" />
+                            </div>
+
+                            <div class="col-xs-11">
+                                <textarea class="inputPost" type="text" placeholder="Update your audience..."></textarea>
+
+                                <div id="postButtons" class="form-group">
+                                    <button class="btn btn-primary">Post</button>
+                                    <label class="btn btn-secondary">
+                                        Attach Media <input type="file" hidden>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <hr />
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="postCC" class="col">
+                    @*
+                        It is worth mentioning that it might be useful to replace the postContainer div below with a 
+                          React component that nests all of the posts inside. This might make iterating through the 
+                          displaying of the posts easier, however presently I do not know how to achieve this.
+                        <PostContainer />
+                    
+                    <div id="postContainer" class="container">
+                        @*
+                            The following is the HTML that was written to originally achieved the desired look.
+                              It has since been replaced by React code that is found in profile.js. However, this
+                              still remains here as a reference if needed.
+
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    <img class="tinyPic" src="@ViewData["ProfPicURL"]" />
+                                </div>
+
+                                <div class="col-xs-11">
+                                    <div class="textContainer">
+                                        The text for a post goes here. When the text is really, really long, then this is what happens.
+                                    </div>
+                                    <div class="mediaContainer">
+                                        <img src="~/images/banner1.svg" />
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

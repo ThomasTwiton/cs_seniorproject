@@ -11,6 +11,21 @@ for details on configuring this project to bundle and minify static web assets. 
 body {
     padding-top: 50px;
     padding-bottom: 20px;
+    font-size: 12pt;
+}
+
+hr {
+    background-color: var(--bkg-teal);
+    border-color: var(--bkg-teal);
+    color: var(--bkg-teal);
+    width: 90%;
+    align-self: center;
+}
+
+footer hr {
+    background-color: var(--bkg-dark);
+    border-color: var(--bkg-dark);
+    color: var(--bkg-dark);
 }
 
 /* Wrapping element */
@@ -47,10 +62,12 @@ body {
 .btn-dark {
     background-color: var(--bkg-dark);
     border-color: #000B13;
+    color: #FFF;
 }
 .btn-dark:hover {
     background-color: #000204;
     border-color: #000;
+    color: #FFF;
 }
 
 .btn-warning {
@@ -67,7 +84,7 @@ body {
     border-color: #A1A1A1;
 }
 .btn-secondary:hover {
-    background-color: #737272;
+    background-color: #AAA;
     border-color: #3F3E3E;
 }
 
@@ -76,6 +93,13 @@ body {
     text-align: center;
 }
 
+[hidden] {
+    display: none !important;
+}
+
+.glyphicon-bell {
+    color: var(--bkg-gold);
+}
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
