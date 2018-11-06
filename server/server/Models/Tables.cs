@@ -67,9 +67,8 @@ namespace server.Models
     {
         public int UserId { get; set; }
 
-        [Key]
         public string Email { get; set; }
-        [Key]
+        
         public string Password { get; set; }
 
         public ICollection<Profile> Profile { get; set; }
