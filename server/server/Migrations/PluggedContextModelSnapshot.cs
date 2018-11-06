@@ -41,7 +41,7 @@ namespace server.Migrations
 
                     b.HasIndex("EnsembleId");
 
-                    b.ToTable("Audition");
+                    b.ToTable("Auditoins");
                 });
 
             modelBuilder.Entity("server.Models.Booked_Gig", b =>
@@ -58,7 +58,26 @@ namespace server.Migrations
 
                     b.HasIndex("GigId");
 
-                    b.ToTable("Booked_Gig");
+                    b.ToTable("Booked_Gigs");
+                });
+
+            modelBuilder.Entity("server.Models.E_Has_Media", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MediaId");
+
+                    b.Property<int>("ProfileId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MediaId");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("E_Has_Medias");
                 });
 
             modelBuilder.Entity("server.Models.Ensemble", b =>
@@ -85,7 +104,7 @@ namespace server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ensemble");
+                    b.ToTable("Ensembles");
                 });
 
             modelBuilder.Entity("server.Models.Gig", b =>
@@ -102,7 +121,7 @@ namespace server.Migrations
 
                     b.HasIndex("VenueId");
 
-                    b.ToTable("Gig");
+                    b.ToTable("Gigs");
                 });
 
             modelBuilder.Entity("server.Models.Instrument", b =>
@@ -115,7 +134,26 @@ namespace server.Migrations
 
                     b.HasKey("InstrumentId");
 
-                    b.ToTable("Instrument");
+                    b.ToTable("Instruments");
+                });
+
+            modelBuilder.Entity("server.Models.P_Has_Media", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MediaId");
+
+                    b.Property<int>("ProfileId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MediaId");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("P_Has_Medias");
                 });
 
             modelBuilder.Entity("server.Models.Plays_Instrument", b =>
@@ -126,9 +164,7 @@ namespace server.Migrations
 
                     b.Property<int>("InstrumentId");
 
-                    b.Property<int?>("ProfileId");
-
-                    b.Property<int>("UserId");
+                    b.Property<int>("ProfileId");
 
                     b.HasKey("Id");
 
@@ -136,9 +172,20 @@ namespace server.Migrations
 
                     b.HasIndex("ProfileId");
 
-                    b.HasIndex("UserId");
+                    b.ToTable("Plays_Instruments");
+                });
 
-                    b.ToTable("Plays_Instrument");
+            modelBuilder.Entity("server.Models.PostMedia", b =>
+                {
+                    b.Property<int>("PostMediaId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("MediaUrl");
+
+                    b.HasKey("PostMediaId");
+
+                    b.ToTable("PostMedias");
                 });
 
             modelBuilder.Entity("server.Models.Profile", b =>
@@ -164,6 +211,23 @@ namespace server.Migrations
                     b.ToTable("Profiles");
                 });
 
+            modelBuilder.Entity("server.Models.ProfileEnsemble", b =>
+                {
+                    b.Property<int>("ProfileId");
+
+                    b.Property<int>("EnsembleId");
+
+                    b.Property<DateTime>("End_Date");
+
+                    b.Property<DateTime>("Start_Date");
+
+                    b.HasKey("ProfileId", "EnsembleId");
+
+                    b.HasIndex("EnsembleId");
+
+                    b.ToTable("ProfileEnsembles");
+                });
+
             modelBuilder.Entity("server.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -176,7 +240,34 @@ namespace server.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
+                    b.HasIndex("Password")
+                        .IsUnique()
+                        .HasFilter("[Password] IS NOT NULL");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("server.Models.V_Has_Media", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MediaId");
+
+                    b.Property<int>("ProfileId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MediaId");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("V_Has_Medias");
                 });
 
             modelBuilder.Entity("server.Models.Venue", b =>
@@ -195,7 +286,7 @@ namespace server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Venue");
+                    b.ToTable("Venues");
                 });
 
             modelBuilder.Entity("server.Models.Audition", b =>
@@ -203,7 +294,7 @@ namespace server.Migrations
                     b.HasOne("server.Models.Ensemble", "Ensemble")
                         .WithMany("Audition")
                         .HasForeignKey("EnsembleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("server.Models.Booked_Gig", b =>
@@ -211,7 +302,20 @@ namespace server.Migrations
                     b.HasOne("server.Models.Gig", "Gig")
                         .WithMany("Booked_Gig")
                         .HasForeignKey("GigId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("server.Models.E_Has_Media", b =>
+                {
+                    b.HasOne("server.Models.PostMedia", "Media")
+                        .WithMany("E_Has_Media")
+                        .HasForeignKey("MediaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("server.Models.Profile", "Profile")
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("server.Models.Ensemble", b =>
@@ -219,7 +323,7 @@ namespace server.Migrations
                     b.HasOne("server.Models.User", "User")
                         .WithMany("Ensemble")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("server.Models.Gig", b =>
@@ -227,7 +331,20 @@ namespace server.Migrations
                     b.HasOne("server.Models.Venue", "Venue")
                         .WithMany("Gig")
                         .HasForeignKey("VenueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("server.Models.P_Has_Media", b =>
+                {
+                    b.HasOne("server.Models.PostMedia", "Media")
+                        .WithMany("P_Has_Media")
+                        .HasForeignKey("MediaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("server.Models.Profile", "Profile")
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("server.Models.Plays_Instrument", b =>
@@ -235,16 +352,12 @@ namespace server.Migrations
                     b.HasOne("server.Models.Instrument", "Instrument")
                         .WithMany("Plays_Instrument")
                         .HasForeignKey("InstrumentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("server.Models.Profile")
+                    b.HasOne("server.Models.Profile", "Profile")
                         .WithMany("Plays_Instrument")
-                        .HasForeignKey("ProfileId");
-
-                    b.HasOne("server.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("server.Models.Profile", b =>
@@ -252,7 +365,33 @@ namespace server.Migrations
                     b.HasOne("server.Models.User", "User")
                         .WithMany("Profile")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("server.Models.ProfileEnsemble", b =>
+                {
+                    b.HasOne("server.Models.Ensemble", "Ensemble")
+                        .WithMany("ProfileEnsemble")
+                        .HasForeignKey("EnsembleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("server.Models.Profile", "Profile")
+                        .WithMany("ProfileEnsemble")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("server.Models.V_Has_Media", b =>
+                {
+                    b.HasOne("server.Models.PostMedia", "Media")
+                        .WithMany("V_Has_Media")
+                        .HasForeignKey("MediaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("server.Models.Profile", "Profile")
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("server.Models.Venue", b =>
@@ -260,7 +399,7 @@ namespace server.Migrations
                     b.HasOne("server.Models.User", "User")
                         .WithMany("Venue")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
