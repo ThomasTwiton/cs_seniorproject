@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Do not ignore .gitkeep
+!*/.gitkeep
+
+# We do not want the Migrations anymore.
+[Mm]igrations/
+
 # User-specific files
 *.suo
 *.user
