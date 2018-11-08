@@ -11,7 +11,7 @@ namespace server.Models
 
         public PluggedContext(DbContextOptions<PluggedContext> options)
             : base(options)
-        {  }
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,7 +51,7 @@ namespace server.Models
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Venue> Venues { get; set; }
         public DbSet<Ensemble> Ensembles { get; set; }
-        public DbSet<Instrument> Instruments{ get; set; }
+        public DbSet<Instrument> Instruments { get; set; }
         public DbSet<Plays_Instrument> Plays_Instruments { get; set; }
         public DbSet<ProfileEnsemble> ProfileEnsembles { get; set; }
         public DbSet<Audition> Auditoins { get; set; }
@@ -67,9 +67,8 @@ namespace server.Models
     {
         public int UserId { get; set; }
 
-        [Key]
         public string Email { get; set; }
-        [Key]
+        
         public string Password { get; set; }
 
         public ICollection<Profile> Profile { get; set; }
@@ -142,7 +141,7 @@ namespace server.Models
         public int InstrumentId { get; set; }
         public Instrument Instrument { get; set; }
     }
- 
+
     public class ProfileEnsemble
     {
         public System.DateTime Start_Date { get; set; }
@@ -150,11 +149,11 @@ namespace server.Models
 
         public int ProfileId { get; set; }
         public Profile Profile { get; set; }
-        
+
         public int EnsembleId { get; set; }
         public Ensemble Ensemble { get; set; }
     }
-  
+
 
     public class Audition
     {
@@ -233,6 +232,6 @@ namespace server.Models
         public PostMedia Media { get; set; }
     }
 
-    
+
 
 }
