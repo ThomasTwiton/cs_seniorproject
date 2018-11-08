@@ -34,13 +34,13 @@
 
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-form form-inline" id="login" role="log">
+                <form asp-action="Login" class="navbar-form form-inline" id="login" role="log">
                     <ul class="nav navbar-nav navbar-right form-group">
                         <li class="form-inline">
-                            <input type="text" class="form-control input-sm" placeholder="Email">
+                            <input type="text" name="email" class="form-control input-sm" placeholder="Email">
                         </li>
                         <li class="form-inline">
-                            <input type="password" class="form-control input-sm" placeholder="Password">
+                            <input type="password" name="password" class="form-control input-sm" placeholder="Password">
                         </li>
                         <li class="form-inline">
                             <button class="btn btn-primary input-sm" type="submit">Log In</button>
