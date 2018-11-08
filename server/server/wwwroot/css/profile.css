@@ -108,17 +108,22 @@ form.row {
     color: var(--bkg-teal);
 }
 
+#ensembleContainer {
+    padding: 0px;
+}
+
 #ensembleContainer img {
     width: 55px;
     height: 55px;
     border: 2px solid var(--bkg-gold);
     border-radius: 3px;
-    margin: 5px;
 }
 
-#ensembleContainer .row {
+#ensembleContainer .ensembleLink {
     margin-top: 5px;
     margin-bottom: 5px;
+    margin-right: 10px;
+    float: left;
 }
 
 /* Hide/rearrange for smaller screens */

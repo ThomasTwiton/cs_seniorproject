@@ -16,7 +16,8 @@ namespace server.Controllers
             ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
             ViewData["Location"] = "Liverpool";
             ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
-            ViewData["Name"] = "Ringo Starr";
+            ViewData["first_name"] = "Ringo";
+            ViewData["last_name"] = "Starr";
             ViewData["Posts"] = new List<object>();
             ViewData["Owner"] = "false";
             return View();
