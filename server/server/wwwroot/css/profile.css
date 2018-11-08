@@ -108,6 +108,19 @@ form.row {
     color: var(--bkg-teal);
 }
 
+#ensembleContainer img {
+    width: 55px;
+    height: 55px;
+    border: 2px solid var(--bkg-gold);
+    border-radius: 3px;
+    margin: 5px;
+}
+
+#ensembleContainer .row {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     #profile {
