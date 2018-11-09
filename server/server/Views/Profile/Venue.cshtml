@@ -1,0 +1,77 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/venue.css" />
+    <link rel="stylesheet" href="~/css/post.css" />
+}
+
+@section Scripts {
+    <script src="~/js/posts.js" type="text/jsx">
+    </script>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <img id="banner" src="@ViewData["BannerURL"]" alt="@ViewData["Name"]" />
+    </div>
+    <div class="row">
+        <div id="profile" class="col-xs-3">
+            <h1 id="name">@ViewData["Name"]</h1>
+            <hr />
+            <div id="bio">
+                @ViewData["Bio"]
+            </div>
+            <hr />
+            <table id="info">
+                <tr>
+                    <td>Phone:</td>
+                    <td>@ViewData["Phone"]</td>
+                </tr>
+                <tr>
+                    <td>Address:</td>
+                    <td>
+                        @ViewData["Address"] <br />
+                        @ViewData["City"], @ViewData["State"]
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="posts" class="col-xs-9">
+            <div class="row">
+                @if (ViewData["Owner"] == "true")
+                {
+                    <div id="createPost" class="container">
+                        <form class="row">
+                            <div class="col-xs-1">
+                                <img class="tinyPic" src="@ViewData["ProfPicURL"]" />
+                            </div>
+
+                            <div class="col-xs-11">
+                                <textarea class="inputPost" type="text" placeholder="Update your audience..."></textarea>
+
+                                <div id="postButtons" class="form-group">
+                                    <button class="btn btn-primary">Post</button>
+                                    <label class="btn btn-secondary">
+                                        Attach Media <input type="file" hidden>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+
+            <div class="row">
+                <hr />
+            </div>
+
+            <div id="postCC" class="row">
+
+            </div>
+        </div>
+</div>
