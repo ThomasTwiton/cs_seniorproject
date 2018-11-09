@@ -1,0 +1,18 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/login.css",
+      "wwwroot/css/post.css",
+      "wwwroot/css/profile.css",
+      "wwwroot/css/venue.css",
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/posts.min.js",
+    "inputFiles": [
+      "wwwroot/js/posts.js"
+    ]
+  }
+]

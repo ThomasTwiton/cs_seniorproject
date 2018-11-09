@@ -4,12 +4,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using server.Models;
 
 namespace server.Controllers
 {
     public class HomeController : Controller
     {
+
+        private readonly PluggedContext _context;
+
+        public HomeController(PluggedContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -39,5 +49,72 @@ namespace server.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public async Task<IActionResult> Login(string email, string password)
+        {
+
+
+            var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList();
+            var profile = user_with_profile[0].Profile.ToList()[0];
+            Console.WriteLine(profile);
+            /* var Ensembles = new List<String>();
+            var dummyens = new Ensemble { Ensemble_Name = "Best Band Ever" };
+            _context.Ensembles.Add(dummyens);
+            if (profile.ProfileEnsemble == null)
+            {
+                profile.ProfileEnsemble = new List<ProfileEnsemble>
+                {
+                    new ProfileEnsemble{ProfileId = profile.ProfileId, EnsembleId = dummyens.EnsembleId}
+                };
+                profile.ProfileEnsemble.ToList().ForEach(pe => _context.ProfileEnsembles.Add(pe));
+                await _context.SaveChangesAsync();
+            }
+            foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
+            {
+                String ensemble = pe.Ensemble.Ensemble_Name;
+                Ensembles.Add(ensemble);
+            }
+            */
+
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            Console.WriteLine(profile.First_Name);
+            Console.WriteLine(email);
+            Console.WriteLine(password);
+
+            ViewData["first_name"] = profile.First_Name;
+            ViewData["last_name"] = profile.Last_Name;
+            //ViewData["ensembles"] = Ensembles;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password, string firstname, string lastname)
+        { //IActionResult = promise. Create new instance of user class
+
+
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(user);
+                await _context.SaveChangesAsync(); //wait until DB is saved for this result
+                var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList();
+                user_with_profile[0].Profile = new List<Profile>();
+                Profile profile = new Profile();
+                user_with_profile[0].Profile.Add(profile);
+                profile.First_Name = firstname;
+                profile.Last_Name = lastname;
+                await _context.SaveChangesAsync(); //wait until DB is saved for this result
+                return RedirectToAction(nameof(Index));
+            }
+            return View(user);
+        }
+
     }
 }

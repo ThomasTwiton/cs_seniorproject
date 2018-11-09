@@ -108,6 +108,10 @@ form.row {
     color: var(--bkg-teal);
 }
 
+#ensembleContainer {
+    padding: 0;
+}
+
 #ensembleContainer img {
     width: 55px;
     height: 55px;
