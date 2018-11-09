@@ -5,17 +5,20 @@
 
 @section Stylesheets {
     <link rel="stylesheet" href="~/css/profile.css" />
+    <link rel="stylesheet" href="~/css/post.css" />
 }
 
 @section Scripts {
     <script src="~/js/posts.js" type="text/jsx">
     </script>
+    <script src="~/js/ensemble.js" type="text/jsx">
+    </script>
 }
 
 <div class="container">
     <div class="row">
-        <div id="profile" class="col-sm-3">
-            <img id="profPic" src="@ViewData["ProfPicURL"]" />
+        <div id="profile" class="col-md-3">
+            <img id="profPic" src="@ViewData["ProfPicURL"]" alt="@ViewData["first_name"]" />
             <div id="bio">
                 @ViewData["Bio"]
             </div>
@@ -26,32 +29,32 @@
             <hr />
             <div id="ensembles">
                 @*
-                    The following is the HTML that was written to originally achieved the desired look.
-                      It has since been replaced by React code that is found in ensemble.js. However, this
-                      still remains here as a reference if needed.
+                        The following is the HTML that was written to originally achieved the desired look.
+                          It has since been replaced by React code that is found in ensemble.js. However, this
+                          still remains here as a reference if needed.
 
-                <div id="ensembleContainer" className="container-fluid">
-                    <div class="row">
-                        <a href="/Profile/id=1"><img src="https://placekitten.com/g/64/64" title="The Beatles" /></a>
-                        <a href="/Profile/id=2"><img src="https://placekitten.com/g/64/64" title="Solo" /></a>
-                        <a href="/Profile/id=3"><img src="https://placekitten.com/g/64/64" title="Jim's Air-Band" /></a>
-                        <a href="/Profile/id=4"><img src="https://placekitten.com/g/64/64" title="Metallica" /></a>
+                    <div id="ensembleContainer" className="container-fluid">
+                        <div class="row">
+                            <a href="/Profile/id=1"><img src="https://placekitten.com/g/64/64" title="The Beatles" /></a>
+                            <a href="/Profile/id=2"><img src="https://placekitten.com/g/64/64" title="Solo" /></a>
+                            <a href="/Profile/id=3"><img src="https://placekitten.com/g/64/64" title="Jim's Air-Band" /></a>
+                            <a href="/Profile/id=4"><img src="https://placekitten.com/g/64/64" title="Metallica" /></a>
+                        </div>
+                        <div class="row">
+                            <a href="/Profile/id=5"><img src="https://placekitten.com/g/64/64" title="The Beatles" /></a>
+                            <a href="/Profile/id=6"><img src="https://placekitten.com/g/64/64" title="Solo" /></a>
+                            <a href="/Profile/id=7"><img src="https://placekitten.com/g/64/64" title="Jim's Air-Band" /></a>
+                            <a href="/Profile/id=8"><img src="https://placekitten.com/g/64/64" title="Metallica" /></a>
+                        </div>
                     </div>
-                    <div class="row">
-                        <a href="/Profile/id=5"><img src="https://placekitten.com/g/64/64" title="The Beatles" /></a>
-                        <a href="/Profile/id=6"><img src="https://placekitten.com/g/64/64" title="Solo" /></a>
-                        <a href="/Profile/id=7"><img src="https://placekitten.com/g/64/64" title="Jim's Air-Band" /></a>
-                        <a href="/Profile/id=8"><img src="https://placekitten.com/g/64/64" title="Metallica" /></a>
-                    </div>
-                </div>
                 *@
             </div>
         </div>
 
-        <div id="posts" class="col-sm-9">
+        <div id="posts" class="col-md-9">
             <div class="row">
                 <div class="col">
-                    <h1 id="name">@ViewData["Name"]</h1>
+                    <h1 id="name">@ViewData["first_name"] @ViewData["last_name"]</h1>
 
                     @if (ViewData["Owner"] == "true")
                     {
@@ -88,28 +91,27 @@
             <div class="row">
                 <div id="postCC" class="col">
                     @*
-                    
-                    <div id="postContainer" class="container">
-                        @*
-                            The following is the HTML that was written to originally achieved the desired look.
-                              It has since been replaced by React code that is found in profile.js. However, this
-                              still remains here as a reference if needed.
+                        <div id="postContainer" class="container">
+                            @*
+                                The following is the HTML that was written to originally achieved the desired look.
+                                  It has since been replaced by React code that is found in profile.js. However, this
+                                  still remains here as a reference if needed.
 
-                            <div class="row">
-                                <div class="col-xs-1">
-                                    <img class="tinyPic" src="@ViewData["ProfPicURL"]" />
-                                </div>
+                                <div class="row">
+                                    <div class="col-xs-1">
+                                        <img class="tinyPic" src="@ViewData["ProfPicURL"]" />
+                                    </div>
 
-                                <div class="col-xs-11">
-                                    <div class="textContainer">
-                                        The text for a post goes here. When the text is really, really long, then this is what happens.
-                                    </div>
-                                    <div class="mediaContainer">
-                                        <img src="~/images/banner1.svg" />
+                                    <div class="col-xs-11">
+                                        <div class="textContainer">
+                                            The text for a post goes here. When the text is really, really long, then this is what happens.
+                                        </div>
+                                        <div class="mediaContainer">
+                                            <img src="~/images/banner1.svg" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                    </div>
+                        </div>
                     *@
                 </div>
             </div>
