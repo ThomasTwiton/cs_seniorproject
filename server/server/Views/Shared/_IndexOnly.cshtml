@@ -3,19 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
+    <title>PluggedIn - Log in or Sign up</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/login.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/login.min.css" asp-append-version="true" />
     </environment>
-    @RenderSection("Stylesheets", required: false)
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top" style="border-radius: 0;">
@@ -33,34 +34,18 @@
 
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#"><span class="glyphicon glyphicon-bell"></span></a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span></a>
-
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#">View Profile</a>
-                            </li>
-                            <li>
-                                <a href="#">Manage Account</a>
-                            </li>
-                            <li>
-                                <a href="#">Invite a friend</a>
-                            </li>
-                            <li role="separator" class="divider"></li>
-                            <li>
-                                <a href="#">Log out</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="navbar-form" id="search" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
+                <form asp-action="Login" class="navbar-form form-inline" id="login" role="log">
+                    <ul class="nav navbar-nav navbar-right form-group">
+                        <li class="form-inline">
+                            <input type="text" name="email" class="form-control input-sm" placeholder="Email">
+                        </li>
+                        <li class="form-inline">
+                            <input type="password" name="password" class="form-control input-sm" placeholder="Password">
+                        </li>
+                        <li class="form-inline">
+                            <button class="btn btn-primary input-sm" type="submit">Log In</button>
+                        </li>
+                    </ul>
                 </form>
             </div>
             <!-- /.navbar-collapse -->
@@ -68,10 +53,14 @@
         <!-- /.container-fluid -->
     </nav>
 
+    @*We might use cookies in the future. Might as well keep this until deemed unneccessary.
+        <partial name="_CookieConsentPartial" />
+    *@
+
     <div class="container body-content">
         @RenderBody()
+        <hr />
         <footer>
-            <hr />
             <p>&copy; 2018 - PluggedIn</p>
         </footer>
     </div>
@@ -79,7 +68,6 @@
     <environment include="Development">
         <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
         <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-        <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js" crossorigin></script>
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
@@ -87,14 +75,12 @@
     <environment exclude="Development">
         <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
         <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
-        <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js" crossorigin></script>
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
                 crossorigin="anonymous"
                 integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
         </script>
-
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
@@ -104,6 +90,5 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    @RenderSection("Scripts", required: false)
 </body>
 </html>

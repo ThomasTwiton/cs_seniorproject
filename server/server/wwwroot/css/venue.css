@@ -1,0 +1,35 @@
+﻿#banner {
+    /*
+        Banners scale nicely with width 
+        at 100%, however the height should
+        not exceed 300px in order for a 
+        comfortable desktop experience.
+    */
+    width: 100%;
+    max-height: 300px;
+}
+
+#name {
+    text-align: center;
+}
+
+#info td {
+    vertical-align: top;
+    width: auto;
+}
+
+#info tr {
+    border-bottom: 1px solid var(--bkg-grey);
+}
+
+#info tr:last-child {
+    border-bottom: none;
+}
+
+#info td:nth-child(even) {
+    padding-left: 10px;
+}
+
+#info td:nth-child(odd) {
+    font-weight: bold;
+}

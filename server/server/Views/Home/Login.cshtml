@@ -51,7 +51,7 @@
         <div id="posts" class="col-sm-9">
             <div class="row">
                 <div class="col">
-                    <h1 id="name">@ViewData["Name"]</h1>
+                    <h1 id="name">@ViewData["first_name"] @ViewData["last_name"]</h1>
 
                     @if (ViewData["Owner"] == "true")
                     {
