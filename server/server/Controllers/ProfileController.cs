@@ -18,7 +18,8 @@ namespace server.Controllers
             ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
             ViewData["first_name"] = "Ringo";
             ViewData["last_name"] = "Starr";
-            ViewData["Owner"] = "false";
+            ViewData["Owner"] = "true";
+            ViewData["ProfileType"] = "ensemble";
             return View();
         }
 

@@ -30,8 +30,21 @@ function ExtraOption(props) {
     // An additional square that is used to create an audition, 
     // create an ensemble or other such functionality.
 
+    let modal = document.getElementById('createModal');
+    if (modal == null) {
+        return (null)
+    }
+
+    let message;
+    console.log(profileType);
+    if (profileType == "ensemble") {
+        message = "Hold Auditions!";
+    } else {
+        message = "Form a Group!";
+    }
+
     return (
-        <div className="extraBit" onClick={() => { showModal() }}>
+        <div title={message} className="extraBit" onClick={() => { showModal() }}>
             <span className="glyphicon glyphicon-plus"></span>
         </div>
     );
@@ -43,18 +56,18 @@ function ExtraOption(props) {
 
 function showModal() {
     // Get the modal
-    let modal = document.getElementById('myModal');
+    let modal = document.getElementById('createModal');
     modal.style.display = "block";
 }
 
 function hideModal() {
-    let modal = document.getElementById('myModal');
+    let modal = document.getElementById('createModal');
     modal.style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
-    let modal = document.getElementById('myModal');
+    let modal = document.getElementById('createModal');
     if (event.target == modal) {
         modal.style.display = "none";
     }

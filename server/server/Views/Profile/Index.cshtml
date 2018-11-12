@@ -12,6 +12,9 @@
     </script>
     <script src="~/js/ensemble.js" type="text/jsx">
     </script>
+    <script>
+        var profileType = "@ViewData["ProfileType"]";
+    </script>
 }
 
 <div class="container">
@@ -118,11 +121,60 @@
     </div>
 </div>
 
-<div id="myModal" class="modal">
+@if (ViewData["Owner"] as String == "true")
+{
 
-    <div class="modal-content">
-        <span class="close" onclick="hideModal()">&times;</span>
-        <p>Some text in the Modal..</p>
-    </div>
+    @if (ViewData["ProfileType"] as String == "ensemble")
+    {
+        /* If the profile is an ensemble, then we want to hold auditions */
+        <div id="createModal" class="modal">
 
-</div>
+            <div class="modal-content">
+                <span class="close" onclick="hideModal()">&times;</span>
+                <form asp-controller="Audition" asp-action="Register" method="post">
+                    <h2>Hold an Audition!</h2>
+                    <hr />
+                    <div class="form-group">
+                        <label for="audition_date">Auditions Begin</label>
+                        <input type="date" name="audition_date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="closed_date">Auditions Close</label>
+                        <input type="date" name="closed_date" class="form-control" />
+                        <small class="form-text text-muted">The closing date should be the day <em>after</em> the last day of auditions. No auditions should be held on the closed date.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Audition Location</label>
+                        <input type="text" class="form-control" name="location" />
+                    </div>
+                    <div class="form-group">
+                        <label for="instrument">What instrument are you looking for?</label>
+                        <input type="text" name="instrument" class="form-control" placeholder="Trumpet, Vocalist etc..." />
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Audition Description</label>
+                        <input type="text" name="description" class="form-control" placeholder="Prepared materials, contact information etc..." />
+                        <small class="form-text text-muted">Some useful information to include might be ways to sign up for an audition; What materials should be prepared; Your contact information; How long the audition slots are etc...</small>
+                    </div>
+                    Some text in the Modal..
+                </form>
+            </div>
+
+        </div>
+    }
+    else if (ViewData["ProfileType"] as String == "profile")
+    {
+        <div id="createModal" class="modal">
+
+            <div class="modal-content">
+                <span class="close" onclick="hideModal()">&times;</span>
+                <form asp-controller="Audition" asp-action="Register" method="post">
+                    <h2>Form a Group!</h2>
+
+                    Some text in the Modal..
+                </form>
+            </div>
+
+        </div>
+    }
+}
