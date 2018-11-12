@@ -102,6 +102,10 @@ footer hr {
     color: var(--bkg-gold);
 }
 
+.red-ast {
+    color: red;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */

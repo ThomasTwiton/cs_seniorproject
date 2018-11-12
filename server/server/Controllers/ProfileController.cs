@@ -19,7 +19,7 @@ namespace server.Controllers
             ViewData["first_name"] = "Ringo";
             ViewData["last_name"] = "Starr";
             ViewData["Owner"] = "true";
-            ViewData["ProfileType"] = "ensemble";
+            ViewData["ProfileType"] = "profile";
             return View();
         }
 
