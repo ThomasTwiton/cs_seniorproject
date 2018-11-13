@@ -97,26 +97,36 @@ namespace server.Controllers
         {
 
 
-            var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList();
-            var profile = user_with_profile[0].Profile.ToList()[0];
+            var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList()[0];
+            var profile = user_with_profile.Profile.ToList()[0];
             var Ensembles = new List<String>();
-            /* var dummyens = new Ensemble { Ensemble_Name = "Best Band Ever" };
-            _context.Ensembles.Add(dummyens);
+
+            var dummyens = new Ensemble();
+            dummyens.Ensemble_Name = "Best Band Ever";
+            if (user_with_profile.Ensemble == null)
+            {
+                user_with_profile.Ensemble = new List<Ensemble>();
+                
+                user_with_profile.Ensemble.Add(dummyens);
+                await _context.SaveChangesAsync();
+            }
+            
             if (profile.ProfileEnsemble == null)
             {
-                profile.ProfileEnsemble = new List<ProfileEnsemble>
-                {
-                    new ProfileEnsemble{ProfileId = profile.ProfileId, EnsembleId = dummyens.EnsembleId}
-                };
-                profile.ProfileEnsemble.ToList().ForEach(pe => _context.ProfileEnsembles.Add(pe));
+                profile.ProfileEnsemble = new List<ProfileEnsemble>();
+                var dummymember = new ProfileEnsemble();
+                dummymember.Profile = profile;
+                dummymember.Ensemble = dummyens;
+                profile.ProfileEnsemble.Add(dummymember);
                 await _context.SaveChangesAsync();
             }
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
                 String ensemble = pe.Ensemble.Ensemble_Name;
+                Console.WriteLine(ensemble);
                 Ensembles.Add(ensemble);
             }
-            */
+            
 
 
             if (profile == null)
@@ -126,7 +136,7 @@ namespace server.Controllers
 
             ViewData["first_name"] = profile.First_Name;
             ViewData["last_name"] = profile.Last_Name;
-            //ViewData["ensembles"] = Ensembles;
+            ViewData["ensembles"] = Ensembles;
 
             return View();
         }
