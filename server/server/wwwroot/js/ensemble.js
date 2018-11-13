@@ -28,7 +28,7 @@ function Member(props) {
 
 function ExtraOption(props) {
     // An additional square that is used to create an audition, 
-    // create an ensemble or other such functionality.
+    // create an ensemble or other such functionality via modal.
 
     let modal = document.getElementById('createModal');
     if (modal == null) {
@@ -48,29 +48,6 @@ function ExtraOption(props) {
             <span className="glyphicon glyphicon-plus"></span>
         </div>
     );
-}
-
-/* ================================================== */
-/* ================= Modal Functions ================ */
-/* ================================================== */
-
-function showModal() {
-    // Get the modal
-    let modal = document.getElementById('createModal');
-    modal.style.display = "block";
-}
-
-function hideModal() {
-    let modal = document.getElementById('createModal');
-    modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function (event) {
-    let modal = document.getElementById('createModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
 }
 
 const e = {

@@ -1,4 +1,7 @@
-﻿:root {
+﻿/* ================================================== */
+/* ================= Color Variables ================ */
+/* ================================================== */
+:root {
     --bkg-teal: #2EC4B6;
     --bkg-red: #E71D36;
     --bkg-dark: #011627;
@@ -6,9 +9,16 @@
     --bkg-grey: #CCCCCC;
     --bkg-dark-grey: #A1A1A1;
 }
+/* Teal: #2EC4B6
+   Red:  #E71D36
+   Dark: #011627
+   Gold: #FF9F1C
+   Grey: #CCCCCC */
 
-/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
-for details on configuring this project to bundle and minify static web assets. */
+
+/* ================================================== */
+/* ================== Misc Styling ================== */
+/* ================================================== */
 body {
     padding-top: 50px;
     padding-bottom: 20px;
@@ -29,6 +39,10 @@ footer hr {
     color: var(--bkg-dark);
 }
 
+[hidden] {
+    display: none !important;
+}
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
@@ -36,12 +50,23 @@ footer hr {
     padding-right: 15px;
 }
 
-/* Teal-Blue: #2EC4B6
-   Red: #E71D36
-   Dark: #011627
-   Gold: #FF9F1C
-   Grey: #CCCCCC */
+.glyphicon-bell {
+    color: var(--bkg-gold);
+}
 
+.red-ast {
+    color: red;
+}
+
+#search {
+    display: block;
+    text-align: center;
+}
+
+
+/* ================================================== */
+/* ================= Button Styling ================= */
+/* ================================================== */
 .btn-primary {
     background-color: var(--bkg-teal);
     border-color: #2ABFB1;
@@ -89,22 +114,73 @@ footer hr {
     border-color: #3F3E3E;
 }
 
-#search {
-    display: block;
-    text-align: center;
+
+/* ================================================== */
+/* ================== Modal Styling ================= */
+/* ================================================== */
+
+/* background */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-[hidden] {
-    display: none !important;
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 6% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    animation-name: animatetop;
+    animation-duration: 0.4s
 }
 
-.glyphicon-bell {
-    color: var(--bkg-gold);
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
-.red-ast {
-    color: red;
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+#desc {
+    height: 300px;
+    vertical-align: top;
 }
+
+/* Add Animation */
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+
+/* ================================================== */
+/* ================= Screen Styling ================= */
+/* ================================================== */
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
