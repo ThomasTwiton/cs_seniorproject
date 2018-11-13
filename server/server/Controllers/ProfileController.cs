@@ -34,6 +34,7 @@ namespace server.Controllers
             ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
             ViewData["Name"] = "Marty's Grill";
             ViewData["Phone"] = "(563) 555-1234";
+            ViewData["Website"] = "https://www.luther.edu/dining/locations/martys/";
             ViewData["Owner"] = "true";
             return View();
         }

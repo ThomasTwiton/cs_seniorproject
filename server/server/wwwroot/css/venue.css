@@ -22,6 +22,11 @@
     border-bottom: 1px solid var(--bkg-grey);
 }
 
+#info td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 #info tr:last-child {
     border-bottom: none;
 }
@@ -32,4 +37,8 @@
 
 #info td:nth-child(odd) {
     font-weight: bold;
+}
+
+#info {
+    margin-bottom: 10px;
 }

@@ -37,7 +37,15 @@
                         @ViewData["City"], @ViewData["State"]
                     </td>
                 </tr>
+                <tr>
+                    <td>Website:</td>
+                    <td><a href="@ViewData["Website"]">@ViewData["Name"]</a></td>
+                </tr>
             </table>
+            @if (ViewData["Owner"] as String == "true")
+            {
+                <button style="width:100%;" class="btn btn-warning" onclick="showModal()">Create a Gig</button>
+            }
         </div>
 
         <div id="posts" class="col-xs-9">
@@ -74,4 +82,73 @@
 
             </div>
         </div>
-</div>
+
+        @if (ViewData["Owner"] as String == "true")
+        {
+
+            <div id="createModal" class="modal">
+
+                <div class="modal-content">
+                    <span class="close" onclick="hideModal()">&times;</span>
+                    <form asp-controller="Ensemble" asp-action="CreateAudition" method="post" class="container-fluid">
+                        <h2 style="text-align:center;font-weight:bold;">Hold an Audition!</h2>
+                        <hr />
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="start_date">Start Date<span class="red-ast">*</span></label>
+                                        <input type="date" name="start_date" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="end_date">End Date</label>
+                                        <input type="date" name="end_date" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <small class="form-text text-muted">
+                                    If the gig has no difinitive end date, you need not include one here.
+                                </small>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="time">Time<span class="red-ast">*</span></label>
+                                        <input type="time" name="time" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label for="repeat">Is this a repeating gig?<span class="red-ast">*</span></label><br />
+                                        <input type="radio" name="repeat" value="Yes" title="Weekly event etc.." /> Yes<br />
+                                        <input type="radio" name="repeat" value="No" title="One-time or sporatic event" /> No<br />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="type">What kind of entertainment are you looking for?<span class="red-ast">*</span></label>
+                                    <input type="text" name="type" class="form-control" placeholder="Cover Band, Jazz Combo etc..." required />
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:20px;">
+                                <button style="width:50%;font-size:20px;" class="btn btn-danger center-block">Post Audition</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="description">Gig Description</label>
+                                <textarea id="desc" name="description" class="form-control" placeholder="Prepared materials, contact information etc..."></textarea>
+                                <small class="form-text text-muted">Some useful information to include might be ways to sign up for the gig; Who to contact; If it is a regularly scheduled event etc...</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        }
+    </div>
