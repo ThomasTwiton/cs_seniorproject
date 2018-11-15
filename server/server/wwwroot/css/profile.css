@@ -118,6 +118,7 @@ form.row {
     border: 2px solid var(--bkg-gold);
     border-radius: 3px;
     margin: 5px;
+    float: left;
 }
 
 #ensembleContainer .row {
