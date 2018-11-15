@@ -125,6 +125,28 @@ form.row {
     margin-bottom: 5px;
 }
 
+.extraBit {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 10px;
+    float: left;
+    border: 3px solid var(--bkg-dark-grey);
+    border-radius: 3px;
+    width: 55px;
+    height: 55px;
+    background-color: var(--bkg-grey);
+    text-align: center;
+    line-height: 50px;
+}
+
+.extraBit .glyphicon-plus {
+    color: var(--bkg-dark-grey);
+}
+
+.extraBit:hover {
+    cursor: pointer;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     #profile {

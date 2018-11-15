@@ -16,9 +16,11 @@ namespace server.Controllers
             ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
             ViewData["Location"] = "Liverpool";
             ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
-            ViewData["Name"] = "Ringo Starr";
-            ViewData["Posts"] = new List<object>();
-            ViewData["Owner"] = "false";
+            ViewData["first_name"] = "Ringo";
+            ViewData["last_name"] = "Starr";
+            ViewData["Owner"] = "true";
+            ViewData["ProfileType"] = "profile";
+
             return View();
         }
 
@@ -28,8 +30,11 @@ namespace server.Controllers
             ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
             ViewData["Location"] = "Liverpool";
             ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
-            ViewData["Name"] = "Ringo Starr";
-            ViewData["Posts"] = new List<object>();
+            ViewData["Name"] = "Marty's Grill";
+            ViewData["Phone"] = "(563) 555-1234";
+            ViewData["Website"] = "https://www.luther.edu/dining/locations/martys/";
+            ViewData["Owner"] = "true";
+
             return View();
         }
 
