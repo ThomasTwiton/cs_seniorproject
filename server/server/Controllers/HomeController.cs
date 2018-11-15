@@ -97,9 +97,16 @@ namespace server.Controllers
 
             ViewData["first_name"] = profile.First_Name;
             ViewData["last_name"] = profile.Last_Name;
-            ViewData["ensembles"] = Ensembles;
 
-
+            /* The following are other bits of information
+             * that are needed for the view. These are all
+             * just templated code. */
+            ViewData["Title"] = "Ringo Starr - Profile";
+            ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
+            ViewData["Location"] = "Liverpool";
+            ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
+            ViewData["Owner"] = "true";
+            ViewData["ProfileType"] = "profile";
 
             return View(Ensembles);
         }
