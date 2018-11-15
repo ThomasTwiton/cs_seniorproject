@@ -1,4 +1,4 @@
-﻿/* ================================================== */
+/* ================================================== */
 /* ================ React Components ================ */
 /* ================================================== */
 
@@ -8,11 +8,15 @@ function EnsembleContainer(props) {
     const membersList = props.members;
     const memberItems = membersList.map((m) => <Member info={m} />);
     return (
-        <div id="ensembleContainer" className="container-fluid">
+        <div id="ensembleContainer" className="container">
             {memberItems}
             <ExtraOption />
         </div>
     );
+}
+
+function MemberRow(props) {
+    // The rows in the EnsembleContainer that hold the Members.
 }
 
 function Member(props) {

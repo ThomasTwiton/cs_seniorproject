@@ -98,6 +98,7 @@ namespace server.Controllers
             ViewData["first_name"] = profile.First_Name;
             ViewData["last_name"] = profile.Last_Name;
 
+
             /* The following are other bits of information
              * that are needed for the view. These are all
              * just templated code. */
@@ -128,7 +129,6 @@ namespace server.Controllers
             }
             return View(ensemble);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
