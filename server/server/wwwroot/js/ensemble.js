@@ -4,21 +4,20 @@
     const membersList = props.members;
     const memberItems = membersList.map((m) => <Member info={m} />);
     return (
-        <div id="ensembleContainer" className="container-fluid">
+        <div id="ensembleContainer" className="container">
             {memberItems}
         </div>
     );
 }
 
+function MemberRow(props) {
+    // The rows in the EnsembleContainer that hold the Members.
+}
+
 function Member(props) {
     // The base component for a member.
-    console.log(props);
-    const link = "/Profile/id=" + props.info.profileID.toString();
     return (
-        <a class="ensembleLink" href={link}>
-            <img src={props.info.avatarURL} title={props.info.name} />
-        </a>
-    );
+        <div)
 }
 
 const e = {
@@ -30,34 +29,10 @@ const e = {
 const n = {
     name: 'Solo',
     avatarURL: 'https://placekitten.com/g/64/64',
-    profileID: 2,
+    profileID: null,
 }
 
-const s = {
-    name: "Jeremy's Band",
-    avatarURL: 'https://placekitten.com/g/64/64',
-    profileID: 3,
-}
-
-const m = {
-    name: 'Luther College Jazz Orchestra',
-    avatarURL: 'https://placekitten.com/g/64/64',
-    profileID: 4,
-}
-
-const b = {
-    name: "Peter's Jazz Combo",
-    avatarURL: 'https://placekitten.com/g/64/64',
-    profileID: 5,
-}
-
-const l = {
-    name: 'Gandolf the Hobbits',
-    avatarURL: 'https://placekitten.com/g/64/64',
-    profileID: 6,
-}
-
-const eList = [e,n,s,m,b,l];
+const eList = [e, n];
 console.log(eList);
 
 ReactDOM.render(
