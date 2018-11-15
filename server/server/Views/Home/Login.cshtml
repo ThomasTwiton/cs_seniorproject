@@ -18,7 +18,7 @@
 <div class="container">
     <div class="row">
         <div id="profile" class="col-md-3">
-            <img id="profPic" src="@ViewData["ProfPicURL"]" alt="@ViewData["first_name"]" />
+            <img id="profPic" src="@ViewData["ProfPicURL"]" />
             <div id="bio">
                 @ViewData["Bio"]
             </div>
@@ -28,6 +28,10 @@
             </div>
             <hr />
             <div id="ensembles">
+                @foreach (var item in Model)
+                {
+                    <Member data-id="@item.EnsembleId" data-avatarURL="@item.Pic_Url" data-name="@item.Ensemble_Name" />
+                }
                 @*
                         The following is the HTML that was written to originally achieved the desired look.
                           It has since been replaced by React code that is found in ensemble.js. However, this
