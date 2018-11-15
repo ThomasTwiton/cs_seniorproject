@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -30,6 +31,7 @@
             </div>
             <hr />
             <div id="ensembles">
+
                 @*
                         The following is the HTML that was written to originally achieved the desired look.
                           It has since been replaced by React code that is found in ensemble.js. However, this
@@ -58,7 +60,7 @@
                 <div class="col">
                     <h1 id="name">@ViewData["first_name"] @ViewData["last_name"]</h1>
 
-                    @if (ViewData["Owner"] == "true")
+                    @if (ViewData["Owner"] as string == "true")
                     {
                         <div id="createPost" class="container">
                             <form class="row">
