@@ -1,4 +1,8 @@
-﻿function EnsembleContainer(props) {
+﻿/* ================================================== */
+/* ================ React Components ================ */
+/* ================================================== */
+
+function EnsembleContainer(props) {
     // The container that holds all the members inside of it.
 
     const membersList = props.members;
@@ -6,6 +10,7 @@
     return (
         <div id="ensembleContainer" className="container-fluid">
             {memberItems}
+            <ExtraOption />
         </div>
     );
 }
@@ -18,6 +23,30 @@ function Member(props) {
         <a className="ensembleLink" href={link}>
             <img src={props.info.avatarURL} title={props.info.name} />
         </a>
+    );
+}
+
+function ExtraOption(props) {
+    // An additional square that is used to create an audition, 
+    // create an ensemble or other such functionality via modal.
+
+    let modal = document.getElementById('createModal');
+    if (modal == null) {
+        return (null)
+    }
+
+    let message;
+    console.log(profileType);
+    if (profileType == "ensemble") {
+        message = "Hold Auditions!";
+    } else {
+        message = "Form a Group!";
+    }
+
+    return (
+        <div title={message} className="extraBit" onClick={() => { showModal() }}>
+            <span className="glyphicon glyphicon-plus"></span>
+        </div>
     );
 }
 
