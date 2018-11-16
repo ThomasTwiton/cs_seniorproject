@@ -82,7 +82,7 @@ form.row {
     margin-left: 10px;
 }
 
-.postWButton button {
+.postWButton .btn {
     float: right;
     padding-left: 25px;
     padding-right: 25px;
