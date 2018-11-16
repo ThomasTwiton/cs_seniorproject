@@ -84,6 +84,8 @@ namespace server.Models
         public string Last_Name { get; set; }
         public string Preferred_Name { get; set; }
         public string Pic_Url { get; set; }
+        public string Bio { get; set; }
+        public string Location { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }

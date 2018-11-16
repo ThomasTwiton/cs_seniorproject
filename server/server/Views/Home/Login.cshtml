@@ -1,4 +1,5 @@
-@model IEnumerable<server.Models.Ensemble>
+@*@model IEnumerable<server.Models.Ensemble> *@
+@model server.Models.ProfileModel
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,24 +16,26 @@
     <script src="~/js/ensemble.js" type="text/jsx">
     </script>
     <script>
-        var profileType = "@ViewData["ProfileType"]";
+        var profileType = "@Model.ViewType";
     </script>
 }
 
 <div class="container">
     <div class="row">
         <div id="profile" class="col-md-3">
-            <img id="profPic" src="@ViewData["ProfPicURL"]" />
+            <img id="profPic" src="@Model.Profile.Pic_Url" />
             <div id="bio">
-                @ViewData["Bio"]
+                @Model.Profile.Bio
+
+               @*@foreach(Plays_Instrument pi in Model.Profile.Plays_Instrument) { @pi.Instrument.Instrument_Name }*@
             </div>
             <div id="location">
                 <span class="glyphicon glyphicon-map-marker"></span>
-                @ViewData["Location"]
+                @Model.Profile.Location
             </div>
             <hr />
             <div id="ensembles">
-                @foreach (var item in Model)
+                @foreach (var item in Model.Ensembles)
                 {
                     <Member data-id="@item.EnsembleId" data-avatarURL="@item.Pic_Url" data-name="@item.Ensemble_Name" />
                 }
@@ -42,14 +45,14 @@
         <div id="posts" class="col-md-9">
             <div class="row">
                 <div class="col">
-                    <h1 id="name">@ViewData["first_name"] @ViewData["last_name"]</h1>
+                    <h1 id="name">@Model.Profile.First_Name @Model.Profile.Last_Name</h1>
 
-                    @if (ViewData["Owner"] as string == "true")
+                    @if (Model.isOwner == true)
                     {
                         <div id="createPost" class="container">
                             <form class="row">
                                 <div class="col-xs-1">
-                                    <img class="tinyPic" src="@ViewData["ProfPicURL"]" />
+                                    <img class="tinyPic" src="@Model.Profile.Pic_Url" />
                                 </div>
 
                                 <div class="col-xs-11">
@@ -66,14 +69,14 @@
                             </form>
                         </div>
                     }
-                    </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col">
-                        <hr />
-                    </div>
+            <div class="row">
+                <div class="col">
+                    <hr />
                 </div>
+            </div>
             <div class="row">
                 <div id="postCC" class="col">
 
@@ -83,11 +86,11 @@
     </div>
 </div>
 
-@if (ViewData["Owner"] as String == "true")
+@if (Model.isOwner == true)
 {
     @* Only owners should be able to see the "createModal" *@
 
-    @if (ViewData["ProfileType"] as String == "ensemble")
+    @if (Model.ViewType == "ensemble")
     {
         @* If the profile is an ensemble, then we want to hold auditions *@
         <div id="createModal" class="modal">
@@ -144,7 +147,7 @@
 
         </div>
     }
-    else if (ViewData["ProfileType"] as String == "profile")
+    else if (Model.ViewType == "profile")
     {
         @* If the profile is an profile, then we want to create ensembles *@
         <div id="createModal" class="modal">

@@ -38,12 +38,19 @@ namespace server.Controllers
 
         public async Task<IActionResult> Login(string email, string password)
         {
+            ProfileModel model = new ProfileModel();
 
+            var user = _context.Users.Where(u => u.Email == email && u.Password == password).ToList()[0];
+            model.User = user;
 
+            //join the user and profile tables to get the profile
             var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList()[0];
             var profile = user_with_profile.Profile.ToList()[0];
-            var Ensembles = new List<Ensemble>();
 
+            model.Profile = profile;
+
+            var Ensembles = new List<Ensemble>();
+            /*
             var dummyens = new Ensemble();
             dummyens.Ensemble_Name = "Best Band Ever";
             if (user_with_profile.Ensemble == null)
@@ -63,6 +70,7 @@ namespace server.Controllers
                 profile.ProfileEnsemble.Add(dummymember);
                 await _context.SaveChangesAsync();
             }
+            */
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
                 //Ensemble ensemble = pe.Ensemble.Ensemble
@@ -71,7 +79,7 @@ namespace server.Controllers
                 //Console.WriteLine(ensemble);
                 Ensembles.Add(pe.Ensemble);
             }
-
+            model.Ensembles = Ensembles;
             
 
 
@@ -81,21 +89,21 @@ namespace server.Controllers
                 return NotFound();
             }
 
-            ViewData["first_name"] = profile.First_Name;
-            ViewData["last_name"] = profile.Last_Name;
+            //ViewData["first_name"] = profile.First_Name;
+            //ViewData["last_name"] = profile.Last_Name;
 
 
             /* The following are other bits of information
              * that are needed for the view. These are all
              * just templated code. */
-            ViewData["Title"] = "Ringo Starr - Profile";
-            ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
-            ViewData["Location"] = "Liverpool";
-            ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
-            ViewData["Owner"] = "true";
-            ViewData["ProfileType"] = "profile";
+            //ViewData["Title"] = "Ringo Starr - Profile";
+            //ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
+            //ViewData["Location"] = "Liverpool";
+            //ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
+            //ViewData["Owner"] = "true";
+            //ViewData["ProfileType"] = "profile";
 
-            return View(Ensembles);
+            return View(model);
         }
 
 
