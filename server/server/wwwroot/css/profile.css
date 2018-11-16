@@ -1,4 +1,4 @@
-﻿#profile, #posts {
+﻿#profile {
     padding: 10px;
     margin-top: 10px;
 }
@@ -20,90 +20,6 @@
     margin-bottom: 15px;
 }
 
-#createPost {
-    border: var(--bkg-dark) solid 1px;
-    border-radius: 3px;
-    width: 80%;
-}
-
-.tinyPic {
-    width: 50px;
-    height: 50px;
-    border: var(--bkg-gold) solid 2px;
-    border-radius: 3px;
-}
-
-.textContainer {
-    font-size: 14pt;
-}
-
-.mediaContainer {
-    width: 100%;
-}
-
-#postButtons {
-    float: right;
-    margin-top: 5px;
-}
-
-#postButtons * {
-    float:right;
-    margin-right: 5px;
-}
-
-.inputPost {
-    resize: none;
-    overflow: auto;
-    border: 0;
-    border-bottom: var(--bkg-teal) solid 2px;
-    width: 95%;
-    height: 70px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-}
-
-.inputPost:focus {
-    outline: none;
-}
-
-form.row {
-    margin-top: 15px;
-}
-
-#postContainer {
-    width: 80%;
-}
-
-#postContainer .row {
-    border: var(--bkg-dark) solid 1px;
-    border-radius: 3px;
-    margin-bottom: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-#postContainer .row hr {
-    float: left;
-    left: 0px;
-}
-
-.postTable {
-    width: 60%;
-    margin-left: 30px;
-    margin-bottom: 10px;
-}
-.postTable td {
-    line-height: 20px;
-    width: auto;
-    margin-left: 10px;
-}
-
-.postWButton button{
-    float: right;
-    padding-left: 25px;
-    padding-right: 25px;
-}
-
 .glyphicon-map-marker {
     color: var(--bkg-teal);
 }
@@ -118,6 +34,7 @@ form.row {
     border: 2px solid var(--bkg-gold);
     border-radius: 3px;
     margin: 5px;
+    float: left;
 }
 
 #ensembleContainer .row {
@@ -147,9 +64,27 @@ form.row {
     cursor: pointer;
 }
 
+#audInfo div {
+    margin-bottom: 7px;
+}
+
+#audInfo .row:last-child {
+    margin-bottom: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#audInfo .bold {
+    margin-left: 50%;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     #profile {
         align-items: center;
+    }
+
+    #audInfo .bold {
+        margin-left: 0px;
     }
 }

@@ -63,6 +63,16 @@ footer hr {
     text-align: center;
 }
 
+.bordered {
+    border: var(--bkg-dark) solid 1px;
+    border-radius: 3px;
+    width: 80%;
+}
+
+.bold {
+    font-weight: bold;
+}
+
 
 /* ================================================== */
 /* ================= Button Styling ================= */
