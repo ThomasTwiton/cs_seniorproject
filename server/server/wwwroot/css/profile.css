@@ -68,8 +68,10 @@
     margin-bottom: 7px;
 }
 
-#audInfo:last-child {
+#audInfo .row:last-child {
     margin-bottom: 10px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 #audInfo .bold {
