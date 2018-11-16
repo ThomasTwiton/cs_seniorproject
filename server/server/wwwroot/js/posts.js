@@ -60,6 +60,7 @@ function BasicBody(props) {
 
 function GigBody(props) {
     // The body of a type='gig' component.
+    const link = "Gig/" + props.post.info.id.toString();
     return (
         <div className="col-xs-11">
             <div className="textContainer">
@@ -85,7 +86,7 @@ function GigBody(props) {
                             <td>{props.post.info.seeking}</td>
                         </tr></tbody>
                 </table>
-                <button className="btn btn-danger">Plug-In</button>
+                <a href={link} className="btn btn-danger">Plug-In</a>
             </div>
         </div>
     );
@@ -93,6 +94,7 @@ function GigBody(props) {
 
 function AuditionBody(props) {
     // The body of a type='aud' component.
+    const link = "Audition/" + props.post.info.id.toString();
     return (
         <div className="col-xs-11">
             <div className="textContainer">
@@ -114,7 +116,7 @@ function AuditionBody(props) {
                             <td>{props.post.info.place}</td>
                         </tr></tbody>
                 </table>
-                <button className="btn btn-danger">Plug-In</button>
+                <a href={link} className="btn btn-danger">Plug-In</a>
             </div>
         </div>
     );
@@ -173,6 +175,7 @@ const p = {
         text: 'The text for a post goes here. When the text is really, really long, then this is what happens.',
         type: 'gig',   // Possible types: post, aud, gig
         info: {         // Optional property that is present for type='aud' or type='gig'
+            id: 1,
             poster: "Marty's Grill",
             start: new Date().toLocaleDateString(), // type='gig'
             end: new Date().toLocaleDateString(),   // type='gig'
@@ -207,6 +210,7 @@ const s = {
         text: 'The text for a post goes here. When the text is really, really long, then this is what happens.',
         type: 'aud',   // Possible types: post, aud, gig
         info: {         // Optional property that is present for type='aud' or type='gig'
+            id: 1,
             poster: "Chicago Symphony Orchestra",
             time: new Date().toLocaleTimeString(),
             seeking: "Vocalist",
