@@ -1,0 +1,104 @@
+﻿@model IEnumerable<server.Models.Ensemble>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/profile.css" />
+}
+
+@section Scripts {
+    <script src="~/js/ensemble.js" type="text/jsx">
+    </script>
+    <script>
+        var profileType = "@ViewData["ProfileType"]";
+    </script>
+}
+
+<div class="container">
+    <div class="row">
+        <div id="profile" class="col-md-3">
+            <img id="profPic" src="@ViewData["ProfPicURL"]" />
+            <div id="bio">
+                @ViewData["Bio"]
+            </div>
+            <div id="location">
+                <span class="glyphicon glyphicon-map-marker"></span>
+                @ViewData["Location"]
+            </div>
+            <hr />
+            <div id="ensembles">
+                @foreach (var item in Model)
+                {
+                    <Member data-id="@item.EnsembleId" data-avatarURL="@item.Pic_Url" data-name="@item.Ensemble_Name" />
+                }
+            </div>
+        </div>
+
+        <div id="posts" class="col-md-9">
+            <div class="row">
+                <div class="col">
+                    <h1 id="name">@ViewData["Name"]</h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <hr />
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="audInfo" class="container bordered">
+                    <div class="row">
+                        <h2 id="name">We're looking for a new member!</h2>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Position:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @ViewData["Aud_Pos"]
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Auditions begin:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @ViewData["Aud_Beg"]
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Auditions close:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @ViewData["Aud_End"]
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Location:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @ViewData["Aud_Loc"]
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Description:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @ViewData["Aud_Des"]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
