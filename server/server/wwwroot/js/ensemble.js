@@ -15,10 +15,6 @@ function EnsembleContainer(props) {
     );
 }
 
-function MemberRow(props) {
-    // The rows in the EnsembleContainer that hold the Members.
-}
-
 function Member(props) {
     // The base component for a member.
     //console.log(props);
