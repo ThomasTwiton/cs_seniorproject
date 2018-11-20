@@ -1,4 +1,84 @@
-﻿function PostContainer(props) {
+﻿class PostContainer extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            isLoaded: false,
+            posts: []
+        };
+        /* The following calculation will determine where the 
+         * api call should go to get the proper posts.
+         * 
+         * Presently, the api calls all lead to the same place
+         * for testing. This may or may not be what happens in
+         * the final version since the database does specify 
+         * different ids depending on whether a profile is an
+         * ensemble, venue or profile.
+        */
+        
+        switch (profileType) {
+            case "ensemble":
+                this.getPostLink = "api/getAllPosts"
+                break;
+            case "profile":
+                this.getPostLink = "api/getAllPosts"
+                break;
+            case "venue":
+                this.getPostLink = "api/getAllPosts"
+                break;
+        }
+    }
+
+    componentDidMount() {
+        fetch(this.getPostLink)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        posts: result.posts
+                    });
+                    console.log(result)
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+    }
+
+    render() {
+        const { error, isLoaded, posts } = this.state;
+
+        // If there was an error loading the posts
+        if (error) {
+            return <div>Error: {error.message}</div>;
+
+        // If the component is loading the posts
+        } else if (!isLoaded) {
+            return <div>Loading...</div>;
+
+        // Else we should have the posts
+        } else {
+            const postsList = posts;
+            const postItems = postsList.map((p) => <Post author={p.author} post={p.post} />);
+
+            return (
+                <div id="postContainer" className="container">
+                    {postItems}
+                </div>
+            );
+        }
+    }
+}
+
+/*function PostContainer(props) {
     // The container that holds all posts inside of it.
 
     const postsList = props.posts;
@@ -8,7 +88,7 @@
             {postItems}
         </div>
     );
-}
+}*/
 
 function Post(props) {
     // The base component for a post
