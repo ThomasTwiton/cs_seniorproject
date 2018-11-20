@@ -71,6 +71,18 @@ namespace server.Controllers
                 await _context.SaveChangesAsync();
             }
             */
+            if (profile.ProfileEnsemble == null)
+            {
+                profile.ProfileEnsemble = new List<ProfileEnsemble>();
+                foreach (ProfileEnsemble pe in _context.ProfileEnsembles)
+                {
+                    if (pe.ProfileId == profile.ProfileId)
+                    {
+                        pe.Ensemble = _context.Ensembles.Find(pe.EnsembleId);
+                        profile.ProfileEnsemble.Add(pe);
+                    }
+                }
+            }
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
                 //Ensemble ensemble = pe.Ensemble.Ensemble
@@ -81,9 +93,6 @@ namespace server.Controllers
             }
             model.Ensembles = Ensembles;
             
-
-
-
             if (profile == null)
             {
                 return NotFound();
