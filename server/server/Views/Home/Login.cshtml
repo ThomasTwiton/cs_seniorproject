@@ -24,10 +24,14 @@
     <div class="row">
         <div id="profile" class="col-md-3">
             <img id="profPic" src="@Model.Profile.Pic_Url" />
+
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Profile.ProfileId">Edit</a>
+            </div>
             <div id="bio">
                 @Model.Profile.Bio
 
-               @*@foreach(Plays_Instrument pi in Model.Profile.Plays_Instrument) { @pi.Instrument.Instrument_Name }*@
+               
             </div>
             <div id="location">
                 <span class="glyphicon glyphicon-map-marker"></span>

@@ -50,7 +50,7 @@ namespace server.Controllers
             model.Profile = profile;
 
             var Ensembles = new List<Ensemble>();
-            /*
+            
             var dummyens = new Ensemble();
             dummyens.Ensemble_Name = "Best Band Ever";
             if (user_with_profile.Ensemble == null)
@@ -70,7 +70,7 @@ namespace server.Controllers
                 profile.ProfileEnsemble.Add(dummymember);
                 await _context.SaveChangesAsync();
             }
-            */
+            
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
                 //Ensemble ensemble = pe.Ensemble.Ensemble
@@ -124,12 +124,86 @@ namespace server.Controllers
             return View(ensemble);
         }
 
+
+
+
+        // GET: Movies/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+ 
+
+
+        {
+            ProfileModel model = new ProfileModel();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var profile = await _context.Profiles.FindAsync(id);
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            if (profile.Plays_Instrument == null)
+            {
+                profile.Plays_Instrument = new List<Plays_Instrument>();
+                await _context.SaveChangesAsync();
+            }
+
+            model.Profile = profile;
+
+            return View(model);
+        }
+
+        // POST: Movies/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
+        /*
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,ReleaseDate,Genre,Price")] Movie movie)
+        {
+            if (id != movie.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(movie);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MovieExists(movie.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(movie);
+        }
+
+        */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password, string firstname, string lastname)
         { //IActionResult = promise. Create new instance of user class
 
 
+
+
+   
 
             if (ModelState.IsValid)
             {
