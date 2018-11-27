@@ -51,26 +51,20 @@ namespace server.Controllers
 
             var Ensembles = new List<Ensemble>();
             
-            var dummyens = new Ensemble();
-            dummyens.Ensemble_Name = "Best Band Ever";
-            if (user_with_profile.Ensemble == null)
-            {
-                user_with_profile.Ensemble = new List<Ensemble>();
-
-                user_with_profile.Ensemble.Add(dummyens);
-                await _context.SaveChangesAsync();
-            }
-
+   
             if (profile.ProfileEnsemble == null)
             {
                 profile.ProfileEnsemble = new List<ProfileEnsemble>();
-                var dummymember = new ProfileEnsemble();
-                dummymember.Profile = profile;
-                dummymember.Ensemble = dummyens;
-                profile.ProfileEnsemble.Add(dummymember);
-                await _context.SaveChangesAsync();
+                foreach (ProfileEnsemble pe in _context.ProfileEnsembles)
+                {
+                    if (pe.ProfileId == profile.ProfileId)
+                    {
+                        pe.Ensemble = _context.Ensembles.Find(pe.EnsembleId);
+                        profile.ProfileEnsemble.Add(pe);
+                    }
+                }
             }
-            
+
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
                 //Ensemble ensemble = pe.Ensemble.Ensemble
@@ -81,9 +75,6 @@ namespace server.Controllers
             }
             model.Ensembles = Ensembles;
             
-
-
-
             if (profile == null)
             {
                 return NotFound();
@@ -134,6 +125,7 @@ namespace server.Controllers
 
         {
             ProfileModel model = new ProfileModel();
+            model.Instruments = _context.Instruments.ToList();
             if (id == null)
             {
                 return NotFound();
@@ -149,8 +141,17 @@ namespace server.Controllers
             if (profile.Plays_Instrument == null)
             {
                 profile.Plays_Instrument = new List<Plays_Instrument>();
+                foreach (Plays_Instrument pi in _context.Plays_Instruments)
+                {
+                    if(pi.ProfileId == profile.ProfileId)
+                    {
+                        pi.Instrument = _context.Instruments.Find(pi.InstrumentId);
+                        profile.Plays_Instrument.Add(pi);
+                    }
+                }
                 await _context.SaveChangesAsync();
             }
+
 
             model.Profile = profile;
 
@@ -161,11 +162,14 @@ namespace server.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         
-        /*
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,ReleaseDate,Genre,Price")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("First_Name,Last_Name,Preferred_Name, Plays_Instrument")] Profile profile)
         {
+            Console.WriteLine(profile.First_Name);
+            Console.WriteLine(profile.Plays_Instrument.ToList()[0].Instrument.Instrument_Name);
+            /*
             if (id != movie.ID)
             {
                 return NotFound();
@@ -191,10 +195,12 @@ namespace server.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(movie);
+            */
+            return View("index");
+
         }
 
-        */
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password, string firstname, string lastname)

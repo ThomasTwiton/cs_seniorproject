@@ -38,9 +38,15 @@
                     <h1>TYLER - DROPDOWN HERE</h1>
                     <input asp-for="Profile.Plays_Instrument" class="form-control" />
                 }
+
                 @foreach (Plays_Instrument pi in Model.Profile.Plays_Instrument)
                 {
                     <input type="checkbox" name="@pi.Instrument.Instrument_Name" value="@pi.Instrument.Instrument_Name"><br>
+                }
+                @foreach (Instrument i in Model.Instruments)
+                {
+                    <input type="checkbox" name="@i.Instrument_Name" value="@i.Instrument_Name"><br>
+
                 }
             </div>
             @*@foreach(Plays_Instrument pi in Model.Profile.Plays_Instrument) { @pi.Instrument.Instrument_Name }*@
