@@ -25,6 +25,7 @@ namespace server.Models
         public DbSet<Audition> Auditions { get; set; }
         public DbSet<Gig> Gigs { get; set; }
         public DbSet<Booked_Gig> Booked_Gigs { get; set; }
+        public DbSet<Post> Posts { get; set; }
         //public DbSet<PostMedia> PostMedias { get; set; }
         //public DbSet<E_Has_Media> E_Has_Medias { get; set; }
         //public DbSet<P_Has_Media> P_Has_Medias { get; set; }
@@ -120,6 +121,10 @@ namespace server.Models
                 new ProfileEnsemble() { ProfileId = 12, EnsembleId = 22, Start_Date = new System.DateTime(2006, 3, 1)}
                 );
 
+            modelBuilder.Entity<Post>().HasData(
+                new Post() { PostId = 1, PosterType="profile", PosterIndex = 1, MediaType="image", MediaUrl = "https://upload.wikimedia.org/wikipedia/en/0/06/Miley_Cyrus_-_Wrecking_Ball.jpg",
+                Text="No longer a Disney gal!"}
+                );
         } 
     }
 
@@ -270,16 +275,20 @@ namespace server.Models
 
         //POSTS
     }
-/*
-    public class PostMedia
+
+    public class Post
     {
-        public int PostMediaId { get; set; }
+        public int PostId { get; set; }
         public string MediaType { get; set; }
         public string MediaUrl { get; set; }
         public string Text { get; set; }
 
         public string PosterType { get; set; }
-        public int PosterId { get; set; }
+        //Not technically a foreign key
+        //We must manually join based on Poster Type
+        //For example, if PosterType = "ensemble"
+        //Then PosterIndex is actually an EnsembleId in disguise
+        public int PosterIndex { get; set; }
 
         public string Type { get; set; }
         public int Ref_Id { get; set; }
@@ -291,7 +300,7 @@ namespace server.Models
         public ProfileEnsemble Membership { get; set; }
         public Profile Profile { get; set; }
     } 
-    */
+    
         /*
         public ICollection<P_Has_Media> P_Has_Media { get; set; }
         public ICollection<E_Has_Media> E_Has_Media { get; set; }
