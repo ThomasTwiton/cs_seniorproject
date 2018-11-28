@@ -10,48 +10,87 @@ using server.Models;
 
 namespace server.Controllers
 {
+
     public class HomeController : Controller
     {
-
+        // Initialize the context (aka database entity)
         private readonly PluggedContext _context;
+
 
         public HomeController(PluggedContext context)
         {
+            // Load the context into the controller
             _context = context;
         }
 
         public IActionResult Index()
         {
+            /* This action method is the landing page for our website. 
+             * Here users should just be displayed the view as is and 
+             *  can navigate to the following pages:
+             *      - Login     --> By entering their login information.
+             *      - Profile   --> By entering their information for a new account.
+             */
             return View();
         }
 
         public IActionResult Privacy()
         {
+            /* This action method is the page that displays our privacy
+             *  policy. Currently, it has no view and is not accessible
+             *  from links on our site, however, people can type the url
+             *  in.
+             */
             return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            /* This action method is used for debugging and displays any
+             *  error information.
+             */
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         public async Task<IActionResult> Login(string email, string password)
         {
+            /* This action method is used as a passageway from the landing
+             *  page to a user's profile. It receives the user's credentials
+             *  and logs them into the system. It returns the Profile view
+             *  of the appropriate user.
+             */
             ProfileModel model = new ProfileModel();
 
             var user = _context.Users.Where(u => u.Email == email && u.Password == password).ToList()[0];
             model.User = user;
 
+            return RedirectToAction("Profile", new { id = user.UserId });
+        }
+
+        public IActionResult Profile(int? id)
+        {
+            /* This action method displays the profile for the user with 
+             *  the provided user id. Here the users should be able to 
+             *  navagate to the following:
+             *      - Profile   --> the profile img on the nav bar
+             *      - Ensemble  --> any ensemble img in the ensembles area
+             */
+            ProfileModel model = new ProfileModel();
+            //System.Web.HttpCookie myCookie = new HttpCookie("UserSettings");
+
+            var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
+            model.User = user;
+
             //join the user and profile tables to get the profile
-            var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList()[0];
+            var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.UserId == id).ToList()[0];
             var profile = user_with_profile.Profile.ToList()[0];
 
             model.Profile = profile;
 
             var Ensembles = new List<Ensemble>();
-            
-   
+
+
             if (profile.ProfileEnsemble == null)
             {
                 profile.ProfileEnsemble = new List<ProfileEnsemble>();
@@ -67,39 +106,26 @@ namespace server.Controllers
 
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
-                //Ensemble ensemble = pe.Ensemble.Ensemble
-                //String ensembleN = pe.Ensemble.Ensemble_Name;
-                //String ensembleID = pe.Ensemble.EnsembleId.ToString();
-                //Console.WriteLine(ensemble);
                 Ensembles.Add(pe.Ensemble);
             }
             model.Ensembles = Ensembles;
-            
+
             if (profile == null)
             {
                 return NotFound();
             }
 
-            //ViewData["first_name"] = profile.First_Name;
-            //ViewData["last_name"] = profile.Last_Name;
-
-
-            /* The following are other bits of information
-             * that are needed for the view. These are all
-             * just templated code. */
-            //ViewData["Title"] = "Ringo Starr - Profile";
-            //ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
-            //ViewData["Location"] = "Liverpool";
-            //ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
-            //ViewData["Owner"] = "true";
-            //ViewData["ProfileType"] = "profile";
-
             return View(model);
         }
 
-
-        public async Task<IActionResult> ViewEnsemble(int? id)
+        public async Task<IActionResult> Ensemble(int? id)
         {
+            /* This action method displays the profile for the ensemble with 
+             *  the provided id. Here the users should be able to 
+             *  navagate to the following:
+             *      - Profile   --> the profile img on the nav bar *or* a profile in the members area
+             *      - Audition  --> clicking on an audition posting
+             */
             Console.WriteLine(id);
             if(id == null)
             {
@@ -120,10 +146,13 @@ namespace server.Controllers
 
         // GET: Movies/Edit/5
         public async Task<IActionResult> Edit(int? id)
- 
-
-
         {
+            /* This action method displays view for editing the profile
+             *  with the provided id. Here the users should be able to 
+             *  navagate to the following:
+             *      - Profile   --> nav bar
+             *      - Edit[Post]--> submitting changes to the page
+             */
             ProfileModel model = new ProfileModel();
             model.Instruments = _context.Instruments.ToList();
             if (id == null)
@@ -167,6 +196,11 @@ namespace server.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("First_Name,Last_Name,Preferred_Name, Plays_Instrument")] Profile profile)
         {
+            /* This action method takes the updated info of the user's
+             *  profile and saves it. There is no view associated with
+             *  this method and the user should be redirected to their
+             *  respective profile page.
+             */
             Console.WriteLine(profile.First_Name);
             Console.WriteLine(profile.Plays_Instrument.ToList()[0].Instrument.Instrument_Name);
             /*
@@ -204,13 +238,10 @@ namespace server.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password, string firstname, string lastname)
-        { //IActionResult = promise. Create new instance of user class
-
-
-
-
-   
-
+        {
+            /* This action method creates a new user in the database
+             *  and moves the user to the profile creation view.
+             */
             if (ModelState.IsValid)
             {
                 _context.Add(user);
