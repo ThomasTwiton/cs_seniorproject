@@ -1,9 +1,13 @@
 ﻿
-    
+
 @model server.Models.ProfileModel
 
 @{
     ViewData["Title"] = "Edit";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/create.css" />
 }
 
 <h2>Edit</h2>
@@ -33,21 +37,15 @@
             <div class="form-group">
                 <label asp-for="Profile.Plays_Instrument" class="control-label"></label>
                 <span asp-validation-for="Profile.Plays_Instrument" class="text-danger"></span>
-                @if (Model.Profile.Plays_Instrument.Count() == 0)
-                {
-                    <h1>TYLER - DROPDOWN HERE</h1>
-                    <input asp-for="Profile.Plays_Instrument" class="form-control" />
-                }
-
-                @foreach (Plays_Instrument pi in Model.Profile.Plays_Instrument)
-                {
-                    <input type="checkbox" name="@pi.Instrument.Instrument_Name" value="@pi.Instrument.Instrument_Name"><br>
-                }
-                @foreach (Instrument i in Model.Instruments)
-                {
-                    <input type="checkbox" name="@i.Instrument_Name" value="@i.Instrument_Name"><br>
-
-                }
+                <div name="pInstruments" id="instruments" class="form-control">
+                    @foreach (var ins in Model.Instruments)
+                    {
+                        <label for="@ins.Instrument_Name" class="checkLabel">
+                            @ins.Instrument_Name
+                            <input id="@ins.Instrument_Name" name="@ins.Instrument_Name" type="checkbox" onchange="changeCheck(this)" />
+                        </label>
+                    }
+                </div>
             </div>
             @*@foreach(Plays_Instrument pi in Model.Profile.Plays_Instrument) { @pi.Instrument.Instrument_Name }*@
             <div class="form-group">
