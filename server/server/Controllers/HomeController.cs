@@ -38,31 +38,33 @@ namespace server.Controllers
 
         public async Task<IActionResult> Login(string email, string password)
         {
+            ProfileModel model = new ProfileModel();
 
+            var user = _context.Users.Where(u => u.Email == email && u.Password == password).ToList()[0];
+            model.User = user;
 
+            //join the user and profile tables to get the profile
             var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList()[0];
             var profile = user_with_profile.Profile.ToList()[0];
+
+            model.Profile = profile;
+
             var Ensembles = new List<Ensemble>();
-
-            var dummyens = new Ensemble();
-            dummyens.Ensemble_Name = "Best Band Ever";
-            if (user_with_profile.Ensemble == null)
-            {
-                user_with_profile.Ensemble = new List<Ensemble>();
-
-                user_with_profile.Ensemble.Add(dummyens);
-                await _context.SaveChangesAsync();
-            }
-
+            
+   
             if (profile.ProfileEnsemble == null)
             {
                 profile.ProfileEnsemble = new List<ProfileEnsemble>();
-                var dummymember = new ProfileEnsemble();
-                dummymember.Profile = profile;
-                dummymember.Ensemble = dummyens;
-                profile.ProfileEnsemble.Add(dummymember);
-                await _context.SaveChangesAsync();
+                foreach (ProfileEnsemble pe in _context.ProfileEnsembles)
+                {
+                    if (pe.ProfileId == profile.ProfileId)
+                    {
+                        pe.Ensemble = _context.Ensembles.Find(pe.EnsembleId);
+                        profile.ProfileEnsemble.Add(pe);
+                    }
+                }
             }
+
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
                 //Ensemble ensemble = pe.Ensemble.Ensemble
@@ -71,31 +73,28 @@ namespace server.Controllers
                 //Console.WriteLine(ensemble);
                 Ensembles.Add(pe.Ensemble);
             }
-
+            model.Ensembles = Ensembles;
             
-
-
-
             if (profile == null)
             {
                 return NotFound();
             }
 
-            ViewData["first_name"] = profile.First_Name;
-            ViewData["last_name"] = profile.Last_Name;
+            //ViewData["first_name"] = profile.First_Name;
+            //ViewData["last_name"] = profile.Last_Name;
 
 
             /* The following are other bits of information
              * that are needed for the view. These are all
              * just templated code. */
-            ViewData["Title"] = "Ringo Starr - Profile";
-            ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
-            ViewData["Location"] = "Liverpool";
-            ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
-            ViewData["Owner"] = "true";
-            ViewData["ProfileType"] = "profile";
+            //ViewData["Title"] = "Ringo Starr - Profile";
+            //ViewData["Bio"] = "English musician, singer, actor, songwriter, and drummer for the Beatles.";
+            //ViewData["Location"] = "Liverpool";
+            //ViewData["ProfPicURL"] = "https://placekitten.com/g/64/64";
+            //ViewData["Owner"] = "true";
+            //ViewData["ProfileType"] = "profile";
 
-            return View(Ensembles);
+            return View(model);
         }
 
 
@@ -116,12 +115,101 @@ namespace server.Controllers
             return View(ensemble);
         }
 
+
+
+
+        // GET: Movies/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+ 
+
+
+        {
+            ProfileModel model = new ProfileModel();
+            model.Instruments = _context.Instruments.ToList();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var profile = await _context.Profiles.FindAsync(id);
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            if (profile.Plays_Instrument == null)
+            {
+                profile.Plays_Instrument = new List<Plays_Instrument>();
+                foreach (Plays_Instrument pi in _context.Plays_Instruments)
+                {
+                    if(pi.ProfileId == profile.ProfileId)
+                    {
+                        pi.Instrument = _context.Instruments.Find(pi.InstrumentId);
+                        profile.Plays_Instrument.Add(pi);
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+
+
+            model.Profile = profile;
+
+            return View(model);
+        }
+
+        // POST: Movies/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("First_Name,Last_Name,Preferred_Name, Plays_Instrument")] Profile profile)
+        {
+            Console.WriteLine(profile.First_Name);
+            Console.WriteLine(profile.Plays_Instrument.ToList()[0].Instrument.Instrument_Name);
+            /*
+            if (id != movie.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(movie);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MovieExists(movie.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            */
+            return View("index");
+
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password, string firstname, string lastname)
         { //IActionResult = promise. Create new instance of user class
 
 
+
+
+   
 
             if (ModelState.IsValid)
             {
