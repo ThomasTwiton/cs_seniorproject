@@ -156,5 +156,77 @@ namespace server.Controllers
             return View(user);
         }
 
+
+        public IActionResult CreateProfile()
+        {
+            var lst = new List<string>();
+            foreach(Instrument i in _context.Instruments)
+            {
+                lst.Add(i.Instrument_Name);
+            }
+            ViewData["Instruments"] = lst;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateProfile(string pName, System.DateTime pBirthday, string pCity, string pState, string pBio, int userID)
+        {
+            Profile profile = new Profile();
+            string[] nameList = pName.Split();
+            profile.First_Name = nameList[0];
+            profile.Last_Name = nameList[1];
+            profile.City = pCity;
+            profile.State = pState;
+            profile.Bio = pBio;
+            profile.User = _context.Users.Find(userID);
+
+            _context.Add(profile);
+            await _context.SaveChangesAsync();
+
+            var lst = new List<string>();
+            foreach (Instrument i in _context.Instruments)
+            {
+                lst.Add(i.Instrument_Name);
+            }
+            ViewData["Instruments"] = lst;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateEnsemble(string eName, System.DateTime eFormed, System.DateTime eDisbanded, string eCity, string eState, string eType, string eGenre, int userID)
+        {
+            Ensemble ensemble = new Ensemble();
+            ensemble.Ensemble_Name = eName;
+            ensemble.Formed_Date = eFormed;
+            ensemble.Disbanded_Date = eDisbanded;
+            ensemble.Type = eType;
+            ensemble.Genre = eGenre;
+            ensemble.City = eCity;
+            ensemble.State = eState;
+            ensemble.User = _context.Users.Find(userID);
+
+          if (ModelState.IsValid)
+            {
+                _context.Add(ensemble);
+                await _context.SaveChangesAsync();
+            }   
+            
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateVenue([Bind()] Venue venue)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(venue);
+                await _context.SaveChangesAsync();
+            }
+            return View();
+        }
+
     }
 }
