@@ -1,0 +1,221 @@
+﻿
+@{
+    ViewData["Title"] = "Create Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/create.css" />
+}
+
+
+@* Title Row *@
+<div id="titleRow" class="row">
+    <h2 style="float:left;">Create Profile</h2>
+    <button style="float:right;" class="btn btn-danger" onclick="submitForm()">Create Profile</button>
+    <hr style="width:100%;" />
+</div>
+
+@* Profile Type Row *@
+<div id="profRow" class="row">
+    <div id="active" class="col-xs-4 align-middle p" onclick="switchView('profile')">
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-user"></span>
+        </div>
+        <div class="col-xs-9">
+            Profile<br />
+            A personal profile
+        </div>
+    </div>
+    <div class="col-xs-4 e" onclick="switchView('ensemble')">
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-cd"></span>
+        </div>
+        <div class="col-xs-9">
+            Ensemble<br />
+            A profile for your group
+        </div>
+    </div>
+    <div class="col-xs-4 v" onclick="switchView('venue')">
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-home"></span>
+        </div>
+        <div class="col-xs-9">
+            Venue<br />
+            A profile for your business
+        </div>
+    </div>
+
+
+</div>
+
+@* Information Row *@
+<div id="infoRow" class="row">
+    <!-- Profile form -->
+    <form id="profileForm" asp-action="CreateProfile">
+        <div class="col-xs-6">
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label for="pName">Name<span class="red-ast">*</span></label>
+                    <input name="pName" type="text" class="form-control" placeholder="What is your name?" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label for="pBirthday">Birthdate</label>
+                    <input name="pBirthday" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-8">
+                    <label for="pCity">City<span class="red-ast">*</span></label>
+                    <input name="pCity" type="text" class="form-control" placeholder="Where are you based out of?" required />
+                </div>
+                <div class="col-xs-4">
+                    <label for="pState">State<span class="red-ast">*</span></label>
+                    <input name="pState" type="text" class="form-control" placeholder="Ss" required />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label for="pInstruments">Instruments</label>
+                    <div name="pInstruments" id="instruments" class="form-control">
+
+                        @foreach (var ins in ViewData["Instruments"] as List<string>)
+                        {
+                            <label for="@ins" class="checkLabel">
+                                @ins
+                                <input id="@ins" name="@ins" type="checkbox" onchange="changeCheck(this)" />
+                            </label>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label for="pBio">Bio<span class="red-ast">*</span></label>
+                    <textarea name="pBio" type="text" class="form-control" placeholder="Who are you? What is your brand?" required></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Ensemble form -->
+    <form id="ensembleForm" style="display:none" asp-action="CreateEnsemble">
+        <div class="col-xs-6">
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label for="eName">Name<span class="red-ast">*</span></label>
+                    <input name="eName" type="text" class="form-control" placeholder="Name of Ensemble" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-6">
+                    <label for="eFormed">Formed<span class="red-ast">*</span></label>
+                    <input name="eFormed" type="date" class="form-control" required />
+                </div>
+                <div class="col-xs-6">
+                    <label for="eEnded">Disbanded</label>
+                    <input name="eEnded" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-8">
+                    <label for="eCity">City<span class="red-ast">*</span></label>
+                    <input name="eCity" type="text" class="form-control" placeholder="Where are you based out of?" required />
+                </div>
+                <div class="col-xs-4">
+                    <label for="eState">State<span class="red-ast">*</span></label>
+                    <input name="eState" type="text" class="form-control" placeholder="Ss" required />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="row form-group">
+                <div class="col-xs-6">
+                    <label for="eType">Ensemble Type<span class="red-ast">*</span></label>
+                    <input name="eType" type="text" class="form-control" placeholder="Cover Band, String Quartet, Garage Band..." required />
+                </div>
+                <div class="col-xs-6">
+                    <label for="eGenre">Genre<span class="red-ast">*</span></label>
+                    <input name="eGenre" type="text" class="form-control" placeholder="Hip-Hop, Rock, 80's Pop..." required />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label for="eBio">Bio<span class="red-ast">*</span></label>
+                    <textarea name="eBio" type="text" class="form-control" placeholder="Who are you? What is your brand?" required></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Venue form -->
+    <form id="venueForm" style="display:none" asp-action="CreateVenue">
+        <div class="col-xs-6">
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label for="vName">Name<span class="red-ast">*</span></label>
+                    <input name="vName" type="text" class="form-control" placeholder="Name of Ensemble" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label for="vFormed">Established</label>
+                    <input name="vFormed" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label for="vAddr1">Address<span class="red-ast">*</span></label>
+                    <input name="vAddr1" type="text" class="form-control" placeholder="Where is your business?" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-8">
+                    <label for="vCity">City<span class="red-ast">*</span></label>
+                    <input name="vCity" type="text" class="form-control" required />
+                </div>
+                <div class="col-xs-4">
+                    <label for="vState">State<span class="red-ast">*</span></label>
+                    <input name="vState" type="text" class="form-control" placeholder="Ss" required />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label for="vPhone">Phone</label>
+                    <input name="vPhone" type="tel" class="form-control" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label for="vWeb">Website</label>
+                    <input name="vWeb" type="text" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label for="vBio">Bio<span class="red-ast">*</span></label>
+                    <textarea name="vBio" type="text" class="form-control" placeholder="Who are you? What is your brand?" required></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
