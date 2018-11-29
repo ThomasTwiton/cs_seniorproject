@@ -199,6 +199,7 @@ namespace server.Models
         public string Bio { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        //phone, web, date formed
 
         public ICollection<Gig> Gig { get; set; }
         //POSTS

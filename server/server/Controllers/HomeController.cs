@@ -195,7 +195,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateEnsemble(string eName, System.DateTime eFormed, System.DateTime eDisbanded, string eCity, string eState, string eType, string eGenre, int userID)
+        public async Task<IActionResult> CreateEnsemble(string eName, System.DateTime eFormed, System.DateTime eDisbanded, string eCity, string eBio, string eState, string eType, string eGenre, int userID)
         {
             Ensemble ensemble = new Ensemble();
             ensemble.Ensemble_Name = eName;
@@ -203,6 +203,7 @@ namespace server.Controllers
             ensemble.Disbanded_Date = eDisbanded;
             ensemble.Type = eType;
             ensemble.Genre = eGenre;
+            ensemble.Bio = eBio;
             ensemble.City = eCity;
             ensemble.State = eState;
             ensemble.User = _context.Users.Find(userID);
@@ -211,21 +212,41 @@ namespace server.Controllers
             {
                 _context.Add(ensemble);
                 await _context.SaveChangesAsync();
-            }   
-            
-            return View();
+            }
+
+            var lst = new List<string>();
+            foreach (Instrument i in _context.Instruments)
+            {
+                lst.Add(i.Instrument_Name);
+            }
+            ViewData["Instruments"] = lst;
+            return View("CreateProfile");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateVenue([Bind()] Venue venue)
+        public async Task<IActionResult> CreateVenue(string vName, System.DateTime vFormed, string vAddr1, string vCity, string vState, string vPhone, string vWeb, string vBio, int userID)
         {
+            Venue venue = new Venue();
+            venue.Venue_Name = vName;
+            venue.Address1 = vAddr1;
+            venue.City = vCity;
+            venue.State = vState;
+            venue.Bio = vBio;
+            venue.User = _context.Users.Find(userID);
             if (ModelState.IsValid)
             {
                 _context.Add(venue);
                 await _context.SaveChangesAsync();
             }
-            return View();
+
+            var lst = new List<string>();
+            foreach (Instrument i in _context.Instruments)
+            {
+                lst.Add(i.Instrument_Name);
+            }
+            ViewData["Instruments"] = lst;
+            return View("CreateProfile");
         }
 
     }
