@@ -82,13 +82,13 @@ function submitForm() {
     //  to be submitted.
     let activeView = document.getElementById("active");
     
-    if ("p" == activeView.classList[2]) {
+    if ("p" == activeView.classList[1]) {
         document.getElementById("profileForm").submit();
 
-    } else if ("e" == activeView.classList[2]) {
+    } else if ("e" == activeView.classList[1]) {
         document.getElementById("ensembleForm").submit();
 
-    } else if ("v" == activeView.classList[2]) {
+    } else if ("v" == activeView.classList[1]) {
         document.getElementById("venueForm").submit();
 
     }
