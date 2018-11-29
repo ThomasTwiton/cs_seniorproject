@@ -86,7 +86,6 @@ namespace server.Models
                     new Instrument() { InstrumentId = 20, Instrument_Name = "Accordion" },
                     new Instrument() { InstrumentId = 21, Instrument_Name = "Harmonica" }
                 );
-
             //seed the database (for testing)
             modelBuilder.Entity<User>().HasData(
                 new User() { UserId = 1, Email = "miley@cyrus.com", Password = "bestObothWorlds" },
