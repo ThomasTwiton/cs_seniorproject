@@ -118,7 +118,7 @@ namespace server.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Ensemble(int? id)
+        public async Task<IActionResult> ViewEnsemble(int? id)
         {
             /* This action method displays the profile for the ensemble with 
              *  the provided id. Here the users should be able to 
