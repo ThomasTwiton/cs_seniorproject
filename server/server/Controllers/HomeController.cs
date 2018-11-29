@@ -68,7 +68,7 @@ namespace server.Controllers
             return RedirectToAction("Profile", new { id = user.UserId });
         }
 
-        public IActionResult Profile(int? id)
+        public async Task<IActionResult> Profile(int? id)
         {
             /* This action method displays the profile for the user with 
              *  the provided user id. Here the users should be able to 
