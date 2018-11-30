@@ -68,8 +68,10 @@ namespace server.Controllers
             return RedirectToAction("Profile", new { id = user.UserId });
         }
 
-        public async Task<IActionResult> Profile(int? id)
+        public IActionResult Profile(int? id)
         {
+            Console.WriteLine("===================");
+            Console.WriteLine(id);
             /* This action method displays the profile for the user with 
              *  the provided user id. Here the users should be able to 
              *  navagate to the following:
@@ -90,23 +92,26 @@ namespace server.Controllers
 
             var Ensembles = new List<Ensemble>();
 
-
             if (profile.ProfileEnsemble == null)
             {
-                profile.ProfileEnsemble = new List<ProfileEnsemble>();
+                profile.ProfileEnsemble = new HashSet<ProfileEnsemble>();
                 foreach (ProfileEnsemble pe in _context.ProfileEnsembles)
                 {
+
                     if (pe.ProfileId == profile.ProfileId)
                     {
                         pe.Ensemble = _context.Ensembles.Find(pe.EnsembleId);
                         profile.ProfileEnsemble.Add(pe);
+
                     }
                 }
             }
 
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
+                Console.WriteLine(pe.Ensemble.Ensemble_Name);
                 Ensembles.Add(pe.Ensemble);
+                j++;
             }
             model.Ensembles = Ensembles;
 
