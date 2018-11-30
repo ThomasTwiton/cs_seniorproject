@@ -111,7 +111,6 @@ namespace server.Controllers
             {
                 Console.WriteLine(pe.Ensemble.Ensemble_Name);
                 Ensembles.Add(pe.Ensemble);
-                j++;
             }
             model.Ensembles = Ensembles;
 
