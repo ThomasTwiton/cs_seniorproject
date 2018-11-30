@@ -56,7 +56,7 @@
     <!-- Profile form -->
     <form id="profileForm" asp-action="CreateProfile">
         <div style="display:none">
-            <input name="userID" type="text" value="1" />
+            <input name="userID" type="text" value=@ViewData["id"] />
         </div>
         <div class="col-xs-6">
             <div class="form-group row">
@@ -114,7 +114,7 @@
     <!-- Ensemble form -->
     <form id="ensembleForm" style="display:none" asp-action="CreateEnsemble">
         <div style="display:none">
-            <input name="userID" type="text" value="1" />
+            <input name="userID" type="text" value=@ViewData["id"] />
         </div>
         <div class="col-xs-6">
             <div class="form-group row">
@@ -170,8 +170,7 @@
     <!-- Venue form -->
     <form id="venueForm" style="display:none" asp-action="CreateVenue">
         <div style="display:none">
-            <input name="userID" type="text" value="1"/>
-            <input name="userID" type="text" value="1" />
+            <input name="userID" type="text" value=@ViewData["id"]/>
         </div>
         <div class="col-xs-6">
             <div class="form-group row">

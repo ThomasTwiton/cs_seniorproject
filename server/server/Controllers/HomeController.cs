@@ -53,6 +53,30 @@ namespace server.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Email, Password")] User user)
+        {
+            /* This action method creates a new user in the database
+             *  and moves the user to the profile creation view.
+             */
+            if (ModelState.IsValid)
+            {
+                _context.Add(user);
+                await _context.SaveChangesAsync(); //wait until DB is saved for this result
+                /*
+                var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList();
+                user_with_profile[0].Profile = new List<Profile>();
+                Profile profile = new Profile();
+                user_with_profile[0].Profile.Add(profile);
+                profile.First_Name = firstname;
+                profile.Last_Name = lastname;
+                await _context.SaveChangesAsync(); //wait until DB is saved for this result
+                */
+            }
+            return RedirectToAction("CreateProfile", new { id = user.UserId });
+        }
+
         public async Task<IActionResult> Login(string email, string password)
         {
             /* This action method is used as a passageway from the landing
@@ -81,12 +105,13 @@ namespace server.Controllers
             ProfileModel model = new ProfileModel();
             //System.Web.HttpCookie myCookie = new HttpCookie("UserSettings");
 
-            var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
+            var user = _context.Users.Find(id);
             model.User = user;
 
             //join the user and profile tables to get the profile
             var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.UserId == id).ToList()[0];
             var profile = user_with_profile.Profile.ToList()[0];
+            //var profile = _context.Profiles.Find(id);
 
             model.Profile = profile;
 
@@ -239,38 +264,16 @@ namespace server.Controllers
         }
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password, string firstname, string lastname)
+        public IActionResult CreateProfile(int? id)
         {
-            /* This action method creates a new user in the database
-             *  and moves the user to the profile creation view.
-             */
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync(); //wait until DB is saved for this result
-                var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList();
-                user_with_profile[0].Profile = new List<Profile>();
-                Profile profile = new Profile();
-                user_with_profile[0].Profile.Add(profile);
-                profile.First_Name = firstname;
-                profile.Last_Name = lastname;
-                await _context.SaveChangesAsync(); //wait until DB is saved for this result
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
-
-        public IActionResult CreateProfile()
-        {
+            int? createdUserId = id;
             var lst = new List<string>();
             foreach(Instrument i in _context.Instruments)
             {
                 lst.Add(i.Instrument_Name);
             }
             ViewData["Instruments"] = lst;
+            ViewData["id"] = createdUserId;
             return View();
         }
 
@@ -296,7 +299,7 @@ namespace server.Controllers
                 lst.Add(i.Instrument_Name);
             }
             ViewData["Instruments"] = lst;
-            return View();
+            return RedirectToAction("Profile", new { id = userID });
         }
 
         [HttpPost]

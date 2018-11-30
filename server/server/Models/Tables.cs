@@ -35,8 +35,6 @@ namespace server.Models
         {
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email).IsUnique();
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Password).IsUnique();
 
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasKey(em => new { em.ProfileId, em.EnsembleId });
