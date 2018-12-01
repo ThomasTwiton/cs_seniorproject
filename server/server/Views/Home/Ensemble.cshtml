@@ -1,5 +1,4 @@
-@*@model IEnumerable<server.Models.Ensemble> *@
-@model server.Models.ProfileModel
+@model server.Models.EnsembleModel
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,36 +14,36 @@
     <script src="~/js/ensemble.js" type="text/jsx">
     </script>
     <script>
-        var profileType = "@Model.ViewType";
+        window.profileType = "@Model.ViewType";
     </script>
 }
 
 <div class="container">
     <div class="row">
         <div id="profile" class="col-md-3">
-            <img id="profPic" src="@Model.Profile.Pic_Url" />
+            <img id="profPic" src="@Model.Ensemble.Pic_Url" />
 
             @if (Model.isOwner == true)
             {
                 <div>
-                    <a asp-action="Edit" asp-route-id="@Model.Profile.ProfileId">Edit</a>
+                    <a asp-action="Edit" asp-route-id="@Model.Ensemble.EnsembleId">Edit</a>
                 </div>
             }
 
             <div id="bio">
-                @Model.Profile.Bio
+                @Model.Ensemble.Bio
 
 
             </div>
             <div id="location">
                 <span class="glyphicon glyphicon-map-marker"></span>
-                @Model.Profile.City
+                @Model.Ensemble.City
             </div>
             <hr />
             <div id="ensembles">
-                @foreach (var item in Model.Ensembles)
+                @foreach (var item in Model.Profiles)
                 {
-                    <Member data-id="@item.EnsembleId" data-avatarURL="@item.Pic_Url" data-name="@item.Ensemble_Name" />
+                    <Member data-id="@item.ProfileId" data-avatarurl="@item.Pic_Url" data-name="@item.First_Name @item.Last_Name" />
                 }
             </div>
         </div>
@@ -52,14 +51,14 @@
         <div id="posts" class="col-md-9">
             <div class="row">
                 <div class="col">
-                    <h1 id="name">@Model.Profile.First_Name @Model.Profile.Last_Name</h1>
+                    <h1 id="name">@Model.Ensemble.Ensemble_Name</h1>
 
                     @if (Model.isOwner == true)
                     {
                         <div id="createPost" class="container">
                             <form class="row">
                                 <div class="col-xs-1">
-                                    <img class="tinyPic" src="@Model.Profile.Pic_Url" />
+                                    <img class="tinyPic" src="@Model.Ensemble.Pic_Url" />
                                 </div>
 
                                 <div class="col-xs-11">
@@ -104,7 +103,7 @@
 
             <div class="modal-content">
                 <span class="close" onclick="hideModal()">&times;</span>
-                <form asp-controller="Ensemble" asp-action="CreateAudition" method="post" class="container-fluid">
+                <form asp-controller="Home" asp-action="CreateAudition" method="post" class="container-fluid">
                     <div style="display:none">
                         <input name="userID" type="text" value="1" />
                     </div>
@@ -126,17 +125,18 @@
                             </div>
                         </div>
                         <div class="row">
-                            <small class="form-text text-muted">
+                            <small class="form-text text-muted col-xs-12">
                                 The closing date should be the day <em>after</em> the last day of auditions. No auditions should be held on the closed date.
+
                             </small>
                         </div>
                         <hr />
                         <div class="row">
-                            <div class="form-group">
+                            <div class="form-group col-xs-12">
                                 <label for="location">Audition Location<span class="red-ast">*</span></label>
                                 <input type="text" class="form-control" name="location" placeholder="Nobal Recital Hall, 1234 N. West St., etc..." required />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col-xs-12">
                                 <label for="instrument">What instrument are you looking for?<span class="red-ast">*</span></label>
                                 <input type="text" name="instrument" class="form-control" placeholder="Trumpet, Vocalist etc..." required />
                             </div>
@@ -204,13 +204,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="city">City<span class="red-ast">*</span></label>
                                     <input type="text" name="city" class="form-control" required />
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="state">State<span class="red-ast">*</span></label>
                                     <input type="text" name="state" class="form-control" required />
