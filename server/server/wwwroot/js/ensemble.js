@@ -18,7 +18,23 @@ function EnsembleContainer(props) {
 function Member(props) {
     // The base component for a member.
     //console.log(props);
-    const link = "ViewEnsemble/" + props.info.id.toString();
+    let link;
+    const profileType = window.profileType;
+    if (profileType == "profile") {
+        // If we are looking at a profile, 
+        //  then the links should go to ensembles
+        link = "../Ensemble/" + props.info.id.toString();
+
+    } else if (profileType == "ensemble") {
+        // If we are looking at an ensemble, 
+        //  then the links should go to profiles
+        link = "../Profile/" + props.info.id.toString();
+
+    } else {
+        link = "#"
+    }
+    console.log(props);
+
     return (
         <a className="ensembleLink" href={link}>
             <img src={props.info.avatarURL} title={props.info.name} />
@@ -62,7 +78,7 @@ function pageLoaded() {
     for (let m of eList) {
         let props = {}
         props.id = m.dataset.id;
-        props.avatarURL = m.dataset.avatarURL;
+        props.avatarURL = m.dataset.avatarurl;
         props.name = m.dataset.name;
 
         propList.push(props)
