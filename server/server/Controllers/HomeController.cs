@@ -443,5 +443,12 @@ namespace server.Controllers
             return View("CreateProfile");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateGig(System.DateTime audition_date, System.DateTime closed_date, string location, string eCity, string instrument, int userID)
+        {
+            return View("CreateProfile");
+        }
+
     }
 }
