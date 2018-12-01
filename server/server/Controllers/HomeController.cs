@@ -53,7 +53,7 @@ namespace server.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public async Task<IActionResult> Login(string email, string password)
+        public IActionResult Login(string email, string password)
         {
             /* This action method is used as a passageway from the landing
              *  page to a user's profile. It receives the user's credentials
@@ -65,13 +65,14 @@ namespace server.Controllers
             var user = _context.Users.Where(u => u.Email == email && u.Password == password).ToList()[0];
             model.User = user;
 
-            return RedirectToAction("Profile", new { id = user.UserId });
+            var profile = _context.Profiles.Where(p => p.UserId == user.UserId).ToList()[0];
+            var proID = profile.ProfileId;
+
+            return RedirectToAction("Profile", new { id = proID });
         }
 
         public IActionResult Profile(int? id)
         {
-            Console.WriteLine("===================");
-            Console.WriteLine(id);
             /* This action method displays the profile for the user with 
              *  the provided user id. Here the users should be able to 
              *  navagate to the following:
@@ -79,14 +80,23 @@ namespace server.Controllers
              *      - Ensemble  --> any ensemble img in the ensembles area
              */
             ProfileModel model = new ProfileModel();
-            //System.Web.HttpCookie myCookie = new HttpCookie("UserSettings");
 
-            var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
-            model.User = user;
-
-            //join the user and profile tables to get the profile
-            var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.UserId == id).ToList()[0];
-            var profile = user_with_profile.Profile.ToList()[0];
+            /* The following lines are the previous way in which we looked up a profile
+             *   from the user id that was provided in the url. We have switched over to
+             *   looking up a profile from the profile id provided. 
+             *   
+             * var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
+             * model.User = user;
+             * //join the user and profile tables to get the profile
+             * var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.UserId == id).ToList()[0];
+             * var profile = user_with_profile.Profile.ToList()[0];
+             * 
+             * We still need to make a way to get the viewer's information when looking at
+             *   a page. Currently, we are hardcoding that information for demonstration 
+             *   purposes as either UserId = 1 or isOwner = true;
+             */
+            
+            var profile = _context.Profiles.Where(u => u.ProfileId == id).ToList()[0];
 
             model.Profile = profile;
 
@@ -109,7 +119,6 @@ namespace server.Controllers
 
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
-                Console.WriteLine(pe.Ensemble.Ensemble_Name);
                 Ensembles.Add(pe.Ensemble);
             }
             model.Ensembles = Ensembles;
@@ -119,10 +128,14 @@ namespace server.Controllers
                 return NotFound();
             }
 
+            model.ViewType = "profile";
+            model.isOwner = true; //model.User.UserId == model.Profile.UserId;
+            Console.WriteLine(model.isOwner);
+
             return View(model);
         }
 
-        public async Task<IActionResult> ViewEnsemble(int? id)
+        public IActionResult Ensemble(int? id)
         {
             /* This action method displays the profile for the ensemble with 
              *  the provided id. Here the users should be able to 
@@ -130,22 +143,89 @@ namespace server.Controllers
              *      - Profile   --> the profile img on the nav bar *or* a profile in the members area
              *      - Audition  --> clicking on an audition posting
              */
-            Console.WriteLine(id);
-            if(id == null)
+
+            EnsembleModel model = new EnsembleModel();
+
+            /* The following lines are the previous way in which we looked up an ensemble
+             *   from the user id that was provided in the url. We have switched over to
+             *   looking up an ensemble from the ensemble id provided. 
+             * 
+             * var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
+             * model.User = user;
+             *
+             *  //join the user and profile tables to get the profile
+             *  var user_with_ensemble = _context.Users.Include(p => p.Ensemble).Where(u => u.UserId == id).ToList()[0];
+             *  var ensemble = user_with_ensemble.Ensemble.ToList()[0];
+             *  
+             *  We still need to make a way to get the viewer's information when looking at
+             *   a page. Currently, we are hardcoding that information for demonstration 
+             *   purposes as either UserId = 1 or isOwner = true;
+             *   
+             */
+
+            var ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).ToList()[0];
+
+            model.Ensemble = ensemble;
+
+            var Profiles = new List<Profile>();
+
+            if (ensemble.ProfileEnsemble == null)
             {
-                return NotFound();
+                ensemble.ProfileEnsemble = new HashSet<ProfileEnsemble>();
+                foreach (ProfileEnsemble pe in _context.ProfileEnsembles)
+                {
+
+                    if (pe.EnsembleId == ensemble.EnsembleId)
+                    {
+                        pe.Ensemble = _context.Ensembles.Find(pe.EnsembleId);
+                        ensemble.ProfileEnsemble.Add(pe);
+
+                    }
+                }
             }
 
-            var ensemble = await _context.Ensembles.FindAsync(id);
-            Console.WriteLine(ensemble.Ensemble_Name);
+            Console.WriteLine("==============");
+            foreach (ProfileEnsemble pe in ensemble.ProfileEnsemble)
+            {
+                if (pe.Profile == null)
+                {
+                    pe.Profile = _context.Profiles.Find(pe.ProfileId);
+                }
+                Profiles.Add(pe.Profile);
+            }
+            model.Profiles = Profiles;
+
             if (ensemble == null)
             {
                 return NotFound();
             }
-            return View(ensemble);
+
+            model.ViewType = "ensemble";
+            model.isOwner = true; //model.User.UserId == model.Ensemble.EnsembleId;
+
+            return View(model);
         }
 
 
+        public IActionResult Venue(int? id)
+        {
+            /* This action method displays the profile for the venue with 
+             *  the provided id. Here the users should be able to 
+             *  navagate to the following:
+             *      - Profile   --> the profile img on the nav bar 
+             *      - Gig  --> clicking on a gig posting
+             */
+
+            VenueModel model = new VenueModel();
+
+            var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
+
+            model.Venue = venue;
+            model.ViewType = "venue";
+            model.isOwner = true; //model.User.UserId == model.Venue.VenueId;
+
+            return View(model);
+        }
 
 
         // GET: Movies/Edit/5
@@ -352,6 +432,14 @@ namespace server.Controllers
                 lst.Add(i.Instrument_Name);
             }
             ViewData["Instruments"] = lst;
+            return View("CreateProfile");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string eCity, string instrument, int userID)
+        {
             return View("CreateProfile");
         }
 
