@@ -68,7 +68,7 @@ namespace server.Controllers
             return RedirectToAction("Profile", new { id = user.UserId });
         }
 
-        public IActionResult Profile(int? id)
+        public IActionResult Profile(int? id = 2)
         {
             /* This action method displays the profile for the user with 
              *  the provided user id. Here the users should be able to 
@@ -154,7 +154,7 @@ namespace server.Controllers
              *      - Edit[Post]--> submitting changes to the page
              */
             ProfileModel model = new ProfileModel();
-            model.Instruments = _context.Instruments.ToList();
+
             if (id == null)
             {
                 return NotFound();
@@ -167,6 +167,7 @@ namespace server.Controllers
                 return NotFound();
             }
 
+            var play_ids = new List<int>();
             if (profile.Plays_Instrument == null)
             {
                 profile.Plays_Instrument = new List<Plays_Instrument>();
@@ -176,9 +177,29 @@ namespace server.Controllers
                     {
                         pi.Instrument = _context.Instruments.Find(pi.InstrumentId);
                         profile.Plays_Instrument.Add(pi);
+                        play_ids.Add(pi.InstrumentId);
                     }
                 }
                 await _context.SaveChangesAsync();
+            }
+
+            else
+            {
+                foreach (Plays_Instrument pi in profile.Plays_Instrument)
+                {
+                    play_ids.Add(pi.InstrumentId);
+                }
+            }
+
+            foreach (Instrument i in _context.Instruments.ToList())
+            {
+                var ins_name = i.Instrument_Name;
+                SelectListItem chk_ins = new SelectListItem { Text = i.Instrument_Name, Value = i.InstrumentId.ToString() };
+                if (play_ids.Contains(i.InstrumentId))
+                {
+                    chk_ins.Selected = true;
+                }
+                model.Instruments.Add(chk_ins);
             }
 
 

@@ -38,12 +38,37 @@
                 <label asp-for="Profile.Plays_Instrument" class="control-label"></label>
                 <span asp-validation-for="Profile.Plays_Instrument" class="text-danger"></span>
                 <div name="pInstruments" id="instruments" class="form-control">
+                    @{ List<int> checklist = new List<int>(); }
+                    @foreach (var pins in Model.Profile.Plays_Instrument)
+                    {
+                        Console.WriteLine("HERE0");
+                        Console.WriteLine(pins.InstrumentId);
+                        checklist.Add(pins.InstrumentId);
+                    }
+                    @{Console.WriteLine("HERE"); }
+                    @{Console.WriteLine(checklist.Count); }
                     @foreach (var ins in Model.Instruments)
                     {
-                        <label for="@ins.Instrument_Name" class="checkLabel">
-                            @ins.Instrument_Name
-                            <input id="@ins.Instrument_Name" name="@ins.Instrument_Name" type="checkbox" onchange="changeCheck(this)" />
-                        </label>
+
+                        if (checklist.Contains(ins.InstrumentId))
+                        {
+                            Console.WriteLine("HERE1");
+                            Console.WriteLine(ins.Instrument_Name);
+                            <label for="@ins.Instrument_Name" class="checkLabel">
+                                @ins.Instrument_Name
+                                <input id="@ins.Instrument_Name" name="@ins.Instrument_Name" type="checkbox" onchange="changeCheck(this)" checked/>
+                            </label>
+                        }
+                        else
+                        {
+                            Console.WriteLine("HERE2");
+                            <label for="@ins.Instrument_Name" class="checkLabel">
+                                @ins.Instrument_Name
+                                <input id="@ins.Instrument_Name" name="@ins.Instrument_Name" type="checkbox" onchange="changeCheck(this)" />
+                            </label>
+                        }
+
+
                     }
                 </div>
             </div>
