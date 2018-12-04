@@ -337,22 +337,21 @@ namespace server.Controllers
                 profile.First_Name = firstname;
                 profile.Last_Name = lastname;
                 await _context.SaveChangesAsync(); //wait until DB is saved for this result
-                return RedirectToAction(nameof(Index));
+
+                var lst = new List<string>();
+                foreach (Instrument i in _context.Instruments)
+                {
+                    lst.Add(i.Instrument_Name);
+                }
+
+                ViewData["Instruments"] = lst;
+
+                return View("CreateProfile", user);
             }
-            return View(user);
+
+            return View("index");
         }
 
-
-        public IActionResult CreateProfile()
-        {
-            var lst = new List<string>();
-            foreach(Instrument i in _context.Instruments)
-            {
-                lst.Add(i.Instrument_Name);
-            }
-            ViewData["Instruments"] = lst;
-            return View();
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -370,13 +369,7 @@ namespace server.Controllers
             _context.Add(profile);
             await _context.SaveChangesAsync();
 
-            var lst = new List<string>();
-            foreach (Instrument i in _context.Instruments)
-            {
-                lst.Add(i.Instrument_Name);
-            }
-            ViewData["Instruments"] = lst;
-            return View();
+            return RedirectToAction("Profile", new { id = profile.ProfileId });
         }
 
         [HttpPost]
@@ -400,13 +393,7 @@ namespace server.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            var lst = new List<string>();
-            foreach (Instrument i in _context.Instruments)
-            {
-                lst.Add(i.Instrument_Name);
-            }
-            ViewData["Instruments"] = lst;
-            return View("CreateProfile");
+            return RedirectToAction("Ensemble", new { id = ensemble.EnsembleId });
         }
 
         [HttpPost]
@@ -426,13 +413,7 @@ namespace server.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            var lst = new List<string>();
-            foreach (Instrument i in _context.Instruments)
-            {
-                lst.Add(i.Instrument_Name);
-            }
-            ViewData["Instruments"] = lst;
-            return View("CreateProfile");
+            return RedirectToAction("Venue", new { id = venue.VenueId });
         }
 
 
