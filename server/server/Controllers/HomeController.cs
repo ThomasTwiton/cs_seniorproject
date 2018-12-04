@@ -190,14 +190,22 @@ namespace server.Controllers
                     play_ids.Add(pi.InstrumentId);
                 }
             }
-
+            //Console.WriteLine("HERE0");
+            //Console.WriteLine(play_ids);
+            model.Instruments = new List<SelectListItem>();
+            model.SelectedInsIds = new List<String>();
             foreach (Instrument i in _context.Instruments.ToList())
             {
+                //Console.WriteLine("HERE1");
+                //Console.WriteLine(i.Instrument_Name);
                 var ins_name = i.Instrument_Name;
+                //Console.WriteLine(ins_name);
                 SelectListItem chk_ins = new SelectListItem { Text = i.Instrument_Name, Value = i.InstrumentId.ToString() };
                 if (play_ids.Contains(i.InstrumentId))
                 {
+                    //Console.WriteLine("HERE3");
                     chk_ins.Selected = true;
+                    //chk_ins.Text = "JOHN CENA";
                 }
                 model.Instruments.Add(chk_ins);
             }
@@ -215,15 +223,54 @@ namespace server.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("First_Name,Last_Name,Preferred_Name, Plays_Instrument")] Profile profile)
+        public async Task<IActionResult> Edit(int id, ProfileModel model)
         {
             /* This action method takes the updated info of the user's
              *  profile and saves it. There is no view associated with
              *  this method and the user should be redirected to their
              *  respective profile page.
              */
-            Console.WriteLine(profile.First_Name);
-            Console.WriteLine(profile.Plays_Instrument.ToList()[0].Instrument.Instrument_Name);
+            Console.WriteLine(model.Profile.First_Name);
+            Console.WriteLine(model.SelectedInsIds[0]);
+            Console.WriteLine(model.Profile.ProfileId);
+            var profile = _context.Profiles.Find(model.Profile.ProfileId);
+            Console.WriteLine(profile.ProfileId);
+
+            Console.WriteLine(profile.Plays_Instrument);
+
+            foreach (Plays_Instrument pi in _context.Plays_Instruments)
+            {
+                Console.WriteLine("REMOVING");
+                if(pi.ProfileId == model.Profile.ProfileId)
+                {
+                    //Console.WriteLine(pi.Instrument.Instrument_Name);
+                    _context.Plays_Instruments.Remove(pi);
+                }
+            }
+
+            Console.WriteLine(profile.Plays_Instrument.Count);
+
+            foreach (String ins in model.SelectedInsIds)
+            {
+               
+                //Console.WriteLine(ins);
+                Plays_Instrument pi = new Plays_Instrument();
+                pi.Profile = _context.Profiles.Find(model.Profile.ProfileId);
+                pi.ProfileId = pi.Profile.ProfileId;
+                pi.Instrument = _context.Instruments.Find(int.Parse(ins));
+                pi.InstrumentId = int.Parse(ins);
+
+                _context.Profiles.Find(model.Profile.ProfileId).Plays_Instrument.Add(pi);
+
+                    //var npi = new Plays_Instrument
+            }
+
+            foreach(Plays_Instrument pi in _context.Profiles.Find(model.Profile.ProfileId).Plays_Instrument.ToList())
+            {
+                Console.WriteLine(pi.Instrument);
+            }
+
+            //Console.WriteLine(profile.Plays_Instrument.ToList()[0].Instrument.Instrument_Name);
             /*
             if (id != movie.ID)
             {
@@ -251,7 +298,7 @@ namespace server.Controllers
                 return RedirectToAction(nameof(Index));
             }
             */
-            return View("index");
+            return RedirectToAction("Edit",  id = model.Profile.ProfileId);
 
         }
 

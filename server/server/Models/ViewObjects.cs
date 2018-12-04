@@ -13,7 +13,8 @@ namespace server.Models
         public Profile Profile { get; set; }
         //List of the Profile's Ensembles
         public List<Ensemble> Ensembles { get; set; } 
-        public IList<SelectListItem> Instruments { get; set; }
+        public List<SelectListItem> Instruments { get; set; }
+        public List<String> SelectedInsIds { get; set; }
         //Current user
         public User User { get; set; }  
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
