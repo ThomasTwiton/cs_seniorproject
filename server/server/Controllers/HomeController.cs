@@ -53,31 +53,7 @@ namespace server.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Email, Password")] User user)
-        {
-            /* This action method creates a new user in the database
-             *  and moves the user to the profile creation view.
-             */
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync(); //wait until DB is saved for this result
-                /*
-                var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.Email == email && u.Password == password).ToList();
-                user_with_profile[0].Profile = new List<Profile>();
-                Profile profile = new Profile();
-                user_with_profile[0].Profile.Add(profile);
-                profile.First_Name = firstname;
-                profile.Last_Name = lastname;
-                await _context.SaveChangesAsync(); //wait until DB is saved for this result
-                */
-            }
-            return RedirectToAction("CreateProfile", new { id = user.UserId });
-        }
-
-        public async Task<IActionResult> Login(string email, string password)
+        public IActionResult Login(string email, string password)
         {
             /* This action method is used as a passageway from the landing
              *  page to a user's profile. It receives the user's credentials
@@ -89,13 +65,14 @@ namespace server.Controllers
             var user = _context.Users.Where(u => u.Email == email && u.Password == password).ToList()[0];
             model.User = user;
 
-            return RedirectToAction("Profile", new { id = user.UserId });
+            var profile = _context.Profiles.Where(p => p.UserId == user.UserId).ToList()[0];
+            var proID = profile.ProfileId;
+
+            return RedirectToAction("Profile", new { id = proID });
         }
 
         public IActionResult Profile(int? id)
         {
-            Console.WriteLine("===================");
-            Console.WriteLine(id);
             /* This action method displays the profile for the user with 
              *  the provided user id. Here the users should be able to 
              *  navagate to the following:
@@ -103,15 +80,23 @@ namespace server.Controllers
              *      - Ensemble  --> any ensemble img in the ensembles area
              */
             ProfileModel model = new ProfileModel();
-            //System.Web.HttpCookie myCookie = new HttpCookie("UserSettings");
 
-            var user = _context.Users.Find(id);
-            model.User = user;
+            /* The following lines are the previous way in which we looked up a profile
+             *   from the user id that was provided in the url. We have switched over to
+             *   looking up a profile from the profile id provided. 
+             *   
+             * var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
+             * model.User = user;
+             * //join the user and profile tables to get the profile
+             * var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.UserId == id).ToList()[0];
+             * var profile = user_with_profile.Profile.ToList()[0];
+             * 
+             * We still need to make a way to get the viewer's information when looking at
+             *   a page. Currently, we are hardcoding that information for demonstration 
+             *   purposes as either UserId = 1 or isOwner = true;
+             */
 
-            //join the user and profile tables to get the profile
-            var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.UserId == id).ToList()[0];
-            var profile = user_with_profile.Profile.ToList()[0];
-            //var profile = _context.Profiles.Find(id);
+            var profile = _context.Profiles.Where(u => u.ProfileId == id).ToList()[0];
 
             model.Profile = profile;
 
@@ -134,7 +119,6 @@ namespace server.Controllers
 
             foreach (ProfileEnsemble pe in profile.ProfileEnsemble)
             {
-                Console.WriteLine(pe.Ensemble.Ensemble_Name);
                 Ensembles.Add(pe.Ensemble);
             }
             model.Ensembles = Ensembles;
@@ -144,10 +128,14 @@ namespace server.Controllers
                 return NotFound();
             }
 
+            model.ViewType = "profile";
+            model.isOwner = true; //model.User.UserId == model.Profile.UserId;
+            Console.WriteLine(model.isOwner);
+
             return View(model);
         }
 
-        public async Task<IActionResult> ViewEnsemble(int? id)
+        public IActionResult Ensemble(int? id)
         {
             /* This action method displays the profile for the ensemble with 
              *  the provided id. Here the users should be able to 
@@ -155,20 +143,90 @@ namespace server.Controllers
              *      - Profile   --> the profile img on the nav bar *or* a profile in the members area
              *      - Audition  --> clicking on an audition posting
              */
-            Console.WriteLine(id);
-            if(id == null)
+
+            EnsembleModel model = new EnsembleModel();
+
+            /* The following lines are the previous way in which we looked up an ensemble
+             *   from the user id that was provided in the url. We have switched over to
+             *   looking up an ensemble from the ensemble id provided. 
+             * 
+             * var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
+             * model.User = user;
+             *
+             *  //join the user and profile tables to get the profile
+             *  var user_with_ensemble = _context.Users.Include(p => p.Ensemble).Where(u => u.UserId == id).ToList()[0];
+             *  var ensemble = user_with_ensemble.Ensemble.ToList()[0];
+             *  
+             *  We still need to make a way to get the viewer's information when looking at
+             *   a page. Currently, we are hardcoding that information for demonstration 
+             *   purposes as either UserId = 1 or isOwner = true;
+             *   
+             */
+
+            var ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).ToList()[0];
+
+            model.Ensemble = ensemble;
+
+            var Profiles = new List<Profile>();
+
+            if (ensemble.ProfileEnsemble == null)
             {
-                return NotFound();
+                ensemble.ProfileEnsemble = new HashSet<ProfileEnsemble>();
+                foreach (ProfileEnsemble pe in _context.ProfileEnsembles)
+                {
+
+                    if (pe.EnsembleId == ensemble.EnsembleId)
+                    {
+                        pe.Ensemble = _context.Ensembles.Find(pe.EnsembleId);
+                        ensemble.ProfileEnsemble.Add(pe);
+
+                    }
+                }
             }
 
-            var ensemble = await _context.Ensembles.FindAsync(id);
-            Console.WriteLine(ensemble.Ensemble_Name);
+            Console.WriteLine("==============");
+            foreach (ProfileEnsemble pe in ensemble.ProfileEnsemble)
+            {
+                if (pe.Profile == null)
+                {
+                    pe.Profile = _context.Profiles.Find(pe.ProfileId);
+                }
+                Profiles.Add(pe.Profile);
+            }
+            model.Profiles = Profiles;
+
             if (ensemble == null)
             {
                 return NotFound();
             }
-            return View(ensemble);
+
+            model.ViewType = "ensemble";
+            model.isOwner = true; //model.User.UserId == model.Ensemble.EnsembleId;
+
+            return View(model);
         }
+
+
+        public IActionResult Venue(int? id)
+        {
+            /* This action method displays the profile for the venue with 
+             *  the provided id. Here the users should be able to 
+             *  navagate to the following:
+             *      - Profile   --> the profile img on the nav bar 
+             *      - Gig  --> clicking on a gig posting
+             */
+
+            VenueModel model = new VenueModel();
+
+            var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
+
+            model.Venue = venue;
+            model.ViewType = "venue";
+            model.isOwner = true; //model.User.UserId == model.Venue.VenueId;
+
+            return View(model);
+        }
+
 
         // GET: Movies/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -198,7 +256,7 @@ namespace server.Controllers
                 profile.Plays_Instrument = new List<Plays_Instrument>();
                 foreach (Plays_Instrument pi in _context.Plays_Instruments)
                 {
-                    if(pi.ProfileId == profile.ProfileId)
+                    if (pi.ProfileId == profile.ProfileId)
                     {
                         pi.Instrument = _context.Instruments.Find(pi.InstrumentId);
                         profile.Plays_Instrument.Add(pi);
@@ -216,8 +274,8 @@ namespace server.Controllers
         // POST: Movies/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        
-        
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("First_Name,Last_Name,Preferred_Name, Plays_Instrument")] Profile profile)
@@ -234,7 +292,6 @@ namespace server.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -261,11 +318,28 @@ namespace server.Controllers
         }
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Email, Password")] User user)
+        {
+            /* This action method creates a new user in the database
+             *  and moves the user to the profile creation view.
+             */
+            if (ModelState.IsValid)
+            {
+                _context.Add(user);
+                await _context.SaveChangesAsync(); //wait until DB is saved for this result
+                return RedirectToAction("CreateProfile", new { id = user.UserId });
+            }
+            return View("Index");            
+        }
+
+
         public IActionResult CreateProfile(int? id)
         {
             int? createdUserId = id;
             var lst = new List<string>();
-            foreach(Instrument i in _context.Instruments)
+            foreach (Instrument i in _context.Instruments)
             {
                 lst.Add(i.Instrument_Name);
             }
@@ -285,6 +359,7 @@ namespace server.Controllers
             profile.City = pCity;
             profile.State = pState;
             profile.Bio = pBio;
+            profile.UserId = int.Parse(userID.ToString());
             profile.User = _context.Users.Find(userID);
 
             _context.Add(profile);
@@ -296,7 +371,7 @@ namespace server.Controllers
                 lst.Add(i.Instrument_Name);
             }
             ViewData["Instruments"] = lst;
-            return RedirectToAction("Profile", new { id = userID });
+            return View();
         }
 
         [HttpPost]
@@ -312,9 +387,10 @@ namespace server.Controllers
             ensemble.Bio = eBio;
             ensemble.City = eCity;
             ensemble.State = eState;
+            ensemble.UserId = int.Parse(userID.ToString());
             ensemble.User = _context.Users.Find(userID);
 
-          if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(ensemble);
                 await _context.SaveChangesAsync();
@@ -339,11 +415,14 @@ namespace server.Controllers
             venue.City = vCity;
             venue.State = vState;
             venue.Bio = vBio;
+            venue.UserId = int.Parse(userID.ToString());
             venue.User = _context.Users.Find(userID);
+            _context.Add(venue);
+            await _context.SaveChangesAsync();
+
             if (ModelState.IsValid)
             {
-                _context.Add(venue);
-                await _context.SaveChangesAsync();
+                
             }
 
             var lst = new List<string>();
@@ -352,6 +431,21 @@ namespace server.Controllers
                 lst.Add(i.Instrument_Name);
             }
             ViewData["Instruments"] = lst;
+            return View("CreateProfile");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string eCity, string instrument, int userID)
+        {
+            return View("CreateProfile");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateGig(System.DateTime audition_date, System.DateTime closed_date, string location, string eCity, string instrument, int userID)
+        {
             return View("CreateProfile");
         }
 
