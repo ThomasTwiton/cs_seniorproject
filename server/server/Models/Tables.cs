@@ -66,12 +66,13 @@ namespace server.Models
                     new Instrument() { InstrumentId = 2, Instrument_Name = "Voice" },
                     new Instrument() { InstrumentId = 3, Instrument_Name = "Violin" },
                     new Instrument() { InstrumentId = 4, Instrument_Name = "Viola" },
-                    new Instrument() { InstrumentId = 5, Instrument_Name = "Chello" },
+                    new Instrument() { InstrumentId = 5, Instrument_Name = "Cello" },
                     new Instrument() { InstrumentId = 6, Instrument_Name = "Bass" },
                     new Instrument() { InstrumentId = 7, Instrument_Name = "Guitar" },
                     new Instrument() { InstrumentId = 8, Instrument_Name = "Drums" },
                     new Instrument() { InstrumentId = 9, Instrument_Name = "Trumpet" },
                     new Instrument() { InstrumentId = 10, Instrument_Name = "Trombone" },
+                    new Instrument() { InstrumentId = 10, Instrument_Name = "Bass Trombone" },
                     new Instrument() { InstrumentId = 11, Instrument_Name = "Tuba" },
                     new Instrument() { InstrumentId = 12, Instrument_Name = "Baritone" },
                     new Instrument() { InstrumentId = 13, Instrument_Name = "French Horn" },
@@ -119,8 +120,10 @@ namespace server.Models
                 );
 
             modelBuilder.Entity<Post>().HasData(
-                new Post() { PostId = 1, PosterType="profile", PosterIndex = 1, MediaType="image", MediaUrl = "https://upload.wikimedia.org/wikipedia/en/0/06/Miley_Cyrus_-_Wrecking_Ball.jpg",
-                Text="No longer a Disney gal!"}
+                new Post() { PostId = 1, PosterType="profile", PosterIndex = 1, MediaType="img", MediaUrl = "https://upload.wikimedia.org/wikipedia/en/0/06/Miley_Cyrus_-_Wrecking_Ball.jpg",
+                Text="No longer a Disney gal!"},         
+                new Post() { PostId = 2, PosterType ="profile", PosterIndex = 1, Text = "Screw you dad @BillyRayCyrus"},
+                new Post() { PostId = 3, PosterType ="profile", PosterIndex = 1, MediaType="img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" }
                 );
         } 
     }
@@ -129,8 +132,10 @@ namespace server.Models
     {
         public int UserId { get; set; }
 
+        [Required]
         public string Email { get; set; }
         
+        [Required]
         public string Password { get; set; }
 
         public ICollection<Profile> Profile { get; set; }
@@ -188,7 +193,7 @@ namespace server.Models
         public int VenueId { get; set; }
 
         public string Venue_Name { get; set; }
-        public string Location { get; set; }
+        public string Pic_Url { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }
@@ -197,6 +202,8 @@ namespace server.Models
         public string Bio { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        public string Website { get; set; }
+        public string Phone { get; set; }
         //phone, web, date formed
 
         public ICollection<Gig> Gig { get; set; }
