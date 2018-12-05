@@ -218,6 +218,24 @@ namespace server.Controllers
                 return NotFound();
             }
 
+            List<Post> posts = new List<Post>();
+            foreach (Post post in _context.Posts)
+            {
+                if (post.PosterType == "ensemble")
+                {
+                    int ensembleId = post.PosterIndex;
+                    if (ensembleId == ensemble.EnsembleId)
+                    {
+                        Ensemble poster_profile = _context.Ensembles.Find(ensembleId);
+                        post.Ensemble = poster_profile;
+                        posts.Add(post);
+                    }
+                }
+            }
+            Console.WriteLine("==================");
+            Console.WriteLine(posts.Count);
+            model.Posts = posts;
+
             model.ViewType = "ensemble";
             model.isOwner = true; //model.User.UserId == model.Ensemble.EnsembleId;
 
@@ -237,6 +255,24 @@ namespace server.Controllers
             VenueModel model = new VenueModel();
 
             var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
+
+            List<Post> posts = new List<Post>();
+            foreach (Post post in _context.Posts)
+            {
+                if (post.PosterType == "venue")
+                {
+                    int venueId = post.PosterIndex;
+                    if (venueId == venue.VenueId)
+                    {
+                        Venue poster_profile = _context.Venues.Find(venueId);
+                        post.Venue = poster_profile;
+                        posts.Add(post);
+                    }
+                }
+            }
+            Console.WriteLine("==================");
+            Console.WriteLine(posts.Count);
+            model.Posts = posts;
 
             model.Venue = venue;
             model.ViewType = "venue";

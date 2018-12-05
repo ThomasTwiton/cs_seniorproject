@@ -9,13 +9,13 @@
 }
 
 @section Scripts {
-    <!--<script src="~/js/posts.js" type="text/jsx">
-    </script>-->
+    <script src="~/js/posts.js" type="text/jsx">
+    </script>
 }
 
 <div class="container-fluid">
     <div class="row">
-        <img id="banner" src="@Model.Venue.Pic_Url" alt="@Model.Venue.Venue_Name" />
+        <img id="banner" src="https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiP__7uhYffAhWhmeAKHSsYCPoQjRx6BAgBEAU&url=https%3A%2F%2Fwww.facebook.com%2Funclemartysinc%2F&psig=AOvVaw33ofUSp-_HCNUuBjlmOwzx&ust=1544042803984002" alt="@Model.Venue.Venue_Name" />
     </div>
     <div class="row">
         <div id="profile" class="col-xs-3">
@@ -28,7 +28,7 @@
             <table id="info">
                 <tr>
                     <td>Phone:</td>
-                    <td>@Model.Venue.Phone</td>
+                    <td>@*@Model.Venue.Phone*@</td>
                 </tr>
                 <tr>
                     <td>Address:</td>
@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <td>Website:</td>
-                    <td><a href="@Model.Venue.Website">@Model.Venue.Venue_Name</a></td>
+                    <td><a href=@*@Model.Venue.Website*@>@Model.Venue.Venue_Name</a></td>
                 </tr>
             </table>
             @if (Model.IsOwner == true)
@@ -56,7 +56,7 @@
                     <div id="createPost" class="container">
                         <form class="row">
                             <div class="col-xs-1">
-                                <img class="tinyPic" src="@Model.Venue.Pic_Url" />
+                                <img class="tinyPic" src="https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiP__7uhYffAhWhmeAKHSsYCPoQjRx6BAgBEAU&url=https%3A%2F%2Fwww.facebook.com%2Funclemartysinc%2F&psig=AOvVaw33ofUSp-_HCNUuBjlmOwzx&ust=1544042803984002" />
                             </div>
 
                             <div class="col-xs-11">
@@ -80,7 +80,30 @@
             </div>
 
             <div id="postCC" class="row">
+                @foreach (var p in Model.Posts)
+                {
 
+                    @if (p.Type == "gig")
+                    {
+                        <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-hasmedia="@false" data-text="@p.Text" />
+                    }
+                    else if (p.Type == "aud")
+                    {
+                        <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-hasmedia="@false" data-text="@p.Text" />
+                    }
+                    else
+                    {
+                        if (p.MediaType != null)
+                        {
+                            <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-text="@p.Text" data-hasmedia="@true" data-mediaurl="@p.MediaUrl" data-mediatype="@p.MediaType" />
+                        }
+                        else
+                        {
+                            <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-text="@p.Text" data-hasmedia="@false" />
+                        }
+                    }
+
+                }
             </div>
         </div>
 

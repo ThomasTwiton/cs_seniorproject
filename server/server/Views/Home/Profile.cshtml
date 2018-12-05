@@ -58,7 +58,7 @@
                     @if (Model.isOwner == true)
                     {
                         <div id="createPost" class="container">
-                            <form class="row">
+                            <form class="row" asp-action="CreatePost">
                                 <div class="col-xs-1">
                                     <img class="tinyPic" src="@Model.Profile.Pic_Url" />
                                 </div>
@@ -258,4 +258,4 @@
         </div>
     }
 }
-</div>
+
