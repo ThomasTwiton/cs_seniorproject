@@ -1,84 +1,84 @@
-﻿class PostContainer extends React.Component {
+﻿//class PostContainer extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            error: null,
-            isLoaded: false,
-            posts: []
-        };
-        /* The following calculation will determine where the 
-         * api call should go to get the proper posts.
-         * 
-         * Presently, the api calls all lead to the same place
-         * for testing. This may or may not be what happens in
-         * the final version since the database does specify 
-         * different ids depending on whether a profile is an
-         * ensemble, venue or profile.
-        */
+//    constructor(props) {
+//        super(props);
+//        this.state = {
+//            error: null,
+//            isLoaded: false,
+//            posts: []
+//        };
+//        /* The following calculation will determine where the 
+//         * api call should go to get the proper posts.
+//         * 
+//         * Presently, the api calls all lead to the same place
+//         * for testing. This may or may not be what happens in
+//         * the final version since the database does specify 
+//         * different ids depending on whether a profile is an
+//         * ensemble, venue or profile.
+//        */
         
-        switch (profileType) {
-            case "ensemble":
-                this.getPostLink = "api/getAllPosts"
-                break;
-            case "profile":
-                this.getPostLink = "api/getAllPosts"
-                break;
-            case "venue":
-                this.getPostLink = "api/getAllPosts"
-                break;
-        }
-    }
+//        switch (profileType) {
+//            case "ensemble":
+//                this.getPostLink = "api/getAllPosts"
+//                break;
+//            case "profile":
+//                this.getPostLink = "api/getAllPosts"
+//                break;
+//            case "venue":
+//                this.getPostLink = "api/getAllPosts"
+//                break;
+//        }
+//    }
 
-    componentDidMount() {
-        fetch(this.getPostLink)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        posts: result.posts
-                    });
-                    console.log(result)
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
-    }
+//    componentDidMount() {
+//        fetch(this.getPostLink)
+//            .then(res => res.json())
+//            .then(
+//                (result) => {
+//                    this.setState({
+//                        isLoaded: true,
+//                        posts: result.posts
+//                    });
+//                    console.log(result)
+//                },
+//                // Note: it's important to handle errors here
+//                // instead of a catch() block so that we don't swallow
+//                // exceptions from actual bugs in components.
+//                (error) => {
+//                    this.setState({
+//                        isLoaded: true,
+//                        error
+//                    });
+//                }
+//            )
+//    }
 
-    render() {
-        const { error, isLoaded, posts } = this.state;
+//    render() {
+//        const { error, isLoaded, posts } = this.state;
 
-        // If there was an error loading the posts
-        if (error) {
-            return <div>Error: {error.message}</div>;
+//        // If there was an error loading the posts
+//        if (error) {
+//            return <div>Error: {error.message}</div>;
 
-        // If the component is loading the posts
-        } else if (!isLoaded) {
-            return <div>Loading...</div>;
+//        // If the component is loading the posts
+//        } else if (!isLoaded) {
+//            return <div>Loading...</div>;
 
-        // Else we should have the posts
-        } else {
-            const postsList = posts;
-            const postItems = postsList.map((p) => <Post author={p.author} post={p.post} />);
+//        // Else we should have the posts
+//        } else {
+//            const postsList = posts;
+//            const postItems = postsList.map((p) => <Post author={p.author} post={p.post} />);
 
-            return (
-                <div id="postContainer" className="container">
-                    {postItems}
-                </div>
-            );
-        }
-    }
-}
+//            return (
+//                <div id="postContainer" className="container">
+//                    {postItems}
+//                </div>
+//            );
+//        }
+//    }
+//}
 
-/*function PostContainer(props) {
+function PostContainer(props) {
     // The container that holds all posts inside of it.
 
     const postsList = props.posts;
@@ -88,7 +88,7 @@
             {postItems}
         </div>
     );
-}*/
+}
 
 function Post(props) {
     // The base component for a post
@@ -206,14 +206,15 @@ function PostBody(props) {
     /* The PostBody component is container for the various types of posts
         that could be created.
     */
+    console.log(props);
 
     switch (props.post.type) {
-        case "post":
-            return (<BasicBody post={props.post} />);
         case "gig":
             return (<GigBody post={props.post} />);
         case "aud":
             return (<AuditionBody post={props.post} />);
+        default: // should be post
+            return (<BasicBody post={props.post} />);
     }
 }
 
@@ -242,7 +243,69 @@ function PostMedia(props) {
     );
 }
 
+function aggPosts() {
+    /* The way that the post data is being passed into
+     * the view requires the javascript to find all of the 
+     * member tags and assemble the appropriate props to be
+     * passed to the EnsembleContainer. */
 
+    let eList = document.getElementsByTagName("Post");
+    console.log(eList);
+    let propList = [];
+    for (let m of eList) {
+        let props = {
+            author: {
+                name: m.dataset.username,
+                avatarURL: m.dataset.avatar
+            },
+            post: {
+                text: m.dataset.text,
+                type: m.dataset.type,
+                
+            }
+        };
+        let info
+        switch (m.dataset.type) {
+            case "gig":
+                info = {
+                    id: m.dataset.gigid,
+                    poster: m.dataset.username,
+                    start: m.dataset.start,
+                    end: m.dataset.end,
+                    time: m.dataset.time,
+                    seeking: m.dataset.pos
+                };
+                props.post.info = info;
+                break;
+
+            case "aud":
+                info = {
+                    id: m.dataset.audid,
+                    poster: m.dataset.username,
+                    time: m.dataset.time,
+                    seeking: m.dataset.pos,
+                    place: m.dataset.place
+                };
+                props.post.info = info;
+                break;
+
+            default:
+                console.log(m.dataset.hasmedia);
+                if (m.dataset.hasmedia) {
+                    let media = {
+                        url: m.dataset.mediaurl,
+                        type: m.dataset.mediatype
+                    };
+                    props.post.media = media
+                };
+                break;
+        };
+
+        propList.push(props)
+    }
+    //console.log(propList);
+    return propList;
+}
 
 
 
@@ -326,7 +389,8 @@ const e = {
     },
 };
 
-const pList = [p,o,s,t,e];
+
+const pList = aggPosts();
 console.log(pList);
 
 ReactDOM.render(

@@ -18,6 +18,9 @@ namespace server.Models
         public String ViewType { get; set; }
         //whether or not you own this page
         public Boolean isOwner { get; set; }
+
+        // For the sake of our MVP demonstration, this is how we will load posts
+        public List<Post> Posts { get; set; }
     }
 
     public class EnsembleModel
@@ -32,6 +35,9 @@ namespace server.Models
         public String ViewType { get; set; }
         //whether or not you own this page
         public Boolean isOwner { get; set; }
+
+        // For the sake of our MVP demonstration, this is how we will load posts
+        public List<Post> Posts { get; set; }
     }
 
     public class VenueModel
@@ -41,9 +47,12 @@ namespace server.Models
         //Current user
         public User User { get; set; }
         //whether or not you own this page
-        public Boolean isOwner { get; set; }
+        public Boolean IsOwner { get; set; }
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
+
+        // For the sake of our MVP demonstration, this is how we will load posts
+        public List<Post> Posts { get; set; }
 
     }
 

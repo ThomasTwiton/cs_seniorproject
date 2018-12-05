@@ -128,6 +128,24 @@ namespace server.Controllers
                 return NotFound();
             }
 
+            List<Post> posts = new List<Post>();
+            foreach(Post post in _context.Posts)
+            {
+                if (post.PosterType == "profile")
+                {
+                    int profileId = post.PosterIndex;
+                    if (profileId == profile.ProfileId)
+                    {
+                        Profile poster_profile = _context.Profiles.Find(profileId);
+                        post.Profile = poster_profile;
+                        posts.Add(post);
+                    }
+                }
+            }
+            Console.WriteLine("==================");
+            Console.WriteLine(posts.Count);
+            model.Posts = posts;
+
             model.ViewType = "profile";
             model.isOwner = true; //model.User.UserId == model.Profile.UserId;
             Console.WriteLine(model.isOwner);
@@ -215,14 +233,14 @@ namespace server.Controllers
              *      - Profile   --> the profile img on the nav bar 
              *      - Gig  --> clicking on a gig posting
              */
-
+            Console.WriteLine(id);
             VenueModel model = new VenueModel();
 
             var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
 
             model.Venue = venue;
             model.ViewType = "venue";
-            model.isOwner = true; //model.User.UserId == model.Venue.VenueId;
+            model.IsOwner = true; //model.User.UserId == model.Venue.VenueId;
 
             return View(model);
         }
@@ -407,11 +425,12 @@ namespace server.Controllers
             venue.State = vState;
             venue.Bio = vBio;
             venue.User = _context.Users.Find(userID);
-            if (ModelState.IsValid)
-            {
-                _context.Add(venue);
-                await _context.SaveChangesAsync();
-            }
+            _context.Venues.Add(venue);
+            await _context.SaveChangesAsync();
+            //if (ModelState.IsValid)
+            //{
+                
+            //}
 
             return RedirectToAction("Venue", new { id = venue.VenueId });
         }
