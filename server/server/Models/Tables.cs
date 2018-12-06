@@ -72,7 +72,7 @@ namespace server.Models
                     new Instrument() { InstrumentId = 8, Instrument_Name = "Drums" },
                     new Instrument() { InstrumentId = 9, Instrument_Name = "Trumpet" },
                     new Instrument() { InstrumentId = 10, Instrument_Name = "Trombone" },
-                    new Instrument() { InstrumentId = 10, Instrument_Name = "Bass Trombone" },
+                    new Instrument() { InstrumentId = 22, Instrument_Name = "Bass Trombone" },
                     new Instrument() { InstrumentId = 11, Instrument_Name = "Tuba" },
                     new Instrument() { InstrumentId = 12, Instrument_Name = "Baritone" },
                     new Instrument() { InstrumentId = 13, Instrument_Name = "French Horn" },
@@ -100,9 +100,11 @@ namespace server.Models
                 );
             modelBuilder.Entity<Ensemble>().HasData(
                 new Ensemble() {EnsembleId = 21, UserId=1, Ensemble_Name="Hannah Montana Show", Formed_Date= new System.DateTime(2006, 3, 1),
-                    Type ="TV Show", Genre="Pop", City="Disneyworld", State="Disney", Bio="Is it really the best of both worlds?", Pic_Url= ""},
+                    Type ="TV Show", Genre="Pop", City="Disneyworld", State="Disney", Bio="Is it really the best of both worlds?", Pic_Url= "https://upload.wikimedia.org/wikipedia/en/2/2b/Hannah_Montana_Logo.PNG"
+                },
                 new Ensemble() {EnsembleId = 22, UserId=2, Ensemble_Name="Cyrus Family Band", Formed_Date= new System.DateTime(2006, 3, 1),
-                    Type="Family Band", Genre="Country", City="Flatwoods", State="Kentucky", Pic_Url=""}
+                    Type="Family Band", Genre="Country", City="Flatwoods", State="Kentucky", Pic_Url= "http://cdn.gospelherald.com/data/images/full/3611/miley-cyrus-and-billy-ray-cyrus.jpg"
+                }
                 );
 
             modelBuilder.Entity<Plays_Instrument>().HasData(
@@ -120,10 +122,10 @@ namespace server.Models
                 );
 
             modelBuilder.Entity<Post>().HasData(
-                new Post() { PostId = 1, PosterType="profile", PosterIndex = 1, MediaType="img", MediaUrl = "https://upload.wikimedia.org/wikipedia/en/0/06/Miley_Cyrus_-_Wrecking_Ball.jpg",
+                new Post() { PostId = 1, PosterType="profile", PosterIndex = 11, MediaType="img", MediaUrl = "https://upload.wikimedia.org/wikipedia/en/0/06/Miley_Cyrus_-_Wrecking_Ball.jpg",
                 Text="No longer a Disney gal!"},         
-                new Post() { PostId = 2, PosterType ="profile", PosterIndex = 1, Text = "Screw you dad @BillyRayCyrus"},
-                new Post() { PostId = 3, PosterType ="profile", PosterIndex = 1, MediaType="img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" }
+                new Post() { PostId = 2, PosterType ="profile", PosterIndex = 11, Text = "Screw you dad @BillyRayCyrus"},
+                new Post() { PostId = 3, PosterType ="profile", PosterIndex = 11, MediaType="img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" }
                 );
         } 
     }
@@ -301,7 +303,7 @@ namespace server.Models
         public Venue Venue { get; set; }
         public Booked_Gig Booked_Gig { get; set; }
         public Ensemble Ensemble { get; set; }
-        public Audition Audtion { get; set; }
+        public Audition Audition { get; set; }
         public ProfileEnsemble Membership { get; set; }
         public Profile Profile { get; set; }
     } 
