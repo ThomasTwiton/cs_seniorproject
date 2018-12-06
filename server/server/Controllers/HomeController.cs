@@ -68,7 +68,8 @@ namespace server.Controllers
             return RedirectToAction("Profile", new { id = user.UserId });
         }
 
-        public IActionResult Profile(int? id = 2)
+
+        public async Task<IActionResult> Profile(int? id)
         {
             /* This action method displays the profile for the user with 
              *  the provided user id. Here the users should be able to 
@@ -118,7 +119,7 @@ namespace server.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Ensemble(int? id)
+        public async Task<IActionResult> ViewEnsemble(int? id)
         {
             /* This action method displays the profile for the ensemble with 
              *  the provided id. Here the users should be able to 
