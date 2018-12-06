@@ -1,4 +1,5 @@
-@model IEnumerable<server.Models.Ensemble>
+@*@model IEnumerable<server.Models.Ensemble> *@
+@model server.Models.ProfileModel
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,29 +11,38 @@
 }
 
 @section Scripts {
-    <script src="~/js/posts.js" type="text/jsx">
-    </script>
+
     <script src="~/js/ensemble.js" type="text/jsx">
     </script>
     <script>
-        var profileType = "@ViewData["ProfileType"]";
+        var profileType = "@Model.ViewType";
     </script>
 }
 
 <div class="container">
     <div class="row">
         <div id="profile" class="col-md-3">
-            <img id="profPic" src="@ViewData["ProfPicURL"]" />
+            <img id="profPic" src="@Model.Profile.Pic_Url" />
+
+            @if (Model.isOwner == true)
+            {
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model.Profile.ProfileId">Edit</a>
+                </div>
+            }
+
             <div id="bio">
-                @ViewData["Bio"]
+                @Model.Profile.Bio
+
+
             </div>
             <div id="location">
                 <span class="glyphicon glyphicon-map-marker"></span>
-                @ViewData["Location"]
+                @Model.Profile.City
             </div>
             <hr />
             <div id="ensembles">
-                @foreach (var item in Model)
+                @foreach (var item in Model.Ensembles)
                 {
                     <Member data-id="@item.EnsembleId" data-avatarURL="@item.Pic_Url" data-name="@item.Ensemble_Name" />
                 }
@@ -42,14 +52,14 @@
         <div id="posts" class="col-md-9">
             <div class="row">
                 <div class="col">
-                    <h1 id="name">@ViewData["first_name"] @ViewData["last_name"]</h1>
+                    <h1 id="name">@Model.Profile.First_Name @Model.Profile.Last_Name</h1>
 
-                    @if (ViewData["Owner"] as string == "true")
+                    @if (Model.isOwner == true)
                     {
                         <div id="createPost" class="container">
                             <form class="row">
                                 <div class="col-xs-1">
-                                    <img class="tinyPic" src="@ViewData["ProfPicURL"]" />
+                                    <img class="tinyPic" src="@Model.Profile.Pic_Url" />
                                 </div>
 
                                 <div class="col-xs-11">
@@ -66,14 +76,14 @@
                             </form>
                         </div>
                     }
-                    </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col">
-                        <hr />
-                    </div>
+            <div class="row">
+                <div class="col">
+                    <hr />
                 </div>
+            </div>
             <div class="row">
                 <div id="postCC" class="col">
 
@@ -83,11 +93,11 @@
     </div>
 </div>
 
-@if (ViewData["Owner"] as String == "true")
+@if (Model.isOwner == true)
 {
     @* Only owners should be able to see the "createModal" *@
 
-    @if (ViewData["ProfileType"] as String == "ensemble")
+    @if (Model.ViewType == "ensemble")
     {
         @* If the profile is an ensemble, then we want to hold auditions *@
         <div id="createModal" class="modal">
@@ -95,6 +105,9 @@
             <div class="modal-content">
                 <span class="close" onclick="hideModal()">&times;</span>
                 <form asp-controller="Ensemble" asp-action="CreateAudition" method="post" class="container-fluid">
+                    <div style="display:none">
+                        <input name="userID" type="text" value="1" />
+                    </div>
                     <h2 style="text-align:center;font-weight:bold;">Hold an Audition!</h2>
                     <hr />
                     <div class="col-sm-6">
@@ -144,14 +157,17 @@
 
         </div>
     }
-    else if (ViewData["ProfileType"] as String == "profile")
+    else if (Model.ViewType == "profile")
     {
         @* If the profile is an profile, then we want to create ensembles *@
         <div id="createModal" class="modal">
 
             <div class="modal-content">
                 <span class="close" onclick="hideModal()">&times;</span>
-                <form asp-controller="Ensemble" asp-action="CreateEnsemble" method="post" class="container-fluid">
+                <form asp-controller="Home" asp-action="CreateEnsemble" method="post" class="container-fluid">
+                    <div style="display:none">
+                        <input name="userID" type="text" value="1" />
+                    </div>
                     <h2 style="text-align:center;font-weight:bold;">Form a Group!</h2>
                     <hr />
                     <div class="col-sm-6">
@@ -174,13 +190,31 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group">
-                                <label for="genre">Genre<span class="red-ast">*</span></label>
-                                <input type="text" class="form-control" name="genre" placeholder="Jazz, Punk Rock, Symphony etc.." required />
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="genre">Genre<span class="red-ast">*</span></label>
+                                    <input type="text" class="form-control" name="genre" placeholder="Jazz, Punk Rock, Symphony etc.." required />
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="type">Group Type<span class="red-ast">*</span></label>
-                                <input type="text" name="type" class="form-control" placeholder="Brass Band, Jazz Combo, Cover Band etc..." />
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="type">Group Type<span class="red-ast">*</span></label>
+                                    <input type="text" name="type" class="form-control" placeholder="Brass Band, Jazz Combo, Cover Band etc..." />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label for="city">City<span class="red-ast">*</span></label>
+                                    <input type="text" name="city" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="state">State<span class="red-ast">*</span></label>
+                                    <input type="text" name="state" class="form-control" required />
+                                </div>
                             </div>
                         </div>
                         <div class="row" style="margin-top:20px;">

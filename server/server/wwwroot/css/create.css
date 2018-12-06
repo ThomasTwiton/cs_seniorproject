@@ -1,0 +1,60 @@
+﻿#titleRow {
+    margin: 20px auto;
+    margin-bottom: 10px;
+}
+
+#profRow {
+    width: 80%;
+    height: 70px;
+    margin: auto;
+    cursor: pointer;
+}
+
+#profRow #active {
+    background-color: var(--bkg-gold);
+    cursor: default;
+}
+
+#profRow > div {
+    border: 1px solid var(--bkg-grey);
+    margin-left: -1px; /* This moves overlaps the borders so it appears as just a single boarder. */
+    height: 100%;
+    padding-top: 10px;
+    padding-right: 0px;
+}
+
+#profRow div .glyphicon {
+    margin: 5px 2px;
+    font-size: 2em;
+}
+
+#infoRow {
+    margin-top: 30px;
+}
+
+#infoRow form textarea {
+    height: 90px;
+    resize: none;
+}
+
+#instruments {
+    height: 150px;
+    overflow-y: scroll;
+}
+
+#instruments input[type=checkbox] {
+    float: right;
+    display: none;
+}
+
+.checkLabel {
+    display: block;
+    width: 100%;
+    background-color: none;
+    padding-left: 5px;
+    margin: 0;
+}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c954ab525892129c70c79570f1708407afdf593

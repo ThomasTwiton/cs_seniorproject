@@ -43,9 +43,7 @@
 }
 
 .extraBit {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-right: 10px;
+    margin: 5px;
     float: left;
     border: 3px solid var(--bkg-dark-grey);
     border-radius: 3px;

@@ -1,0 +1,46 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/search.css" />
+    <link rel="stylesheet" href="~/css/post.css" />
+}
+
+@section Scripts {
+    <script src="~/js/posts.js" type="text/jsx">
+    </script>
+    <script>
+        var profileType = "@ViewData["ProfileType"]";
+    </script>
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <nav id="resultNav">
+                <a id="selected" href="#">Auditions <span class="resultNum">42</span></a>
+                <a href="#">Ensembles <span class="resultNum">42</span></a>
+                <a href="#">Gigs <span class="resultNum">42</span></a>
+                <a href="#">People <span class="resultNum">42</span></a>
+                <a href="#">Venues <span class="resultNum">42</span></a>
+            </nav>
+        </div>
+
+        <div id="posts" class="col-md-9">
+            <div class="row">
+                <div class="col">
+                    
+                    <h4 id="near">Showing results near: </h4>
+                    
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="postCC" class="col">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
