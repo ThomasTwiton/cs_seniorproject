@@ -35,7 +35,8 @@ namespace server
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            var connection = @"Server=(localdb)\mssqllocaldb;Database=server;Trusted_Connection=True;ConnectRetryCount=0";
+            //var connection = @"Server=(localdb)\mssqllocaldb;Database=server;Trusted_Connection=True;ConnectRetryCount=0";
+            var connection = @"Server=tcp:pluggedin.database.windows.net,1433;Initial Catalog=pluggedin;Persist Security Info=False;User ID={pluggedadmin};Password={$eni0rTTM};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
             services.AddDbContext<PluggedContext>
                 (options => options.UseSqlServer(connection));
         }

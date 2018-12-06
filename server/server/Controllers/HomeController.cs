@@ -130,7 +130,7 @@ namespace server.Controllers
 
             List<Post> posts = new List<Post>();
             
-            foreach(Post post in _context.Posts)
+            foreach(Post post in _context.Posts.OrderByDescending(p => p.PostId))
             {
                 if (post.PosterType == "profile")
                 {
@@ -219,7 +219,7 @@ namespace server.Controllers
             }
 
             HashSet<Post> posts = new HashSet<Post>();
-            foreach (Post post in _context.Posts)
+            foreach (Post post in _context.Posts.OrderByDescending(p=>p.PostId))
             {
                 if (post.PosterType == "ensemble")
                 {
@@ -265,7 +265,7 @@ namespace server.Controllers
             var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
 
             List<Post> posts = new List<Post>();
-            foreach (Post post in _context.Posts)
+            foreach (Post post in _context.Posts.OrderByDescending(p=>p.PostId))
             {
                 if (post.PosterType == "venue")
                 {
@@ -317,8 +317,8 @@ namespace server.Controllers
                 }
 
                 ViewData["Instruments"] = lst;
-
-                return View("CreateProfile", user);
+                ViewData["id"] = user.UserId;
+                return View("CreateProfile");
             }
 
             return View("index");
@@ -556,5 +556,28 @@ namespace server.Controllers
             return RedirectToAction("Edit", id = model.Profile.ProfileId);
 
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> createPost([Bind("Text, PosterType, PosterIndex, Type")] Post post, string PosterType, int PosterIndex)
+        {
+            _context.Add(post);
+            await _context.SaveChangesAsync();
+            if(PosterType == "profile")
+            {
+                return RedirectToAction("Profile", new { id = PosterIndex });
+            }
+            if (PosterType == "ensemble")
+            {
+                return RedirectToAction("Ensemble", new { id = PosterIndex });
+            }
+            if (PosterType == "venue")
+            {
+                return RedirectToAction("Venue", new { id = PosterIndex });
+            }
+            //This is bad !!! X.X
+            return View("Index");
+        }
+        
     }
 }
