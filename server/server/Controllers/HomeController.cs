@@ -479,6 +479,46 @@ namespace server.Controllers
             return RedirectToAction("Venue", new { id = venue.VenueId });
         }
 
+        public async Task<IActionResult> Audition(int id)
+        {
+            AuditionModel model = new AuditionModel();
+
+            var aud = _context.Auditions.Where(u => u.AuditionId == id).ToList()[0];
+            var ens = _context.Ensembles.Where(u => u.EnsembleId == aud.EnsembleId).ToList()[0];
+
+            var Profiles = new List<Profile>();
+
+            if (ens.ProfileEnsemble == null)
+            {
+                ens.ProfileEnsemble = new HashSet<ProfileEnsemble>();
+                foreach (ProfileEnsemble pe in _context.ProfileEnsembles)
+                {
+
+                    if (pe.EnsembleId == ens.EnsembleId)
+                    {
+                        pe.Ensemble = _context.Ensembles.Find(pe.EnsembleId);
+                        ens.ProfileEnsemble.Add(pe);
+
+                    }
+                }
+            }
+
+            Console.WriteLine("==============");
+            foreach (ProfileEnsemble pe in ens.ProfileEnsemble)
+            {
+                if (pe.Profile == null)
+                {
+                    pe.Profile = _context.Profiles.Find(pe.ProfileId);
+                }
+                Profiles.Add(pe.Profile);
+            }
+            model.Profiles = Profiles;
+            model.Audition = aud;
+            model.Ensemble = ens;
+            model.ViewType = "ensemble";
+            
+            return View(model);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

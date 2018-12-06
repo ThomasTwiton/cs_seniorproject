@@ -174,7 +174,7 @@ function GigBody(props) {
 
 function AuditionBody(props) {
     // The body of a type='aud' component.
-    const link = "Audition/" + props.post.info.id.toString();
+    const link = "/Home/Audition/" + props.post.info.id.toString();
     return (
         <div className="col-xs-11">
             <div className="textContainer">
