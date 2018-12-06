@@ -169,7 +169,21 @@ namespace server.Models
                     Text = "No longer a Disney gal!"
                 },
                 new Post() { PostId = 2, PosterType = "profile", PosterIndex = 1, Text = "Screw you dad @BillyRayCyrus" },
-                new Post() { PostId = 3, PosterType = "profile", PosterIndex = 1, MediaType = "img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" }
+                new Post() { PostId = 3, PosterType = "profile", PosterIndex = 1, MediaType = "img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" },
+                new Post() { PostId = 4, PosterType = "ensemble", PosterIndex = 21, Type = "aud", Ref_Id = 1, Text = "We're looking for a new member!" }
+                );
+
+            modelBuilder.Entity<Audition>().HasData(
+                new Audition()
+                {
+                    AuditionId = 1,
+                    Open_Date = new System.DateTime(2018, 12, 6),
+                    Audition_Location = "Marty's Grill",
+                    Audition_Description = "She's a diva and left us... We need a new Hannah Montana! (Not required to be from Montana)",
+                    Instrument_Name = "Voice",
+                    EnsembleId = 21
+
+                }
                 );
         }
     }
@@ -347,7 +361,7 @@ namespace server.Models
         public Venue Venue { get; set; }
         public Booked_Gig Booked_Gig { get; set; }
         public Ensemble Ensemble { get; set; }
-        public Audition Audtion { get; set; }
+        public Audition Audition { get; set; }
         public ProfileEnsemble Membership { get; set; }
         public Profile Profile { get; set; }
     }

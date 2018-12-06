@@ -37,7 +37,7 @@ namespace server.Models
         public Boolean isOwner { get; set; }
 
         // For the sake of our MVP demonstration, this is how we will load posts
-        public List<Post> Posts { get; set; }
+        public HashSet<Post> Posts { get; set; }
     }
 
     public class VenueModel
@@ -58,11 +58,13 @@ namespace server.Models
 
     public class AuditionModel
     {
-        public Profile profile { get; set; }
+        public Ensemble Ensemble { get; set; }
 
-        public List<Ensemble> Ensembles { get; set; }
+        public Audition Audition { get; set; }
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
+
+        public List<Profile> Profiles { get; set; }
 
     }
 
