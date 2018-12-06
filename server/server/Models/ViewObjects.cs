@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace server.Models
 {
@@ -10,8 +12,9 @@ namespace server.Models
         //the profile we are displaying
         public Profile Profile { get; set; }
         //List of the Profile's Ensembles
-        public List<Ensemble> Ensembles { get; set; }
-        public List<Instrument> Instruments { get; set; }
+        public List<Ensemble> Ensembles { get; set; } 
+        public List<SelectListItem> Instruments { get; set; }
+        public List<String> SelectedInsIds { get; set; }
         //Current user
         public User User { get; set; }  
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
@@ -35,7 +38,6 @@ namespace server.Models
         public String ViewType { get; set; }
         //whether or not you own this page
         public Boolean isOwner { get; set; }
-
         // For the sake of our MVP demonstration, this is how we will load posts
         public HashSet<Post> Posts { get; set; }
     }

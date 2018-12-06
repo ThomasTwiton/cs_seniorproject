@@ -95,7 +95,7 @@ namespace server.Controllers
              *   a page. Currently, we are hardcoding that information for demonstration 
              *   purposes as either UserId = 1 or isOwner = true;
              */
-            
+
             var profile = _context.Profiles.Where(u => u.ProfileId == id).ToList()[0];
 
             model.Profile = profile;
@@ -129,6 +129,7 @@ namespace server.Controllers
             }
 
             List<Post> posts = new List<Post>();
+            
             foreach(Post post in _context.Posts)
             {
                 if (post.PosterType == "profile")
@@ -142,8 +143,7 @@ namespace server.Controllers
                     }
                 }
             }
-            Console.WriteLine("==================");
-            Console.WriteLine(posts.Count);
+
             model.Posts = posts;
 
             model.ViewType = "profile";
@@ -290,96 +290,6 @@ namespace server.Controllers
         }
 
 
-        // GET: Movies/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            /* This action method displays view for editing the profile
-             *  with the provided id. Here the users should be able to 
-             *  navagate to the following:
-             *      - Profile   --> nav bar
-             *      - Edit[Post]--> submitting changes to the page
-             */
-            ProfileModel model = new ProfileModel();
-            model.Instruments = _context.Instruments.ToList();
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var profile = await _context.Profiles.FindAsync(id);
-
-            if (profile == null)
-            {
-                return NotFound();
-            }
-
-            if (profile.Plays_Instrument == null)
-            {
-                profile.Plays_Instrument = new List<Plays_Instrument>();
-                foreach (Plays_Instrument pi in _context.Plays_Instruments)
-                {
-                    if(pi.ProfileId == profile.ProfileId)
-                    {
-                        pi.Instrument = _context.Instruments.Find(pi.InstrumentId);
-                        profile.Plays_Instrument.Add(pi);
-                    }
-                }
-                await _context.SaveChangesAsync();
-            }
-
-
-            model.Profile = profile;
-
-            return View(model);
-        }
-
-        // POST: Movies/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        
-        
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("First_Name,Last_Name,Preferred_Name, Plays_Instrument")] Profile profile)
-        {
-            /* This action method takes the updated info of the user's
-             *  profile and saves it. There is no view associated with
-             *  this method and the user should be redirected to their
-             *  respective profile page.
-             */
-            Console.WriteLine(profile.First_Name);
-            Console.WriteLine(profile.Plays_Instrument.ToList()[0].Instrument.Instrument_Name);
-            /*
-            if (id != movie.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MovieExists(movie.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            */
-            return View("index");
-
-        }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -449,7 +359,7 @@ namespace server.Controllers
             ensemble.State = eState;
             ensemble.User = _context.Users.Find(userID);
 
-          if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(ensemble);
                 await _context.SaveChangesAsync();
@@ -534,5 +444,117 @@ namespace server.Controllers
             return View("CreateProfile");
         }
 
+        public async Task<IActionResult> Edit(int? id)
+        {
+            /* This action method displays view for editing the profile
+             *  with the provided id. Here the users should be able to 
+             *  navagate to the following:
+             *      - Profile   --> nav bar
+             *      - Edit[Post]--> submitting changes to the page
+             */
+            ProfileModel model = new ProfileModel();
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var profile = await _context.Profiles.FindAsync(id);
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            var play_ids = new List<int>();
+            if (profile.Plays_Instrument == null)
+            {
+                profile.Plays_Instrument = new List<Plays_Instrument>();
+                foreach (Plays_Instrument pi in _context.Plays_Instruments)
+                {
+                    if (pi.ProfileId == profile.ProfileId)
+                    {
+                        pi.Instrument = _context.Instruments.Find(pi.InstrumentId);
+                        profile.Plays_Instrument.Add(pi);
+                        play_ids.Add(pi.InstrumentId);
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            else
+            {
+                foreach (Plays_Instrument pi in profile.Plays_Instrument)
+                {
+                    play_ids.Add(pi.InstrumentId);
+                }
+            }
+            model.Instruments = new List<SelectListItem>();
+            model.SelectedInsIds = new List<String>();
+            foreach (Instrument i in _context.Instruments.ToList())
+            {
+                var ins_name = i.Instrument_Name;
+                SelectListItem chk_ins = new SelectListItem { Text = i.Instrument_Name, Value = i.InstrumentId.ToString() };
+                if (play_ids.Contains(i.InstrumentId))
+                {
+                    chk_ins.Selected = true;
+                }
+                model.Instruments.Add(chk_ins);
+            }
+
+
+            model.Profile = profile;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ProfileModel model)
+        {
+            /* This action method takes the updated info of the user's
+             *  profile and saves it. There is no view associated with
+             *  this method and the user should be redirected to their
+             *  respective profile page.
+             */
+
+            var profile = _context.Profiles.Find(model.Profile.ProfileId);
+
+
+            Profile userprofile = _context.Profiles.Find(model.Profile.ProfileId);
+            userprofile.First_Name = model.Profile.First_Name;
+            userprofile.Last_Name = model.Profile.Last_Name;
+            userprofile.Preferred_Name = model.Profile.Preferred_Name;
+            userprofile.Pic_Url = model.Profile.Pic_Url;
+            await _context.SaveChangesAsync();
+
+            foreach (Plays_Instrument pi in _context.Plays_Instruments)
+            {
+                if (pi.ProfileId == model.Profile.ProfileId)
+                {
+                    _context.Plays_Instruments.Remove(pi);
+
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            userprofile.Plays_Instrument = new List<Plays_Instrument>();
+            
+            foreach (String ins in model.SelectedInsIds)
+            {
+
+                Plays_Instrument pi = new Plays_Instrument();
+                pi.Profile = _context.Profiles.Find(model.Profile.ProfileId);
+                pi.ProfileId = pi.Profile.ProfileId;
+                pi.Instrument = _context.Instruments.Find(int.Parse(ins));
+                pi.InstrumentId = int.Parse(ins);
+
+                userprofile.Plays_Instrument.Add(pi);
+            }
+            await _context.SaveChangesAsync();
+      
+            return RedirectToAction("Edit", id = model.Profile.ProfileId);
+
+        }
     }
 }
