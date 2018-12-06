@@ -452,22 +452,15 @@ namespace server.Controllers
                     play_ids.Add(pi.InstrumentId);
                 }
             }
-            //Console.WriteLine("HERE0");
-            //Console.WriteLine(play_ids);
             model.Instruments = new List<SelectListItem>();
             model.SelectedInsIds = new List<String>();
             foreach (Instrument i in _context.Instruments.ToList())
             {
-                //Console.WriteLine("HERE1");
-                //Console.WriteLine(i.Instrument_Name);
                 var ins_name = i.Instrument_Name;
-                //Console.WriteLine(ins_name);
                 SelectListItem chk_ins = new SelectListItem { Text = i.Instrument_Name, Value = i.InstrumentId.ToString() };
                 if (play_ids.Contains(i.InstrumentId))
                 {
-                    //Console.WriteLine("HERE3");
                     chk_ins.Selected = true;
-                    //chk_ins.Text = "JOHN CENA";
                 }
                 model.Instruments.Add(chk_ins);
             }
@@ -478,9 +471,6 @@ namespace server.Controllers
             return View(model);
         }
 
-        // POST: Movies/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 
 
         [HttpPost]
@@ -492,27 +482,20 @@ namespace server.Controllers
              *  this method and the user should be redirected to their
              *  respective profile page.
              */
-            Console.WriteLine(model.Profile.First_Name);
-            Console.WriteLine(model.SelectedInsIds[0]);
-            Console.WriteLine(model.Profile.ProfileId);
             var profile = _context.Profiles.Find(model.Profile.ProfileId);
-            Console.WriteLine(profile.ProfileId);
 
-            Console.WriteLine(profile.Plays_Instrument);
 
             Profile userprofile = _context.Profiles.Find(model.Profile.ProfileId);
             userprofile.First_Name = model.Profile.First_Name;
             userprofile.Last_Name = model.Profile.Last_Name;
             userprofile.Preferred_Name = model.Profile.Preferred_Name;
+            userprofile.Pic_Url = model.Profile.Pic_Url;
             await _context.SaveChangesAsync();
 
             foreach (Plays_Instrument pi in _context.Plays_Instruments)
             {
-                Console.WriteLine("REMOVING");
                 if (pi.ProfileId == model.Profile.ProfileId)
                 {
-                    Console.WriteLine("Inside");
-                    //Console.WriteLine(pi.Instrument.Instrument_Name);
                     _context.Plays_Instruments.Remove(pi);
 
                 }
@@ -524,7 +507,6 @@ namespace server.Controllers
             foreach (String ins in model.SelectedInsIds)
             {
 
-                //Console.WriteLine(ins);
                 Plays_Instrument pi = new Plays_Instrument();
                 pi.Profile = _context.Profiles.Find(model.Profile.ProfileId);
                 pi.ProfileId = pi.Profile.ProfileId;
@@ -534,47 +516,13 @@ namespace server.Controllers
                 userprofile.Plays_Instrument.Add(pi);
 
 
-                //var npi = new Plays_Instrument
             }
 
-            Console.WriteLine("Instruments after new selection");
-            foreach (Plays_Instrument pi in _context.Profiles.Find(model.Profile.ProfileId).Plays_Instrument)
-            {
-                Console.WriteLine("HERE");
-                Console.WriteLine(pi.Instrument.Instrument_Name);
-            }
 
             await _context.SaveChangesAsync();
 
 
-            //Console.WriteLine(profile.Plays_Instrument.ToList()[0].Instrument.Instrument_Name);
-            /*
-            if (id != movie.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MovieExists(movie.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            */
+      
             return RedirectToAction("Edit", id = model.Profile.ProfileId);
 
         }
