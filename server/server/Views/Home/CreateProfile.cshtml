@@ -18,7 +18,8 @@
 
 @* Profile Type Row *@
 <div id="profRow" class="row">
-    <div id="active" class="col-xs-4 align-middle p" onclick="switchView('profile')">
+    @*<div id="active" class="col-xs-4 align-middle p" onclick="switchView('profile')">*@
+    <div id="active" class="col-xs-4 p" onclick="switchView('profile')">
         <div class="col-xs-3">
             <span class="glyphicon glyphicon-user"></span>
         </div>
@@ -27,6 +28,7 @@
             A personal profile
         </div>
     </div>
+ 
     <div class="col-xs-4 e" onclick="switchView('ensemble')">
         <div class="col-xs-3">
             <span class="glyphicon glyphicon-cd"></span>
@@ -53,6 +55,9 @@
 <div id="infoRow" class="row">
     <!-- Profile form -->
     <form id="profileForm" asp-action="CreateProfile">
+        <div style="display:none">
+            <input name="userID" type="text" value=@ViewData["id"] />
+        </div>
         <div class="col-xs-6">
             <div class="form-group row">
                 <div class="col-xs-12">
@@ -108,6 +113,9 @@
 
     <!-- Ensemble form -->
     <form id="ensembleForm" style="display:none" asp-action="CreateEnsemble">
+        <div style="display:none">
+            <input name="userID" type="text" value=@ViewData["id"] />
+        </div>
         <div class="col-xs-6">
             <div class="form-group row">
                 <div class="col-xs-12">
@@ -162,7 +170,7 @@
     <!-- Venue form -->
     <form id="venueForm" style="display:none" asp-action="CreateVenue">
         <div style="display:none">
-            <input name="userID" type="text" value="1"/>
+            <input name="userID" type="text" value=@ViewData["id"]/>
         </div>
         <div class="col-xs-6">
             <div class="form-group row">

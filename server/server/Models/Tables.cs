@@ -128,7 +128,7 @@ namespace server.Models
                     City = "Disneyworld",
                     State = "Disney",
                     Bio = "Is it really the best of both worlds?",
-                    Pic_Url = ""
+                    Pic_Url = "https://upload.wikimedia.org/wikipedia/en/2/2b/Hannah_Montana_Logo.PNG"
                 },
                 new Ensemble()
                 {
@@ -140,7 +140,7 @@ namespace server.Models
                     Genre = "Country",
                     City = "Flatwoods",
                     State = "Kentucky",
-                    Pic_Url = ""
+                    Pic_Url = "http://cdn.gospelherald.com/data/images/full/3611/miley-cyrus-and-billy-ray-cyrus.jpg"
                 }
                 );
 

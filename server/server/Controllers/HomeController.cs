@@ -142,8 +142,6 @@ namespace server.Controllers
                     }
                 }
             }
-            Console.WriteLine("==================");
-            Console.WriteLine(posts.Count);
             model.Posts = posts;
 
             model.ViewType = "profile";
@@ -243,7 +241,7 @@ namespace server.Controllers
             Console.WriteLine("==================");
             Console.WriteLine(posts.Count);
             model.Posts = posts;
-
+            
             model.ViewType = "ensemble";
             model.isOwner = true; //model.User.UserId == model.Ensemble.EnsembleId;
 
@@ -404,9 +402,6 @@ namespace server.Controllers
             return View("CreateProfile");
         }
 
-
-
-        // GET: Movies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             /* This action method displays view for editing the profile
@@ -471,8 +466,6 @@ namespace server.Controllers
             return View(model);
         }
 
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ProfileModel model)
@@ -482,6 +475,7 @@ namespace server.Controllers
              *  this method and the user should be redirected to their
              *  respective profile page.
              */
+
             var profile = _context.Profiles.Find(model.Profile.ProfileId);
 
 
@@ -503,7 +497,7 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
 
             userprofile.Plays_Instrument = new List<Plays_Instrument>();
-
+            
             foreach (String ins in model.SelectedInsIds)
             {
 
@@ -514,14 +508,8 @@ namespace server.Controllers
                 pi.InstrumentId = int.Parse(ins);
 
                 userprofile.Plays_Instrument.Add(pi);
-
-
             }
-
-
             await _context.SaveChangesAsync();
-
-
       
             return RedirectToAction("Edit", id = model.Profile.ProfileId);
 
