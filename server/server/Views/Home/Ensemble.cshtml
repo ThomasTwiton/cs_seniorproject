@@ -13,6 +13,7 @@
 
     <script src="~/js/ensemble.js" type="text/jsx">
     </script>
+    <script src="~/js/posts.js" type="text/jsx"></script>
     <script>
         window.profileType = "@Model.ViewType";
     </script>
@@ -85,7 +86,30 @@
             </div>
             <div class="row">
                 <div id="postCC" class="col">
+                    @foreach (var p in Model.Posts)
+                    {
 
+                        @if (p.Type == "gig")
+                        {
+                            <Post data-username="@Model.Ensemble.Ensemble_Name" data-type="@p.Type" data-avatar="@Model.Ensemble.Pic_Url" data-hasmedia="@false" data-text="@p.Text" />
+                        }
+                        else if (p.Type == "aud")
+                        {
+                            <Post data-username="@Model.Ensemble.Ensemble_Name" data-type="@p.Type" data-avatar="@Model.Ensemble.Pic_Url" data-hasmedia="@false" data-text="@p.Text" data-time="@p.Audition.Open_Date" data-place="@p.Audition.Audition_Location" data-pos="@p.Audition.Instrument_Name" data-audid="@p.Audition.AuditionId" />
+                        }
+                        else
+                        {
+                            if (p.MediaType != null)
+                            {
+                                <Post data-username="@Model.Ensemble.Ensemble_Name" data-type="@p.Type" data-avatar="@Model.Ensemble.Pic_Url" data-text="@p.Text" data-hasmedia="@true" data-mediaurl="@p.MediaUrl" data-mediatype="@p.MediaType" />
+                            }
+                            else
+                            {
+                                <Post data-username="@Model.Ensemble.Ensemble_Name" data-type="@p.Type" data-avatar="@Model.Ensemble.Pic_Url" data-text="@p.Text" data-hasmedia="@false" />
+                            }
+                        }
+
+                    }
                 </div>
             </div>
         </div>
@@ -234,4 +258,3 @@
         </div>
     }
 }
-</div>

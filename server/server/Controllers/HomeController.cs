@@ -129,7 +129,8 @@ namespace server.Controllers
             }
 
             List<Post> posts = new List<Post>();
-            foreach (Post post in _context.Posts)
+            
+            foreach(Post post in _context.Posts)
             {
                 if (post.PosterType == "profile")
                 {
@@ -142,6 +143,7 @@ namespace server.Controllers
                     }
                 }
             }
+
             model.Posts = posts;
 
             model.ViewType = "profile";
@@ -241,7 +243,7 @@ namespace server.Controllers
             Console.WriteLine("==================");
             Console.WriteLine(posts.Count);
             model.Posts = posts;
-            
+
             model.ViewType = "ensemble";
             model.isOwner = true; //model.User.UserId == model.Ensemble.EnsembleId;
 
@@ -381,12 +383,52 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
             //if (ModelState.IsValid)
             //{
-
+                
             //}
 
             return RedirectToAction("Venue", new { id = venue.VenueId });
         }
 
+        public async Task<IActionResult> Audition(int id)
+        {
+            AuditionModel model = new AuditionModel();
+
+            var aud = _context.Auditions.Where(u => u.AuditionId == id).ToList()[0];
+            var ens = _context.Ensembles.Where(u => u.EnsembleId == aud.EnsembleId).ToList()[0];
+
+            var Profiles = new List<Profile>();
+
+            if (ens.ProfileEnsemble == null)
+            {
+                ens.ProfileEnsemble = new HashSet<ProfileEnsemble>();
+                foreach (ProfileEnsemble pe in _context.ProfileEnsembles)
+                {
+
+                    if (pe.EnsembleId == ens.EnsembleId)
+                    {
+                        pe.Ensemble = _context.Ensembles.Find(pe.EnsembleId);
+                        ens.ProfileEnsemble.Add(pe);
+
+                    }
+                }
+            }
+
+            Console.WriteLine("==============");
+            foreach (ProfileEnsemble pe in ens.ProfileEnsemble)
+            {
+                if (pe.Profile == null)
+                {
+                    pe.Profile = _context.Profiles.Find(pe.ProfileId);
+                }
+                Profiles.Add(pe.Profile);
+            }
+            model.Profiles = Profiles;
+            model.Audition = aud;
+            model.Ensemble = ens;
+            model.ViewType = "ensemble";
+            
+            return View(model);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -24,7 +24,6 @@ namespace server.Models
 
         // For the sake of our MVP demonstration, this is how we will load posts
         public List<Post> Posts { get; set; }
-
     }
 
     public class EnsembleModel

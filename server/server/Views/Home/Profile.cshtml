@@ -14,6 +14,7 @@
 
     <script src="~/js/ensemble.js" type="text/jsx">
     </script>
+    <script src="~/js/posts.js" type="text/jsx"></script>
     <script>
         var profileType = "@Model.ViewType";
     </script>
@@ -57,7 +58,7 @@
                     @if (Model.isOwner == true)
                     {
                         <div id="createPost" class="container">
-                            <form class="row">
+                            <form class="row" asp-action="CreatePost">
                                 <div class="col-xs-1">
                                     <img class="tinyPic" src="@Model.Profile.Pic_Url" />
                                 </div>
@@ -86,7 +87,30 @@
             </div>
             <div class="row">
                 <div id="postCC" class="col">
+                    @foreach (var p in Model.Posts)
+                    {
 
+                        @if (p.Type == "gig")
+                        {
+                            <Post data-username="@Model.Profile.First_Name @Model.Profile.Last_Name" data-type="@p.Type" data-avatar="@Model.Profile.Pic_Url" data-hasmedia="@false" data-text="@p.Text" />
+                        }
+                        else if (p.Type == "aud")
+                        {
+                            <Post data-username="@Model.Profile.First_Name @Model.Profile.Last_Name" data-type="@p.Type" data-avatar="@Model.Profile.Pic_Url" data-hasmedia="@false" data-text="@p.Text" />
+                        }
+                        else
+                        {
+                            if (p.MediaType != null)
+                            {
+                                <Post data-username="@Model.Profile.First_Name @Model.Profile.Last_Name" data-type="@p.Type" data-avatar="@Model.Profile.Pic_Url" data-text="@p.Text" data-hasmedia="@true" data-mediaurl="@p.MediaUrl" data-mediatype="@p.MediaType" />
+                            }
+                            else
+                            {
+                                <Post data-username="@Model.Profile.First_Name @Model.Profile.Last_Name" data-type="@p.Type" data-avatar="@Model.Profile.Pic_Url" data-text="@p.Text" data-hasmedia="@false" />
+                            }
+                        }
+
+                    }
                 </div>
             </div>
         </div>
@@ -234,4 +258,4 @@
         </div>
     }
 }
-</div>
+
