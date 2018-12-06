@@ -238,17 +238,26 @@ namespace server.Controllers
 
             Console.WriteLine(profile.Plays_Instrument);
 
+            Profile userprofile = _context.Profiles.Find(model.Profile.ProfileId);
+            userprofile.First_Name = model.Profile.First_Name;
+            userprofile.Last_Name = model.Profile.Last_Name;
+            userprofile.Preferred_Name = model.Profile.Preferred_Name;
+            await _context.SaveChangesAsync();
+
             foreach (Plays_Instrument pi in _context.Plays_Instruments)
             {
                 Console.WriteLine("REMOVING");
                 if(pi.ProfileId == model.Profile.ProfileId)
                 {
+                    Console.WriteLine("Inside");
                     //Console.WriteLine(pi.Instrument.Instrument_Name);
                     _context.Plays_Instruments.Remove(pi);
+                    
                 }
             }
+            await _context.SaveChangesAsync();
 
-            Console.WriteLine(profile.Plays_Instrument.Count);
+            userprofile.Plays_Instrument = new List<Plays_Instrument>();
 
             foreach (String ins in model.SelectedInsIds)
             {
@@ -260,15 +269,21 @@ namespace server.Controllers
                 pi.Instrument = _context.Instruments.Find(int.Parse(ins));
                 pi.InstrumentId = int.Parse(ins);
 
-                _context.Profiles.Find(model.Profile.ProfileId).Plays_Instrument.Add(pi);
+                userprofile.Plays_Instrument.Add(pi);
+
 
                     //var npi = new Plays_Instrument
             }
 
-            foreach(Plays_Instrument pi in _context.Profiles.Find(model.Profile.ProfileId).Plays_Instrument.ToList())
+            Console.WriteLine("Instruments after new selection");
+            foreach(Plays_Instrument pi in _context.Profiles.Find(model.Profile.ProfileId).Plays_Instrument)
             {
-                Console.WriteLine(pi.Instrument);
+                Console.WriteLine("HERE");
+                Console.WriteLine(pi.Instrument.Instrument_Name);
             }
+
+            await _context.SaveChangesAsync();
+
 
             //Console.WriteLine(profile.Plays_Instrument.ToList()[0].Instrument.Instrument_Name);
             /*
