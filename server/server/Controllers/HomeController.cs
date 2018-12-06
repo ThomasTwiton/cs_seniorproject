@@ -218,7 +218,7 @@ namespace server.Controllers
                 return NotFound();
             }
 
-            List<Post> posts = new List<Post>();
+            HashSet<Post> posts = new HashSet<Post>();
             foreach (Post post in _context.Posts)
             {
                 if (post.PosterType == "ensemble")
@@ -229,7 +229,15 @@ namespace server.Controllers
                         Ensemble poster_profile = _context.Ensembles.Find(ensembleId);
                         post.Ensemble = poster_profile;
                         posts.Add(post);
+
+                        if (post.Type == "aud")
+                        {
+                            Audition aud = _context.Auditions.Find(post.Ref_Id);
+                            post.Audition = aud;
+                            posts.Add(post);
+                        }
                     }
+
                 }
             }
             Console.WriteLine("==================");
