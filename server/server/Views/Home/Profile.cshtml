@@ -62,15 +62,18 @@
                                 <div class="col-xs-1">
                                     <img class="tinyPic" src="@Model.Profile.Pic_Url" />
                                 </div>
+                                <div style="display:none">
+                                    <input name="PosterType" type="text" value="profile" />
+                                    <input name = "Type" type ="text" value="post" />
+                                    <input name = "PosterIndex" type ="text" value="@Model.Profile.ProfileId" />
+                                </div>
 
                                 <div class="col-xs-11">
-                                    <textarea class="inputPost" type="text" placeholder="Update your audience..."></textarea>
+                                    <textarea name="Text" class="inputPost" type="text" placeholder="Update your audience..."></textarea>
 
                                     <div id="postButtons" class="form-group">
                                         <button class="btn btn-primary">Post</button>
-                                        <label class="btn btn-secondary">
-                                            Attach Media <input type="file" hidden>
-                                        </label>
+                                        
                                     </div>
 
                                 </div>

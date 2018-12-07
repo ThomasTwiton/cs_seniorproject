@@ -15,7 +15,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <img id="banner" src="https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiP__7uhYffAhWhmeAKHSsYCPoQjRx6BAgBEAU&url=https%3A%2F%2Fwww.facebook.com%2Funclemartysinc%2F&psig=AOvVaw33ofUSp-_HCNUuBjlmOwzx&ust=1544042803984002" alt="@Model.Venue.Venue_Name" />
+        <img id="banner" src="~/images/banner3.svg" alt="@Model.Venue.Venue_Name" />
     </div>
     <div class="row">
         <div id="profile" class="col-xs-3">
@@ -54,13 +54,19 @@
                 @if (Model.IsOwner == true)
                 {
                     <div id="createPost" class="container">
-                        <form class="row">
+                        <form class="row" asp-action="CreatePost">
                             <div class="col-xs-1">
                                 <img class="tinyPic" src="https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiP__7uhYffAhWhmeAKHSsYCPoQjRx6BAgBEAU&url=https%3A%2F%2Fwww.facebook.com%2Funclemartysinc%2F&psig=AOvVaw33ofUSp-_HCNUuBjlmOwzx&ust=1544042803984002" />
                             </div>
 
+                            <div style="display:none">
+                                <input name="PosterType" type="text" value="venue" />
+                                <input name="Type" type="text" value="post" />
+                                <input name="PosterIndex" type="text" value="@Model.Venue.VenueId" />
+                            </div>
+
                             <div class="col-xs-11">
-                                <textarea class="inputPost" type="text" placeholder="Update your audience..."></textarea>
+                                <textarea name="Text" class="inputPost" type="text" placeholder="Update your audience..."></textarea>
 
                                 <div id="postButtons" class="form-group">
                                     <button class="btn btn-primary">Post</button>

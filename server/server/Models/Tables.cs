@@ -168,8 +168,8 @@ namespace server.Models
                     MediaUrl = "https://upload.wikimedia.org/wikipedia/en/0/06/Miley_Cyrus_-_Wrecking_Ball.jpg",
                     Text = "No longer a Disney gal!"
                 },
-                new Post() { PostId = 2, PosterType = "profile", PosterIndex = 1, Text = "Screw you dad @BillyRayCyrus" },
-                new Post() { PostId = 3, PosterType = "profile", PosterIndex = 1, MediaType = "img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" },
+                new Post() { PostId = 2, PosterType = "profile", PosterIndex = 11, Text = "Screw you dad @BillyRayCyrus" },
+                new Post() { PostId = 3, PosterType = "profile", PosterIndex = 11, MediaType = "img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" },
                 new Post() { PostId = 4, PosterType = "ensemble", PosterIndex = 21, Type = "aud", Ref_Id = 1, Text = "We're looking for a new member!" }
                 );
 
