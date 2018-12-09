@@ -1,6 +1,7 @@
 ﻿using Xunit;
 using server.Models;
 using server.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PluggedIn_Tests
 {
@@ -9,13 +10,16 @@ namespace PluggedIn_Tests
         private readonly PluggedContext LoadedContext;
 
         [Fact]
-        public void IndexReturnValidView()
+        public void Index_ReturnValidView()
         {
             // Arrange
             var controller = new HomeController(LoadedContext);
 
             // Act
             var result = controller.Index();
+
+            // Assert
+            Assert.IsType<ViewResult>(result);
         }
     }
 }
