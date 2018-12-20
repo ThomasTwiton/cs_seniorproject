@@ -1,10 +1,23 @@
-﻿using System;
+﻿using Moq;
+using Xunit;
+using System.Linq;
+using server.Models;
+using server.Controllers;
 using System.Collections.Generic;
-using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace PluggedIn_Tests
 {
-    class AuditionActionTests
+    public class AuditionActionTests
     {
+        [Fact]
+        public void Audition_Always_DisplaysAppropriateProfile() { }
+
+        [Fact]
+        public void Audition_Always_DisplayAppropriateAudition() { }
+
+        [Fact]
+        public void Audition_Always_HandlesInvalidAuditionId() { }
     }
 }

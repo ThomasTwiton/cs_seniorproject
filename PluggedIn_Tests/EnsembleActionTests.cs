@@ -9,7 +9,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PluggedIn_Tests
 {
-    class EnsembleActionTests
+    public class EnsembleActionTests
     {
+        [Fact]
+        public void Ensemble_Always_ReturnsAppropriateView() { }
+
+        [Fact]
+        public void Ensemble_Always_HandlesInvalidEnsembleId() { }
+
+        [Fact]
+        public void Ensemble_Alawys_DisplaysMembersForEnsemble() { }
+
+        [Fact]
+        public void Ensemble_WhenUserOwnsPage_SetsIsOwnerToTrue() { }
+
+        [Fact]
+        public void Profile_Always_DisplaysPosts() { }
     }
 }

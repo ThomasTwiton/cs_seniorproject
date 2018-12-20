@@ -23,5 +23,9 @@ namespace PluggedIn_Tests
         [Fact]
         public void Profile_WhenUserOwnsPage_SetsIsOwnerToTrue() { }
 
+        [Fact]
+        public void Profile_Always_DisplaysPosts() { }
+
+
     }
 }

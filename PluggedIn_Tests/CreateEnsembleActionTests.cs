@@ -1,10 +1,26 @@
-﻿using System;
+﻿using Moq;
+using Xunit;
+using System.Linq;
+using server.Models;
+using server.Controllers;
 using System.Collections.Generic;
-using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace PluggedIn_Tests
 {
-    class CreateEnsembleActionTests
+    public class CreateEnsembleActionTests
     {
+        [Fact]
+        public void CreateEnsemble_WhenGivenValidData_CreatesNewEnsemble() { }
+
+        [Fact]
+        public void CreateEnsemble_WhenGivenValidData_ReturnsValidRedirect() { }
+
+        [Fact]
+        public void CreateEnsemble_Always_HandlesDuplicateEnsembles() { }
+
+        [Fact]
+        public void CreateEnsemble_Always_HandlesMissingEnsembleData() { }
     }
 }
