@@ -10,22 +10,24 @@ namespace server.Models
     public class PluggedContext : DbContext
     {
 
+        public PluggedContext() { }
+
         public PluggedContext(DbContextOptions<PluggedContext> options)
             : base(options)
         { }
 
         //tables in the database
-        public DbSet<User> Users { get; set; }
-        public DbSet<Profile> Profiles { get; set; }
-        public DbSet<Venue> Venues { get; set; }
-        public DbSet<Ensemble> Ensembles { get; set; }
-        public DbSet<Instrument> Instruments { get; set; }
-        public DbSet<Plays_Instrument> Plays_Instruments { get; set; }
-        public DbSet<ProfileEnsemble> ProfileEnsembles { get; set; }
-        public DbSet<Audition> Auditions { get; set; }
-        public DbSet<Gig> Gigs { get; set; }
-        public DbSet<Booked_Gig> Booked_Gigs { get; set; }
-        public DbSet<Post> Posts { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Profile> Profiles { get; set; }
+        public virtual DbSet<Venue> Venues { get; set; }
+        public virtual DbSet<Ensemble> Ensembles { get; set; }
+        public virtual DbSet<Instrument> Instruments { get; set; }
+        public virtual DbSet<Plays_Instrument> Plays_Instruments { get; set; }
+        public virtual DbSet<ProfileEnsemble> ProfileEnsembles { get; set; }
+        public virtual DbSet<Audition> Auditions { get; set; }
+        public virtual DbSet<Gig> Gigs { get; set; }
+        public virtual DbSet<Booked_Gig> Booked_Gigs { get; set; }
+        public virtual DbSet<Post> Posts { get; set; }
         //public DbSet<PostMedia> PostMedias { get; set; }
         //public DbSet<E_Has_Media> E_Has_Medias { get; set; }
         //public DbSet<P_Has_Media> P_Has_Medias { get; set; }
