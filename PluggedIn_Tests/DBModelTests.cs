@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace PluggedIn_Tests
 {
 
-  public class ModelTests.cs
+  public class DBModelTests
   {
   }
   
