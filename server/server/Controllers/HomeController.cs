@@ -185,6 +185,18 @@ namespace server.Controllers
 
             model.Ensemble = ensemble;
 
+
+            model.Instruments = new List<SelectListItem>();
+            model.SelectedInsId = new List<String>();
+
+            foreach (Instrument ins in _context.Instruments.ToList())
+            {
+                var ins_name = ins.Instrument_Name;
+                SelectListItem chk_ins = new SelectListItem { Text = ins.Instrument_Name, Value = ins.InstrumentId.ToString() };
+                model.Instruments.Add(chk_ins);
+            }
+
+
             var Profiles = new List<Profile>();
 
             if (ensemble.ProfileEnsemble == null)
@@ -432,9 +444,27 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string eCity, string instrument, int userID)
+        public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string description, string eCity, int userID, int ensId, int selectedInsId)
         {
-            return View("CreateProfile");
+
+
+            Audition audition = new Audition();
+            audition.Open_Date = audition_date;
+            audition.Closed_Date = closed_date;
+            audition.Audition_Location = location;
+            audition.Audition_Description = description;
+            audition.EnsembleId = ensId;
+            audition.Instrument = _context.Instruments.Find(selectedInsId);
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(audition);
+                await _context.SaveChangesAsync();
+            }
+
+
+            return RedirectToAction("Ensemble", new { id = ensId });
+
         }
 
         [HttpPost]

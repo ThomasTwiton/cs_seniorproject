@@ -33,6 +33,10 @@ namespace server.Models
         //List of the Profile's Ensembles
         public List<Profile> Profiles { get; set; }
         //Current user
+        public List<SelectListItem> Instruments { get; set; }
+        public List<String> SelectedInsId { get; set; }
+        //instrument that ensemble selected for audition
+        //all possible instruments
         public User User { get; set; }
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
