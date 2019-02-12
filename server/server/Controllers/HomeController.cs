@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +19,17 @@ namespace server.Controllers
         // Initialize the context (aka database entity)
         private readonly PluggedContext _context;
 
+        //Initialize the hosting enviornment
+        private IHostingEnvironment _hostingEnvironment;
 
-        public HomeController(PluggedContext context)
+
+        public HomeController(PluggedContext context, IHostingEnvironment environment)
         {
             // Load the context into the controller
             _context = context;
+
+            //Load the enviornment into the controller
+            _hostingEnvironment = environment;
         }
 
         public IActionResult Index()
@@ -520,12 +529,24 @@ namespace server.Controllers
 
             var profile = _context.Profiles.Find(model.Profile.ProfileId);
 
-
             Profile userprofile = _context.Profiles.Find(model.Profile.ProfileId);
             userprofile.First_Name = model.Profile.First_Name;
             userprofile.Last_Name = model.Profile.Last_Name;
             userprofile.Preferred_Name = model.Profile.Preferred_Name;
-            userprofile.Pic_Url = model.Profile.Pic_Url;
+
+            //handle uploading the image file to our directory
+            //Console.WriteLine(model.File.FileName);
+
+            string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+            var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+            var filePath = Path.Combine(uploads, fileName); 
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.File.CopyToAsync(fileStream);
+            }
+            userprofile.Pic_Url = "/images/"+ fileName;
+
+
             await _context.SaveChangesAsync();
 
             foreach (Plays_Instrument pi in _context.Plays_Instruments)
@@ -559,12 +580,46 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> createPost([Bind("Text, PosterType, PosterIndex, Type")] Post post, string PosterType, int PosterIndex)
+        public async Task<IActionResult> createPost([Bind("Text, PosterType, PosterIndex, Type")] Post post, ProfileModel model, string PosterType, int PosterIndex)
         {
+            //handle uploading the image file to our directory
+            //Console.WriteLine(model.File.FileName)
+            string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+            var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+            var filePath = Path.Combine(uploads, fileName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.File.CopyToAsync(fileStream);
+            }
+            post.MediaUrl = "/images/" + fileName;
+
+            //parsing media type
+            HashSet<string> img_extensions = new HashSet<string>();
+            HashSet<string> audio_extensions = new HashSet<string>();
+            HashSet<string> video_extensions = new HashSet<string>();
+            img_extensions.Add("png");
+            img_extensions.Add("jpg");
+            img_extensions.Add("gif");
+            audio_extensions.Add("mp3");
+            audio_extensions.Add("mp4");
+            video_extensions.Add("mov");
+            if(img_extensions.Contains(fileName.Substring(fileName.Length -3))){
+                post.MediaType = "img";
+            }
+            if (audio_extensions.Contains(fileName.Substring(fileName.Length - 3)))
+            {
+                post.MediaType = "audio";
+            }
+            if (video_extensions.Contains(fileName.Substring(fileName.Length - 3)))
+            {
+                post.MediaType = "video";
+            }
+
+            //add the post to database
             _context.Add(post);
             await _context.SaveChangesAsync();
             if(PosterType == "profile")
-            {
+            {                 
                 return RedirectToAction("Profile", new { id = PosterIndex });
             }
             if (PosterType == "ensemble")
