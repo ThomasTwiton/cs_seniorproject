@@ -44,6 +44,8 @@ namespace server.Models
         public Boolean isOwner { get; set; }
         // For the sake of our MVP demonstration, this is how we will load posts
         public HashSet<Post> Posts { get; set; }
+        public ICollection<Audition> Audition { get; set; }
+
     }
 
     public class VenueModel
@@ -72,6 +74,11 @@ namespace server.Models
 
         public List<Profile> Profiles { get; set; }
 
+    }
+
+    public class AuditionSearch
+    {
+        public List<Audition> Auditions { get; set; }
     }
 
     public class GigModel

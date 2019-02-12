@@ -71,6 +71,14 @@ namespace server.Controllers
             return RedirectToAction("Profile", new { id = proID });
         }
 
+        public IActionResult audsearch()
+        {
+            AuditionSearch model = new AuditionSearch();
+            var auditions = _context.Auditions.ToList();
+            model.Auditions = auditions;
+            return View(model);
+        }
+
         public IActionResult Profile(int? id)
         {
             /* This action method displays the profile for the user with 
@@ -181,9 +189,23 @@ namespace server.Controllers
              *   
              */
 
+            //TO DO ON MONDAY: populate audition data in EnsembleModel by querying _context for all auditions which have the given ensemble id
             var ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).ToList()[0];
 
             model.Ensemble = ensemble;
+
+            if(model.Ensemble.Audition == null)
+            {
+                model.Ensemble.Audition = new HashSet<Audition>();
+                foreach(Audition ad in _context.Auditions)
+                {
+                    if (ad.EnsembleId == model.Ensemble.EnsembleId)
+                    {
+                        model.Ensemble.Audition.Add(ad);
+                    }
+                }
+            }
+
 
 
             model.Instruments = new List<SelectListItem>();

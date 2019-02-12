@@ -36,6 +36,19 @@
 
 
             </div>
+            <div id="auditions">
+                @foreach (var ins in Model.Ensemble.Audition)
+                {
+                    <h1>@ins.AuditionId</h1>
+                    <h1>@ins.Instrument.Instrument_Name</h1>
+                    <h1>@ins.Open_Date</h1>
+                    <h1>@ins.Closed_Date</h1>
+                    <h1>@ins.Audition_Location</h1>
+                    <h1>@ins.Audition_Description</h1>
+                }
+
+
+            </div>
             <div id="location">
                 <span class="glyphicon glyphicon-map-marker"></span>
                 @Model.Ensemble.City
