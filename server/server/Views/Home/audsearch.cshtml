@@ -10,5 +10,5 @@
 
 @foreach (var ins in Model.Auditions)
 {
-    <tr><td>@ins.Ensemble  </td><td>@ins.EnsembleId  </td><td>@ins.AuditionId  </td><td>@ins.Instrument_Name  </td><td>@ins.Open_Date  </td><td>@ins.Closed_Date  </td><td>@ins.Audition_Location  </td><td>@ins.Audition_Description>  </td></tr><br />
+    <tr><td>@ins.Ensemble.Ensemble_Name  </td><td>@ins.EnsembleId  </td><td>@ins.AuditionId  </td><td>@ins.Instrument_Name  </td><td>@ins.Open_Date  </td><td>@ins.Closed_Date  </td><td>@ins.Audition_Location  </td><td>@ins.Audition_Description>  </td><td><a asp-action="Audition" asp-route-id="@ins.AuditionId">  PLUG IN  </a></td></tr><br />
 }

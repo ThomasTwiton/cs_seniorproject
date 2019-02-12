@@ -75,6 +75,11 @@ namespace server.Controllers
         {
             AuditionSearch model = new AuditionSearch();
             var auditions = _context.Auditions.ToList();
+            foreach(Audition aud in auditions)
+            {
+                aud.Ensemble = _context.Ensembles.Find(aud.EnsembleId);
+                aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
+            }
             model.Auditions = auditions;
             return View(model);
         }
@@ -429,6 +434,8 @@ namespace server.Controllers
 
             var aud = _context.Auditions.Where(u => u.AuditionId == id).ToList()[0];
             var ens = _context.Ensembles.Where(u => u.EnsembleId == aud.EnsembleId).ToList()[0];
+
+            aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
 
             var Profiles = new List<Profile>();
 
