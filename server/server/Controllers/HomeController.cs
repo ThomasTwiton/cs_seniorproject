@@ -85,6 +85,33 @@ namespace server.Controllers
              *      - Login     --> By entering their login information.
              *      - Profile   --> By entering their information for a new account.
              */
+
+            SessionModel s = GetSessionInfo(HttpContext.Session);
+
+            if (s.IsLoggedIn)
+            {
+                // Check if there are any profiles associated with the user id
+                if (_context.Profiles.Any(p => p.UserId == s.UserID))
+                {
+                    var profile = _context.Profiles.Where(p => p.UserId == s.UserID).ToList()[0];
+                    return RedirectToAction("Profile", new { id = profile.ProfileId });
+                }
+
+                // Check if there are any venues associated with the user id
+                if (_context.Venues.Any(p => p.UserId == s.UserID))
+                {
+                    var venue = _context.Venues.Where(p => p.UserId == s.UserID).ToList()[0];
+                    return RedirectToAction("Venue", new { id = venue.VenueId });
+                }
+
+                // Check if there are any ensembles associated with the user id
+                if (_context.Ensembles.Any(p => p.UserId == s.UserID))
+                {
+                    var ensemble = _context.Ensembles.Where(p => p.UserId == s.UserID).ToList()[0];
+                    return RedirectToAction("Ensemble", new { id = ensemble.EnsembleId });
+                }
+            }
+
             return View();
         }
 
