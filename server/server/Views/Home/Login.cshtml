@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/login.css" />
+}
+
+<div class="row">
+    <div class="container" id="signup" style="margin-top:10%;margin-bottom:9%;width:25%;min-width:200px;">
+        <div id="header" class="row">
+        </div>
+        <div class="row" style="padding:10px;">
+            <form id="form" asp-action="Login">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Email Address">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" id="password" aria-describedby="passwordHelp" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <small><a id="change" onclick="changeAction('/Home/Create')" href="#">Create Account</a></small>
+                </div>
+                <button type="submit" class="btn btn-danger">Log In</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script type="text/javascript">
+    function changeAction(route) {
+        console.log("FUNCTION");
+
+        let f = document.getElementById("form");
+        f.action = route;
+
+        let a = document.getElementById("change");
+        let b = document.getElementsByTagName("button")[1];
+
+        if (route == "/Home/Create") {
+            console.log("Create new account");
+            a.innerHTML = "Sign In";
+            a.setAttribute("onclick", "changeAction('/Home/Login')");
+            b.innerHTML = "Sign Up";
+
+        } else {
+            console.log("Log in");
+            a.innerHTML = "Create Account";
+            a.setAttribute("onclick", "changeAction('/Home/Create')");;
+            b.innerHTML = "Sign In";
+        }
+    }
+    </script>
+}
+

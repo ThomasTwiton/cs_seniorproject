@@ -21,6 +21,8 @@ namespace server.Models
         public String ViewType { get; set; }
         //whether or not you own this page
         public Boolean isOwner { get; set; }
+        //whether or not you are logged in
+        public Boolean isLoggedIn { get; set; }
 
         // For the sake of our MVP demonstration, this is how we will load posts
         public List<Post> Posts { get; set; }
@@ -38,6 +40,8 @@ namespace server.Models
         public String ViewType { get; set; }
         //whether or not you own this page
         public Boolean isOwner { get; set; }
+        //whether or not you are logged in
+        public Boolean isLoggedIn { get; set; }
         // For the sake of our MVP demonstration, this is how we will load posts
         public HashSet<Post> Posts { get; set; }
     }
@@ -50,6 +54,8 @@ namespace server.Models
         public User User { get; set; }
         //whether or not you own this page
         public Boolean IsOwner { get; set; }
+        //whether or not you are logged in
+        public Boolean isLoggedIn { get; set; }
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
 
@@ -76,5 +82,18 @@ namespace server.Models
         public String ViewType { get; set; }
         public Venue venue { get; set; }
         public Gig gig { get; set; }
+    }
+
+    public class SessionModel
+    {
+        /* This is not a view object, but rather a container for data 
+         * that is stored in HttpContext.Session.
+         */
+        
+        public int UserID { get; set; }
+        //public String ViewType { get; set; }
+        //public int ViewID { get; set; }
+        public bool IsLoggedIn { get; set; }
+        public string PrevAction { get; set; }
     }
 }
