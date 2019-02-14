@@ -181,7 +181,9 @@ namespace server.Models
                     Audition_Location = "Marty's Grill",
                     Audition_Description = "She's a diva and left us... We need a new Hannah Montana! (Not required to be from Montana)",
                     Instrument_Name = "Voice",
+                    InstrumentId = 2,
                     EnsembleId = 21
+
 
                 }
                 );
@@ -311,7 +313,11 @@ namespace server.Models
         public System.DateTime Closed_Date { get; set; }
         public string Audition_Location { get; set; }
         public string Audition_Description { get; set; }
+
         public string Instrument_Name { get; set; }
+
+        public int InstrumentId { get; set; }
+        public Instrument Instrument { get; set; }
 
         public int EnsembleId { get; set; }
         public Ensemble Ensemble { get; set; }

@@ -33,6 +33,10 @@ namespace server.Models
         //List of the Profile's Ensembles
         public List<Profile> Profiles { get; set; }
         //Current user
+        public List<SelectListItem> Instruments { get; set; }
+        public List<String> SelectedInsId { get; set; }
+        //instrument that ensemble selected for audition
+        //all possible instruments
         public User User { get; set; }
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
@@ -40,6 +44,8 @@ namespace server.Models
         public Boolean isOwner { get; set; }
         // For the sake of our MVP demonstration, this is how we will load posts
         public HashSet<Post> Posts { get; set; }
+        public ICollection<Audition> Audition { get; set; }
+
     }
 
     public class VenueModel
@@ -68,6 +74,11 @@ namespace server.Models
 
         public List<Profile> Profiles { get; set; }
 
+    }
+
+    public class AuditionSearch
+    {
+        public List<Audition> Auditions { get; set; }
     }
 
     public class GigModel

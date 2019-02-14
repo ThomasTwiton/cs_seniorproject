@@ -71,6 +71,19 @@ namespace server.Controllers
             return RedirectToAction("Profile", new { id = proID });
         }
 
+        public IActionResult audsearch()
+        {
+            AuditionSearch model = new AuditionSearch();
+            var auditions = _context.Auditions.ToList();
+            foreach(Audition aud in auditions)
+            {
+                aud.Ensemble = _context.Ensembles.Find(aud.EnsembleId);
+                aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
+            }
+            model.Auditions = auditions;
+            return View(model);
+        }
+
         public IActionResult Profile(int? id)
         {
             /* This action method displays the profile for the user with 
@@ -181,9 +194,35 @@ namespace server.Controllers
              *   
              */
 
+            //TO DO ON MONDAY: populate audition data in EnsembleModel by querying _context for all auditions which have the given ensemble id
             var ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).ToList()[0];
 
             model.Ensemble = ensemble;
+
+            if(model.Ensemble.Audition == null)
+            {
+                model.Ensemble.Audition = new HashSet<Audition>();
+                foreach(Audition ad in _context.Auditions)
+                {
+                    if (ad.EnsembleId == model.Ensemble.EnsembleId)
+                    {
+                        model.Ensemble.Audition.Add(ad);
+                    }
+                }
+            }
+
+
+
+            model.Instruments = new List<SelectListItem>();
+            model.SelectedInsId = new List<String>();
+
+            foreach (Instrument ins in _context.Instruments.ToList())
+            {
+                var ins_name = ins.Instrument_Name;
+                SelectListItem chk_ins = new SelectListItem { Text = ins.Instrument_Name, Value = ins.InstrumentId.ToString() };
+                model.Instruments.Add(chk_ins);
+            }
+
 
             var Profiles = new List<Profile>();
 
@@ -396,6 +435,8 @@ namespace server.Controllers
             var aud = _context.Auditions.Where(u => u.AuditionId == id).ToList()[0];
             var ens = _context.Ensembles.Where(u => u.EnsembleId == aud.EnsembleId).ToList()[0];
 
+            aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
+
             var Profiles = new List<Profile>();
 
             if (ens.ProfileEnsemble == null)
@@ -432,9 +473,27 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string eCity, string instrument, int userID)
+        public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string description, string eCity, int userID, int ensId, int selectedInsId)
         {
-            return View("CreateProfile");
+
+
+            Audition audition = new Audition();
+            audition.Open_Date = audition_date;
+            audition.Closed_Date = closed_date;
+            audition.Audition_Location = location;
+            audition.Audition_Description = description;
+            audition.EnsembleId = ensId;
+            audition.Instrument = _context.Instruments.Find(selectedInsId);
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(audition);
+                await _context.SaveChangesAsync();
+            }
+
+
+            return RedirectToAction("Ensemble", new { id = ensId });
+
         }
 
         [HttpPost]
