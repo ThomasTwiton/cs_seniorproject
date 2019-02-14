@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace server.Models
 {
@@ -11,6 +13,8 @@ namespace server.Models
     {
         //the profile we are displaying
         public Profile Profile { get; set; }
+        //the image, its relative file path is stored in Profile.Pic_Url
+        public IFormFile File { get; set; }
         //List of the Profile's Ensembles
         public List<Ensemble> Ensembles { get; set; } 
         public List<SelectListItem> Instruments { get; set; }
