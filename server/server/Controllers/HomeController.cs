@@ -836,13 +836,13 @@ namespace server.Controllers
                 if (model.File != null)
                 {
                     string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
-                    var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                    var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
                     var filePath = Path.Combine(uploads, fileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await model.File.CopyToAsync(fileStream);
                     }
-                    userprofile.Pic_Url = "/images/" + fileName;
+                    userprofile.Pic_Url = "/images/uploads/" + fileName;
 
 
                     await _context.SaveChangesAsync();
@@ -893,19 +893,17 @@ namespace server.Controllers
                 {
                     //handle uploading the image file to our directory
                     //Console.WriteLine(model.File.FileName)
-                    Console.WriteLine("-1=1-1=1-1=1-1=1-1=1-1=1-1=1-1=1-1=1-1=");
-                    Console.WriteLine(model.File);
 
                     if (model.File != null)
                     {
                         string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
-                        var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                        var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
                         var filePath = Path.Combine(uploads, fileName);
                         using (var fileStream = new FileStream(filePath, FileMode.Create))
                         {
                             await model.File.CopyToAsync(fileStream);
                         }
-                        post.MediaUrl = "/images/" + fileName;
+                        post.MediaUrl = "/images/uploads/" + fileName;
 
                         //parsing media type
                         HashSet<string> img_extensions = new HashSet<string>();
