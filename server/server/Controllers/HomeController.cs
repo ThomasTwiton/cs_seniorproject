@@ -711,8 +711,21 @@ namespace server.Controllers
                     audition.Audition_Description = description;
                     audition.EnsembleId = ensId;
                     audition.Instrument = _context.Instruments.Find(selectedInsId);
+                    audition.Instrument_Name = audition.Instrument.Instrument_Name;
 
-                    _context.Add(audition);
+                    Post post = new Post();
+                    post.Text = description;
+                    post.PosterType = "ensemble";
+                    post.PosterIndex = ensId;
+                    post.Type = "aud";                  
+
+
+                    _context.Add(audition);                    
+                    await _context.SaveChangesAsync();
+
+                    //can't get the audition id until audition is saved to the database
+                    post.Ref_Id = audition.AuditionId;
+                    _context.Add(post);
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction("Ensemble", new { id = ensId });

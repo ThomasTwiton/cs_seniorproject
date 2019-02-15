@@ -38,6 +38,8 @@ namespace server.Models
         public Ensemble Ensemble { get; set; }
         //List of the Profile's Ensembles
         public List<Profile> Profiles { get; set; }
+        //the image, its relative file path is stored in Profile.Pic_Url
+        public IFormFile File { get; set; }
         //Current user
         public List<SelectListItem> Instruments { get; set; }
         public List<String> SelectedInsId { get; set; }
@@ -62,6 +64,8 @@ namespace server.Models
         public Venue Venue { get; set; }
         //Current user
         public User User { get; set; }
+        //the image, its relative file path is stored in Profile.Pic_Url
+        public IFormFile File { get; set; }
         //whether or not you own this page
         public Boolean IsOwner { get; set; }
         //whether or not you are logged in
