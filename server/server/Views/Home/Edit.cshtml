@@ -16,7 +16,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Profile.ProfileId" />
             <div class="form-group">
@@ -59,9 +59,8 @@
                 }
             </div>
             <div class="form-group">
-                <label asp-for="Profile.Pic_Url" class="control-label"></label>
-                <input asp-for="Profile.Pic_Url" class="form-control" />
-                <span asp-validation-for="Profile.Pic_Url" class="text-danger"></span>
+                <label asp-for="File" class="control-label">Profile Picture</label>
+                <input asp-for="File" type="file" class="form-control" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />

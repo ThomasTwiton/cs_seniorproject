@@ -30,6 +30,8 @@
 
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">PluggedIn</a>
+                <a asp-action="audsearch">Find auditions</a>
+
 
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -42,17 +44,11 @@
 
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#">View Profile</a>
-                            </li>
-                            <li>
-                                <a href="#">Manage Account</a>
-                            </li>
-                            <li>
-                                <a href="#">Invite a friend</a>
+                                <a href="/">View Profile</a>
                             </li>
                             <li role="separator" class="divider"></li>
                             <li>
-                                <a href="/">Log out</a>
+                                <a href="/Home/Logout">Log out</a>
                             </li>
                         </ul>
                     </li>
