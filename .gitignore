@@ -9,6 +9,9 @@
 # We do not want the Migrations anymore.
 [Mm]igrations/
 
+# We do not want uploaded media
+wwwroot/images/uploads/*
+
 # User-specific files
 *.suo
 *.user
