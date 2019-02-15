@@ -36,6 +36,20 @@
 
 
             </div>
+            <div id="auditions">
+                @foreach (var ins in Model.Ensemble.Audition)
+                {
+                    <h1>@ins.AuditionId</h1>
+                    <h1>@ins.Instrument.Instrument_Name</h1>
+                    <h1>@ins.Open_Date</h1>
+                    <h1>@ins.Closed_Date</h1>
+                    <h1>@ins.Audition_Location</h1>
+                    <h1>@ins.Audition_Description</h1>
+                    <a asp-action="Audition" asp-route-id="@ins.AuditionId">  PLUG IN  </a>
+                }
+
+
+            </div>
             <div id="location">
                 <span class="glyphicon glyphicon-map-marker"></span>
                 @Model.Ensemble.City
@@ -135,6 +149,7 @@
                 <form asp-controller="Home" asp-action="CreateAudition" method="post" class="container-fluid">
                     <div style="display:none">
                         <input name="userID" type="text" value="1" />
+                        <input name="ensID" type="text" value ="@Model.Ensemble.EnsembleId" />
                     </div>
                     <h2 style="text-align:center;font-weight:bold;">Hold an Audition!</h2>
                     <hr />
@@ -166,8 +181,16 @@
                                 <input type="text" class="form-control" name="location" placeholder="Nobal Recital Hall, 1234 N. West St., etc..." required />
                             </div>
                             <div class="form-group col-xs-12">
-                                <label for="instrument">What instrument are you looking for?<span class="red-ast">*</span></label>
-                                <input type="text" name="instrument" class="form-control" placeholder="Trumpet, Vocalist etc..." required />
+                                <label asp-for="Instruments">What instrument are you looking for?<span class="red-ast">*</span></label>
+                                <span asp-validation-for="Instruments" class="text-danger"></span>
+                                @foreach (var ins in Model.Instruments)
+                                {
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="SelectedInsId" value="@ins.Value" /> @ins.Text
+                                        </label>
+                                    </div>
+                                }
                             </div>
                         </div>
                         <div class="row" style="margin-top:20px;">

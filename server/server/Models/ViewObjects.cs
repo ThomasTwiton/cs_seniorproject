@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace server.Models
 {
@@ -11,6 +13,8 @@ namespace server.Models
     {
         //the profile we are displaying
         public Profile Profile { get; set; }
+        //the image, its relative file path is stored in Profile.Pic_Url
+        public IFormFile File { get; set; }
         //List of the Profile's Ensembles
         public List<Ensemble> Ensembles { get; set; } 
         public List<SelectListItem> Instruments { get; set; }
@@ -35,6 +39,10 @@ namespace server.Models
         //List of the Profile's Ensembles
         public List<Profile> Profiles { get; set; }
         //Current user
+        public List<SelectListItem> Instruments { get; set; }
+        public List<String> SelectedInsId { get; set; }
+        //instrument that ensemble selected for audition
+        //all possible instruments
         public User User { get; set; }
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
@@ -44,6 +52,8 @@ namespace server.Models
         public Boolean isLoggedIn { get; set; }
         // For the sake of our MVP demonstration, this is how we will load posts
         public HashSet<Post> Posts { get; set; }
+        public ICollection<Audition> Audition { get; set; }
+
     }
 
     public class VenueModel
@@ -74,6 +84,11 @@ namespace server.Models
 
         public List<Profile> Profiles { get; set; }
 
+    }
+
+    public class AuditionSearch
+    {
+        public List<Audition> Auditions { get; set; }
     }
 
     public class GigModel

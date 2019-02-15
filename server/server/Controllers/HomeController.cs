@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
@@ -17,6 +18,7 @@ namespace server.Controllers
     {
         // Initialize the context (aka database entity)
         private readonly PluggedContext _context;
+        private IHostingEnvironment _hostingEnvironment;
 
         const string SessionUserId = "_UserID";
         const string SessionPrevAct = "_PrevAction";
@@ -71,10 +73,13 @@ namespace server.Controllers
 
         }
 
-        public HomeController(PluggedContext context)
+        public HomeController(PluggedContext context, IHostingEnvironment environment)
         {
             // Load the context into the controller
             _context = context;
+
+            //Load the enviornment into the controller
+            _hostingEnvironment = environment;
         }
 
         public IActionResult Index()
@@ -231,6 +236,19 @@ namespace server.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult audsearch()
+        {
+            AuditionSearch model = new AuditionSearch();
+            var auditions = _context.Auditions.ToList();
+            foreach(Audition aud in auditions)
+            {
+                aud.Ensemble = _context.Ensembles.Find(aud.EnsembleId);
+                aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
+            }
+            model.Auditions = auditions;
+            return View(model);
+        }
+
         public IActionResult Profile(int? id)
         {
             /* This action method displays the profile for the user with 
@@ -348,10 +366,33 @@ namespace server.Controllers
              *   purposes as either UserId = 1 or isOwner = true;
              *   
              */
-            
+
+            //TO DO ON MONDAY: populate audition data in EnsembleModel by querying _context for all auditions which have the given ensemble id
             var ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).ToList()[0];
 
             model.Ensemble = ensemble;
+
+            if(model.Ensemble.Audition == null)
+            {
+                model.Ensemble.Audition = new HashSet<Audition>();
+                foreach(Audition ad in _context.Auditions)
+                {
+                    if (ad.EnsembleId == model.Ensemble.EnsembleId)
+                    {
+                        model.Ensemble.Audition.Add(ad);
+                    }
+                }
+            }
+
+            model.Instruments = new List<SelectListItem>();
+            model.SelectedInsId = new List<String>();
+
+            foreach (Instrument ins in _context.Instruments.ToList())
+            {
+                var ins_name = ins.Instrument_Name;
+                SelectListItem chk_ins = new SelectListItem { Text = ins.Instrument_Name, Value = ins.InstrumentId.ToString() };
+                model.Instruments.Add(chk_ins);
+            }
 
             var Profiles = new List<Profile>();
 
@@ -421,7 +462,6 @@ namespace server.Controllers
             return View(model);
         }
 
-
         public IActionResult Venue(int? id)
         {
             /* This action method displays the profile for the venue with 
@@ -464,8 +504,6 @@ namespace server.Controllers
             return View(model);
         }
 
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password)
@@ -496,7 +534,6 @@ namespace server.Controllers
             return View("index");
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProfile(string pName, System.DateTime pBirthday, string pCity, string pState, string pBio, int userID)
@@ -523,6 +560,7 @@ namespace server.Controllers
                 }
 
                 // If not logged in
+                HttpContext.Session.SetString(SessionPrevAct, "/Home/CreateProfile");
                 return RedirectToAction("Login");
             }
 
@@ -561,6 +599,7 @@ namespace server.Controllers
                     return RedirectToAction("Ensemble", new { id = ensemble.EnsembleId });
                 }
                 // If not logged in
+                HttpContext.Session.SetString(SessionPrevAct, "/Home/CreateProfile");
                 return RedirectToAction("Login");
 
             }
@@ -592,6 +631,7 @@ namespace server.Controllers
                     return RedirectToAction("Venue", new { id = venue.VenueId });
                 }
                 // If not logged in
+                HttpContext.Session.SetString(SessionPrevAct, "/Home/CreateProfile");
                 return RedirectToAction("Login");
             }
             // If ModelState is invalid
@@ -609,6 +649,8 @@ namespace server.Controllers
 
                 var aud = _context.Auditions.Where(u => u.AuditionId == id).ToList()[0];
                 var ens = _context.Ensembles.Where(u => u.EnsembleId == aud.EnsembleId).ToList()[0];
+
+                aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
 
                 var Profiles = new List<Profile>();
 
@@ -642,18 +684,49 @@ namespace server.Controllers
 
                 return View(model);
 
-            } else
-            {
-                return RedirectToAction("Login");
             }
+            
+            // If not logged in
+            HttpContext.Session.SetString(SessionPrevAct, "/Home/Audition/"+id.ToString());
+            return RedirectToAction("Login");
+            
             
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string eCity, string instrument, int userID)
+        public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string description, string eCity, int userID, int ensId, int selectedInsId)
         {
-            return View("CreateProfile");
+
+            if (ModelState.IsValid)
+            {
+                SessionModel s = GetSessionInfo(HttpContext.Session);
+
+                if (s.IsLoggedIn)
+                {
+                    Audition audition = new Audition();
+                    audition.Open_Date = audition_date;
+                    audition.Closed_Date = closed_date;
+                    audition.Audition_Location = location;
+                    audition.Audition_Description = description;
+                    audition.EnsembleId = ensId;
+                    audition.Instrument = _context.Instruments.Find(selectedInsId);
+
+                    _context.Add(audition);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Ensemble", new { id = ensId });
+                }
+
+                // If not logged in
+                HttpContext.Session.SetString(SessionPrevAct, "/Home/Ensemble/" + ensId.ToString());
+                return RedirectToAction("Login");
+
+            }
+
+            // If ModelState is not valid
+            return RedirectToAction("Index");
+
         }
 
         [HttpPost]
@@ -752,14 +825,29 @@ namespace server.Controllers
             {
                 var profile = _context.Profiles.Find(model.Profile.ProfileId);
 
-
                 Profile userprofile = _context.Profiles.Find(model.Profile.ProfileId);
                 userprofile.First_Name = model.Profile.First_Name;
                 userprofile.Last_Name = model.Profile.Last_Name;
                 userprofile.Preferred_Name = model.Profile.Preferred_Name;
-                userprofile.Pic_Url = model.Profile.Pic_Url;
-                await _context.SaveChangesAsync();
 
+                //handle uploading the image file to our directory
+                //Console.WriteLine(model.File.FileName);
+
+                if (model.File != null)
+                {
+                    string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                    var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                    var filePath = Path.Combine(uploads, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+                    userprofile.Pic_Url = "/images/" + fileName;
+
+
+                    await _context.SaveChangesAsync();
+                }
+                
                 foreach (Plays_Instrument pi in _context.Plays_Instruments)
                 {
                     if (pi.ProfileId == model.Profile.ProfileId)
@@ -794,7 +882,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> createPost([Bind("Text, PosterType, PosterIndex, Type")] Post post, string PosterType, int PosterIndex)
+        public async Task<IActionResult> createPost([Bind("Text, PosterType, PosterIndex, Type")] Post post, ProfileModel model, string PosterType, int PosterIndex)
         {
 
             if (ModelState.IsValid)
@@ -803,6 +891,48 @@ namespace server.Controllers
 
                 if (s.IsLoggedIn)
                 {
+                    //handle uploading the image file to our directory
+                    //Console.WriteLine(model.File.FileName)
+                    Console.WriteLine("-1=1-1=1-1=1-1=1-1=1-1=1-1=1-1=1-1=1-1=");
+                    Console.WriteLine(model.File);
+
+                    if (model.File != null)
+                    {
+                        string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                        var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                        var filePath = Path.Combine(uploads, fileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.File.CopyToAsync(fileStream);
+                        }
+                        post.MediaUrl = "/images/" + fileName;
+
+                        //parsing media type
+                        HashSet<string> img_extensions = new HashSet<string>();
+                        HashSet<string> audio_extensions = new HashSet<string>();
+                        HashSet<string> video_extensions = new HashSet<string>();
+                        img_extensions.Add("png");
+                        img_extensions.Add("jpg");
+                        img_extensions.Add("gif");
+                        audio_extensions.Add("mp3");
+                        audio_extensions.Add("mp4");
+                        video_extensions.Add("mov");
+                        if (img_extensions.Contains(fileName.Substring(fileName.Length - 3)))
+                        {
+                            post.MediaType = "img";
+                        }
+                        if (audio_extensions.Contains(fileName.Substring(fileName.Length - 3)))
+                        {
+                            post.MediaType = "audio";
+                        }
+                        if (video_extensions.Contains(fileName.Substring(fileName.Length - 3)))
+                        {
+                            post.MediaType = "video";
+                        }
+                    }
+                    
+
+                    //add the post to database
                     _context.Add(post);
                     await _context.SaveChangesAsync();
                     if (PosterType == "profile")
