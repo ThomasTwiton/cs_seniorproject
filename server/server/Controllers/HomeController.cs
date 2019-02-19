@@ -744,9 +744,51 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateGig(System.DateTime audition_date, System.DateTime closed_date, string location, string eCity, string instrument, int userID)
+        public async Task<IActionResult> CreateGig(System.DateTime start_date, System.DateTime end_date, string repeat, string type, string description, int userID, int PosterIndex)
         {
-            return View("CreateProfile");
+            if (ModelState.IsValid)
+            {
+                SessionModel s = GetSessionInfo(HttpContext.Session);
+
+                if (s.IsLoggedIn)
+                {
+                    Gig gig = new Gig();
+                    gig.Gig_Date = start_date;
+                    gig.Closed_Date = end_date;
+                    gig.Genre = type;
+                    gig.Description = description;
+                    gig.VenueId = PosterIndex;
+                    if (repeat == "Yes")
+                    {
+                        gig.Description = gig.Description + "\n This is a repeating gig";
+                    }
+
+                    Post post = new Post();
+                    post.Text = description;
+                    post.PosterType = "venue";
+                    post.PosterIndex = PosterIndex;
+                    post.Type = "gig";
+
+
+                    _context.Add(gig);
+                    await _context.SaveChangesAsync();
+
+                    //can't get the audition id until audition is saved to the database
+                    post.Ref_Id = gig.GigId;
+                    _context.Add(post);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Venue", new { id = PosterIndex });
+                }
+
+                // If not logged in
+                HttpContext.Session.SetString(SessionPrevAct, "/Home/Venue/" + PosterIndex.ToString());
+                return RedirectToAction("Login");
+
+            }
+
+            // If ModelState is not valid
+            return RedirectToAction("Index"); ;
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -941,7 +983,7 @@ namespace server.Controllers
                             post.MediaType = "video";
                         }
                     }
-                    
+
 
                     //add the post to database
                     _context.Add(post);
@@ -969,6 +1011,6 @@ namespace server.Controllers
             return View("Index");
 
         }
-        
+
     }
 }

@@ -332,6 +332,9 @@ namespace server.Models
     {
         public int GigId { get; set; }
         public System.DateTime Gig_Date { get; set; }
+        public System.DateTime Closed_Date { get; set; }
+        public string Genre { get; set; }
+        public string Description { get; set; }
 
         public int VenueId { get; set; }
         public Venue Venue { get; set; }
