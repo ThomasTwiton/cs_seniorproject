@@ -76,6 +76,27 @@
     margin-left: 50%;
 }
 
+#openAuditions {
+    overflow-y: auto;
+    max-height: 150px;
+}
+
+#openAuditions .row {
+    vertical-align: middle;
+    padding: 5px;
+    margin: 0;
+    //background-color: powderblue;
+    align-content: center;
+}
+
+#openAuditions .row .col-xs-6 {
+    margin-bottom: 0;
+    vertical-align: middle;
+    height: 100%;
+
+}
+
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     #profile {
