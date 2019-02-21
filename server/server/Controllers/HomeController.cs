@@ -488,6 +488,8 @@ namespace server.Controllers
                         post.Venue = poster_profile;
                         posts.Add(post);
                     }
+
+
                 }
             }
             model.Posts = posts;
@@ -604,7 +606,7 @@ namespace server.Controllers
 
             }
             // If not a valid model state
-            return View("Create");
+            return View("CreateProfile");
 
         }
 
