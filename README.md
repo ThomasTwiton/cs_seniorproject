@@ -25,64 +25,62 @@ PluggedIn utilizes the .NET framework for its server and
 database and React.js and Bootstrap for the front-end design
 and user interface. For this application, you will need:
 
-* Asp .NET Core v2.1
-* React.js 
+* [Asp .NET Core v2.1](https://dotnet.microsoft.com/download/archives)
+* React.js
 * Bootstrap 4
 * JQuery *(For some Bootstrap formatting)*
 
-It is also recommended that you have Visual Studio although 
-this is not entirely necessary. In addition, you may want to 
+It is also recommended that you have Visual Studio. Use
+of other IDEs should still work, however Visual Studio
+has a fair amount of built-in functionality that makes
+development and deployment much easier. In addition, you may want to 
 have some way of minifying `.css` and `.js` code, however
-if you choose not to, there is a simple fix in configuraiton
+if you choose not to, there is a simple fix in the configuration
 of the `_Layout.cshtml` file.
 
 ### Installation
 
-Here is a step by step series of examples that tells you how
-to get the development environment up and running.
-```
-[ WORK IN PROGRESS ]
-```
-<!--
-Installing PostgreSQL
+First download and install .NET Core 2.1 [here](https://dotnet.microsoft.com/download/archives).
+Then, if you would like to use Visual Studio, you can download
+and install it [here](https://visualstudio.microsoft.com/downloads/).
 
-```
-$ sudo apt-get update
-$ sudo apt-get install postgresql postgresql-contrib
-$ sudo -u postgres createuser --interactive
-```
-Follow the prompts to create a role for yourself. I suggest creating a role that is the same name as your username and making yourself a superuser.
+Next clone this repository or download the `.zip` file.
 
-Installing Python
-
+To clone our repository, execute the commands below in a PowerShell terminal.
 ```
-$ sudo apt-get install python3.5
+cd \location\for\development\
+git clone git@github.com:ThomasTwiton/cs_seniorproject.git
 ```
 
-Installing VirtualEnv
+If you simply downloaded the `.zip` file, unzip it in the directory you
+would like to use for development.
 
+When you have the necessary files, run the `setup.ps1` file 
+or execute the following from the `\server\server` directory
 ```
-$ sudo pip install virtualenv
-$ virtualenv -p python3 /path/to/home/MyEnv
-$ source /path/to/home/MyEnv/bin/activate
+.\setup.ps1
 ```
-In order to develop in the correct Python environment, you will need to perform the last step each time you close your terminal. Similarly, if you would like to exit the virtual enviromnet, simply type `deactivate` in the terminal.
 
-With all of the above prerequisites installed, you should be able to run
-```
-$ python createDB.py
-$ python scheduleServer.py
-```
-to start the Flask server. You can then open the browser of your choice and go to `localhost:5000/`.
--->
+This script will build your environment, test the application, and run
+the application locally.
+
 ## Running the tests
 
-Automated unit testing is provided by [Travis CI](https://travis-ci.org/)
+Automated unit testing for this repository is provided by [Travis CI](https://travis-ci.org/)
 An explanation about how the unit tests are run can be 
 found in the `PluggedIn_Tests/` directory. It is 
 recommended that you run your unit tests locally *before*
 pushing any changes to Github as the current implementation
 of .NET is a bit sluggish.
+
+Executing the following commands in a PowerShell terminal will run
+the tests for the application.
+```
+dotnet build
+dotnet test PluggedIn_Tests.sln
+```
+
+Additionally, tests can be run in Visual Studio by going to Test > Run > All Tests
 
 ## Deployment
 
@@ -92,9 +90,17 @@ Studio, works really well with
 options might be available, but your mileage may vary.
 
 Using Visual Studio you can easily deploy by:
-```
-[ WORK IN PROGRESS ]
-```
+* Make a free account with [Azure](https://azure.microsoft.com) 
+* In Powershell, navigate into the server folder
+* Run the script `.\deployscript.ps1`
+
+This will create a blank website on Azure.
+Eventually, this script will complete the following steps automatically, but for now:
+
+* In .NET, in the Solution Explorer, right click the top level of the project (server), and go to Publish
+* Within the wizard, connect to your Azure profile and choose to deploy to the web app created by the script
+* Within the wizard, go to Configure > Settings > Databases > Entity Framework Migrations and select “Apply this migration on publish”
+
 
 <!--
 ## Contributing
@@ -126,3 +132,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 * Inspiration
 * etc
 -->
+
