@@ -140,7 +140,7 @@ function BasicBody(props) {
 
 function GigBody(props) {
     // The body of a type='gig' component.
-    const link = "Gig/" + props.post.info.id.toString();
+    const link = "/Home/Gig/" + props.post.info.id.toString();
     return (
         <div className="col-xs-11">
             <div className="textContainer">

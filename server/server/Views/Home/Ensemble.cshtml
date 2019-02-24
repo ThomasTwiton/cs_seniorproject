@@ -71,7 +71,7 @@
                     @if (Model.isOwner == true)
                     {
                         <div id="createPost" class="container">
-                            <form class="row" asp-action="CreatePost">
+                            <form class="row" asp-action="CreatePost" enctype="multipart/form-data">
                                 <div class="col-xs-1">
                                     <img class="tinyPic" src="@Model.Ensemble.Pic_Url" />
                                 </div>

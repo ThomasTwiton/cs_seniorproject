@@ -161,7 +161,11 @@ namespace server.Controllers
             {
                 ProfileModel model = new ProfileModel();
 
-                var user = _context.Users.Where(u => u.Email == email && u.Password == password).ToList()[0];
+                var userList = _context.Users.Where(u => u.Email == email && u.Password == password).ToList();
+                if (userList.Count() == 0){
+                    return RedirectToAction("Login");
+                }
+                User user = userList[0];
                 model.User = user;
 
                 HttpContext.Session.SetInt32(SessionUserId, user.UserId);
@@ -309,7 +313,7 @@ namespace server.Controllers
                 return NotFound();
             }
 
-            List<Post> posts = new List<Post>();
+            HashSet<Post> posts = new HashSet<Post>();
             
             foreach(Post post in _context.Posts.OrderByDescending(p => p.PostId))
             {
@@ -476,7 +480,7 @@ namespace server.Controllers
 
             var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
 
-            List<Post> posts = new List<Post>();
+            HashSet<Post> posts = new HashSet<Post>();
             foreach (Post post in _context.Posts.OrderByDescending(p=>p.PostId))
             {
                 if (post.PosterType == "venue")
@@ -486,6 +490,9 @@ namespace server.Controllers
                     {
                         Venue poster_profile = _context.Venues.Find(venueId);
                         post.Venue = poster_profile;
+                        if (post.Type == "gig") {
+                            post.Gig = _context.Gigs.Find(post.Ref_Id);
+                        }
                         posts.Add(post);
                     }
                 }
@@ -496,7 +503,7 @@ namespace server.Controllers
             model.ViewType = "venue";
             if (s.IsLoggedIn)
             {
-                model.IsOwner = s.UserID == model.Venue.UserId;
+                model.isOwner = s.UserID == model.Venue.UserId;
             }
 
             model.isLoggedIn = s.IsLoggedIn;
@@ -744,7 +751,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateGig(System.DateTime start_date, System.DateTime end_date, string repeat, string type, string description, int userID, int PosterIndex)
+        public async Task<IActionResult> CreateGig(System.DateTime start_date, System.DateTime end_date, string repeat, string genre, string description, int userID, int PosterIndex)
         {
             if (ModelState.IsValid)
             {
@@ -752,12 +759,14 @@ namespace server.Controllers
 
                 if (s.IsLoggedIn)
                 {
+                    Console.WriteLine("***");
+                    Console.WriteLine(PosterIndex);
                     Gig gig = new Gig();
                     gig.Gig_Date = start_date;
                     gig.Closed_Date = end_date;
-                    gig.Genre = type;
+                    gig.Genre = genre;
                     gig.Description = description;
-                    gig.VenueId = PosterIndex;
+                    gig.Venue = _context.Venues.Find(PosterIndex);
                     if (repeat == "Yes")
                     {
                         gig.Description = gig.Description + "\n This is a repeating gig";
@@ -937,7 +946,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> createPost([Bind("Text, PosterType, PosterIndex, Type")] Post post, ProfileModel model, string PosterType, int PosterIndex)
+        public async Task<IActionResult> createPost([Bind("Text, PosterType, PosterIndex, Type")] Post post, PageModel model, string PosterType, int PosterIndex)
         {
 
             if (ModelState.IsValid)

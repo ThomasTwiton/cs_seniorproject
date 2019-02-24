@@ -10,7 +10,6 @@ namespace server.Models
 {
     public class PluggedContext : DbContext
     {
-
         public PluggedContext() { }
 
         public PluggedContext(DbContextOptions<PluggedContext> options)
@@ -339,7 +338,7 @@ namespace server.Models
         public int VenueId { get; set; }
         public Venue Venue { get; set; }
 
-        public ICollection<Booked_Gig> Booked_Gig { get; set; }
+        //posts
     }
 
     public class Booked_Gig
@@ -371,7 +370,7 @@ namespace server.Models
         public int Ref_Id { get; set; }
 
         public Venue Venue { get; set; }
-        public Booked_Gig Booked_Gig { get; set; }
+        public Gig Gig { get; set; }
         public Ensemble Ensemble { get; set; }
         public Audition Audition { get; set; }
         public ProfileEnsemble Membership { get; set; }

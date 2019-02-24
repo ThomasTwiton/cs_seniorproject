@@ -9,42 +9,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace server.Models
 {
-    public class ProfileModel
+    public class PageModel
     {
-        //the profile we are displaying
-        public Profile Profile { get; set; }
-        //the image, its relative file path is stored in Profile.Pic_Url
-        public IFormFile File { get; set; }
-        //List of the Profile's Ensembles
-        public List<Ensemble> Ensembles { get; set; } 
-        public List<SelectListItem> Instruments { get; set; }
-        public List<String> SelectedInsIds { get; set; }
-        //Current user
-        public User User { get; set; }  
-        //Stores "profile", "ensemble", or "venue" so our View knows how to format
-        public String ViewType { get; set; }
-        //whether or not you own this page
-        public Boolean isOwner { get; set; }
-        //whether or not you are logged in
-        public Boolean isLoggedIn { get; set; }
-
-        // For the sake of our MVP demonstration, this is how we will load posts
-        public List<Post> Posts { get; set; }
-    }
-
-    public class EnsembleModel
-    {
-        //the profile we are displaying
-        public Ensemble Ensemble { get; set; }
-        //List of the Profile's Ensembles
-        public List<Profile> Profiles { get; set; }
         //the image, its relative file path is stored in Profile.Pic_Url
         public IFormFile File { get; set; }
         //Current user
-        public List<SelectListItem> Instruments { get; set; }
-        public List<String> SelectedInsId { get; set; }
-        //instrument that ensemble selected for audition
-        //all possible instruments
         public User User { get; set; }
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
@@ -54,28 +23,38 @@ namespace server.Models
         public Boolean isLoggedIn { get; set; }
         // For the sake of our MVP demonstration, this is how we will load posts
         public HashSet<Post> Posts { get; set; }
+    }
+    public class ProfileModel : PageModel
+    {
+        //the profile we are displaying
+        public Profile Profile { get; set; }
+        
+        //List of the Profile's Ensembles
+        public List<Ensemble> Ensembles { get; set; } 
+        public List<SelectListItem> Instruments { get; set; }
+        public List<String> SelectedInsIds { get; set; }        
+    }
+
+    public class EnsembleModel : PageModel
+    {
+        //the profile we are displaying
+        public Ensemble Ensemble { get; set; }
+        //List of the Profile's Ensembles
+        public List<Profile> Profiles { get; set; }
+       
+        public List<SelectListItem> Instruments { get; set; }
+        public List<String> SelectedInsId { get; set; }
+        //instrument that ensemble selected for audition
+        //all possible instrument
+ 
         public ICollection<Audition> Audition { get; set; }
 
     }
 
-    public class VenueModel
+    public class VenueModel : PageModel
     {
         //the venue begin displayed
         public Venue Venue { get; set; }
-        //Current user
-        public User User { get; set; }
-        //the image, its relative file path is stored in Profile.Pic_Url
-        public IFormFile File { get; set; }
-        //whether or not you own this page
-        public Boolean IsOwner { get; set; }
-        //whether or not you are logged in
-        public Boolean isLoggedIn { get; set; }
-        //Stores "profile", "ensemble", or "venue" so our View knows how to format
-        public String ViewType { get; set; }
-
-        // For the sake of our MVP demonstration, this is how we will load posts
-        public List<Post> Posts { get; set; }
-
     }
 
     public class AuditionModel
