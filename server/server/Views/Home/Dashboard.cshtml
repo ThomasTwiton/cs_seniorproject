@@ -1,0 +1,123 @@
+﻿@*@model server.Models.DashModel*@
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link href="https://unpkg.com/react-tabs@3/style/react-tabs.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <!--<script src="~/js/dash.js" type="text/jsx">
+    </script>-->
+    <!-- Load the react tabs component -->
+    <script src="https://unpkg.com/prop-types/prop-types.js"></script>
+    <script src="https://unpkg.com/react-tabs/dist/react-tabs.development.js"></script>
+
+}
+
+<div class="container">
+    <div class="row">
+        <h2>Dashboard</h2>
+    </div>
+
+    <div id="tabCC" class="row">
+
+    </div>
+</div>
+
+<script type="text/jsx">
+    const { Tabs, TabList, Tab, TabPanel } = ReactTabs;
+
+    const Component = (
+    <Tabs defaultIndex={0}>
+        <TabList>
+            <Tab>Previous ______</Tab>
+            <Tab>Pending ______</Tab>
+            <Tab>Manage _-_-_-_-</Tab>
+        </TabList>
+
+        <TabPanel>
+            <div class="row">
+                <table>
+                    <tr>
+                        <th>Instrument</th>
+                        <th>Date Posted</th>
+                        <th>Closing Date</th>
+                        <th>Number Applicants</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    @foreach (var a in Model.Auditions)
+                    {
+                    <tr>
+                        <td>@a.Instrument_Name</td>
+                        <td>@a.Open_Date</td>
+                        <td>@a.Closed_Date</td>
+                        <td>@a.Instrument</td>
+                        <td>@a.NumApplicants</td>
+                        <td><span class="glyphicon glyphicon-pencil"></span></td>
+                        <td><span class="glyphicon-remove"></span></td>
+
+                    </tr>
+                    }
+
+
+                </table>
+            </div>
+
+        </TabPanel>
+
+        <TabPanel>
+            <p>
+                <b>Mario</b> (<i>Japanese: マリオ Hepburn: Mario, [ma.ɾʲi.o]</i>) (<i>
+                    English:
+                    /ˈmɑːrioʊ/; Italian: [ˈmaːrjo]
+                </i>) is a fictional character in the Mario video
+                game franchise, owned by Nintendo and created by Japanese video game designer
+                Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist
+                of the series, Mario has appeared in over 200 video games since his creation.
+                Depicted as a short, pudgy, Italian plumber who resides in the Mushroom
+                Kingdom, his adventures generally center upon rescuing Princess Peach from the
+                Koopa villain Bowser. His younger brother and sidekick is Luigi.
+            </p>
+            <p>
+                Source:{' '}
+                <a href="https://en.wikipedia.org/wiki/Mario" target="_blank">
+                    Wikipedia
+                </a>
+            </p>
+        </TabPanel>
+
+        <TabPanel>
+            <p>
+                <b>Peach</b> (<i>Japanese: マリオ Hepburn: Mario, [ma.ɾʲi.o]</i>) (<i>
+                    English:
+                    /ˈmɑːrioʊ/; Italian: [ˈmaːrjo]
+                </i>) is a fictional character in the Mario video
+                game franchise, owned by Nintendo and created by Japanese video game designer
+                Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist
+                of the series, Mario has appeared in over 200 video games since his creation.
+                Depicted as a short, pudgy, Italian plumber who resides in the Mushroom
+                Kingdom, his adventures generally center upon rescuing Princess Peach from the
+                Koopa villain Bowser. His younger brother and sidekick is Luigi.
+            </p>
+            <p>
+                Source:{' '}
+                <a href="https://en.wikipedia.org/wiki/Mario" target="_blank">
+                    Wikipedia
+                </a>
+            </p>
+        </TabPanel>
+    </Tabs>
+    );
+
+
+    ReactDOM.render(Component,
+    document.getElementById('tabCC')
+    );
+</script>
+
+

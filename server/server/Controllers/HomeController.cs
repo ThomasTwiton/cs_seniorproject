@@ -959,5 +959,10 @@ namespace server.Controllers
 
         }
         
+
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
     }
 }
