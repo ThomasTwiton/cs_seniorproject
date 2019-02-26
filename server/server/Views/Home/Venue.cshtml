@@ -1,4 +1,4 @@
-﻿
+﻿@model server.Models.VenueModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -43,7 +43,7 @@
                     <td><a href=@*@Model.Venue.Website*@>@Model.Venue.Venue_Name</a></td>
                 </tr>
             </table>
-            @if (Model.IsOwner == true)
+            @if (Model.isOwner == true)
             {
                 <button style="width:100%;" class="btn btn-warning" onclick="showModal()">Create a Gig</button>
             }
@@ -51,10 +51,10 @@
 
         <div id="posts" class="col-xs-9">
             <div class="row">
-                @if (Model.IsOwner == true)
+                @if (Model.isOwner == true)
                 {
                     <div id="createPost" class="container">
-                        <form class="row" asp-action="CreatePost">
+                        <form class="row" asp-action="CreatePost" enctype="multipart/form-data">
                             <div class="col-xs-1">
                                 <img class="tinyPic" src="https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiP__7uhYffAhWhmeAKHSsYCPoQjRx6BAgBEAU&url=https%3A%2F%2Fwww.facebook.com%2Funclemartysinc%2F&psig=AOvVaw33ofUSp-_HCNUuBjlmOwzx&ust=1544042803984002" />
                             </div>
@@ -71,7 +71,7 @@
                                 <div id="postButtons" class="form-group">
                                     <button class="btn btn-primary">Post</button>
                                     <label class="btn btn-secondary">
-                                        Attach Media <input type="file" hidden>
+                                        Attach Media <input asp-for="File" name="File" type="file" hidden>
                                     </label>
                                 </div>
 
@@ -91,7 +91,7 @@
 
                     @if (p.Type == "gig")
                     {
-                        <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-hasmedia="@false" data-text="@p.Text" />
+                        <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-hasmedia="@false" data-text="@p.Text" data-gigid="@p.Gig.GigId" data-start="@p.Gig.Gig_Date" data-seeking="@p.Gig.Genre" data-end="@p.Gig.Closed_Date"/>
                     }
                     else if (p.Type == "aud")
                     {
@@ -113,7 +113,7 @@
             </div>
         </div>
 
-        @if (Model.IsOwner == true)
+        @if (Model.isOwner == true)
         {
 
             <div id="createModal" class="modal">
@@ -121,6 +121,11 @@
                 <div class="modal-content">
                     <span class="close" onclick="hideModal()">&times;</span>
                     <form asp-controller="Home" asp-action="CreateGig" method="post" class="container-fluid">
+                        <div style="display:none">
+                            <input name="PosterType" type="text" value="venue" />
+                            <input name="Type" type="text" value="post" />
+                            <input name="PosterIndex" type="text" value="@Model.Venue.VenueId" />
+                        </div>
                         <h2 style="text-align:center;font-weight:bold;">Got a gig?</h2>
                         <hr />
                         <div class="col-sm-6">
@@ -161,8 +166,8 @@
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="type">What kind of entertainment are you looking for?<span class="red-ast">*</span></label>
-                                    <input type="text" name="type" class="form-control" placeholder="Cover Band, Jazz Combo etc..." required />
+                                    <label for="genre">What kind of entertainment are you looking for?<span class="red-ast">*</span></label>
+                                    <input type="text" name="genre" class="form-control" placeholder="Cover Band, Jazz Combo etc..." required />
                                 </div>
                             </div>
                             <div class="row" style="margin-top:20px;">
