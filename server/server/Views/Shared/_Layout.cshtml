@@ -30,7 +30,6 @@
 
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">PluggedIn</a>
-                <a asp-action="audsearch">Find auditions</a>
 
 
             </div>
@@ -56,6 +55,7 @@
                 <form class="navbar-form" id="search" role="search">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Search">
+                        <button class="btn btn-primary" asp-action="audsearch"><span class="glyphicon glyphicon-search"></span></button>
                     </div>
                 </form>
             </div>

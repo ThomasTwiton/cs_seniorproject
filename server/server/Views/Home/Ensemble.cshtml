@@ -22,40 +22,50 @@
 <div class="container">
     <div class="row">
         <div id="profile" class="col-md-3">
-            <img id="profPic" src="@Model.Ensemble.Pic_Url" />
+            <div class="row">
+                <img id="profPic" src="@Model.Ensemble.Pic_Url" />
+            </div>
+
 
             @if (Model.isOwner == true)
             {
-                <div>
+                <div class="row">
                     <a asp-action="Edit" asp-route-id="@Model.Ensemble.EnsembleId">Edit</a>
                 </div>
             }
 
-            <div id="bio">
+            <div id="bio" class="row">
                 @Model.Ensemble.Bio
-
-
             </div>
-            <div id="auditions">
-                @foreach (var ins in Model.Ensemble.Audition)
-                {
-                    <h1>@ins.AuditionId</h1>
-                    <h1>@ins.Instrument.Instrument_Name</h1>
-                    <h1>@ins.Open_Date</h1>
-                    <h1>@ins.Closed_Date</h1>
-                    <h1>@ins.Audition_Location</h1>
-                    <h1>@ins.Audition_Description</h1>
-                    <a asp-action="Audition" asp-route-id="@ins.AuditionId">  PLUG IN  </a>
-                }
-
-
-            </div>
-            <div id="location">
+            <div id="location" class="row">
                 <span class="glyphicon glyphicon-map-marker"></span>
                 @Model.Ensemble.City
             </div>
-            <hr />
-            <div id="ensembles">
+
+            @if (Model.Ensemble.Audition.Count > 0)
+            {
+                <div class="row"><h4>Open Auditions:</h4></div>
+                <div id="openAuditions" class="row">
+
+                    @foreach (var ins in Model.Ensemble.Audition)
+                    {
+                        <div class="row">
+                            <div class="col-xs-6">
+                                @ins.Instrument.Instrument_Name
+                            </div>
+                            <div class="col-xs-6">
+                                <a class="btn btn-danger" asp-action="Audition" asp-route-id="@ins.AuditionId">Plug In!</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="row less-space">
+                <hr style="width:100%;" />
+            </div>
+
+            <div id="ensembles" class="row">
                 @foreach (var item in Model.Profiles)
                 {
                     <Member data-id="@item.ProfileId" data-avatarurl="@item.Pic_Url" data-name="@item.First_Name @item.Last_Name" />
