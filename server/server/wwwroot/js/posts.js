@@ -16,7 +16,7 @@
 //         * different ids depending on whether a profile is an
 //         * ensemble, venue or profile.
 //        */
-        
+
 //        switch (profileType) {
 //            case "ensemble":
 //                this.getPostLink = "api/getAllPosts"
@@ -97,7 +97,7 @@ function Post(props) {
             <Avatar user={props.author} />
             <PostBody post={props.post} />
         </div>
-     );
+    );
 }
 
 function Avatar(props) {
@@ -140,7 +140,7 @@ function BasicBody(props) {
 
 function GigBody(props) {
     // The body of a type='gig' component.
-    const link = "Gig/" + props.post.info.id.toString();
+    const link = "/Home/Gig/" + props.post.info.id.toString();
     return (
         <div className="col-xs-11">
             <div className="textContainer">
@@ -171,7 +171,6 @@ function GigBody(props) {
         </div>
     );
 }
-
 function AuditionBody(props) {
     // The body of a type='aud' component.
     const link = "/Home/Audition/" + props.post.info.id.toString();
@@ -261,7 +260,7 @@ function aggPosts() {
             post: {
                 text: m.dataset.text,
                 type: m.dataset.type,
-                
+
             }
         };
         let info
