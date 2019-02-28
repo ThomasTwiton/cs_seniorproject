@@ -240,19 +240,6 @@ namespace server.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult audsearch()
-        {
-            AuditionSearch model = new AuditionSearch();
-            var auditions = _context.Auditions.ToList();
-            foreach(Audition aud in auditions)
-            {
-                aud.Ensemble = _context.Ensembles.Find(aud.EnsembleId);
-                aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
-            }
-            model.Auditions = auditions;
-            return View(model);
-        }
-
         public IActionResult Profile(int? id)
         {
             /* This action method displays the profile for the user with 
@@ -1021,6 +1008,70 @@ namespace server.Controllers
             //This is bad !!! X.X
             return View("Index");
 
+        }
+
+        public IActionResult Search(string type, string query)
+        {
+            Console.WriteLine("***");
+            Console.WriteLine(query);
+            Console.WriteLine("***");
+            SearchModel model = new SearchModel();
+
+
+            HashSet<Audition> audresult = new HashSet<Audition>();
+            HashSet<Gig> gigresult = new HashSet<Gig>();
+            HashSet<Profile> profileresult = new HashSet<Profile>();
+            HashSet<Ensemble> ensembleresult = new HashSet<Ensemble>();
+            HashSet<Venue> venueresult = new HashSet<Venue>();
+
+            string[] wordList = query.Split();
+            foreach (String word in wordList)
+            {
+                //Auditions--find by instrument
+                List<Audition> auditions = _context.Auditions.Where(a => a.Instrument_Name == word).ToList();
+                foreach (Audition aud in auditions)
+                {
+                    audresult.Add(aud);
+                }
+                //Gigs--find by genre
+                List<Gig> gigs = _context.Gigs.Where(g => g.Genre == word || g.Genre ==query).ToList();
+                foreach (Gig gig in gigs)
+                {
+                    gigresult.Add(gig);
+                }
+                //Profiles--find by name, instrument
+                List<Profile> profiles = _context.Profiles.Where(p => p.First_Name == word || p.Last_Name == word).ToList();
+                foreach (Profile profile in profiles)
+                {
+                    profileresult.Add(profile);
+                }
+                List<Plays_Instrument> profByInstr = _context.Plays_Instruments.Where(pi => pi.Instrument.Instrument_Name == word).ToList();
+                foreach (Plays_Instrument pi in profByInstr)
+                {
+                    profileresult.Add(_context.Profiles.Find(pi.ProfileId));
+                }
+                //Ensembles--find by name, genre
+                List<Ensemble> ensembles = _context.Ensembles.Where(e => e.Ensemble_Name == word || e.Ensemble_Name == query || e.Genre == word || e.Genre == query || e.Type == word || e.Genre == query).ToList();
+                foreach (Ensemble e in ensembles)
+                {
+                    ensembleresult.Add(e);
+                }
+                //Venues--find by name
+                List<Venue> venues = _context.Venues.Where(v => v.Venue_Name == word || v.Venue_Name == query).ToList();
+                foreach(Venue v in venues)
+                {
+                    venueresult.Add(v);
+                }
+            }
+
+            model.Auditions = audresult;
+            model.Gigs = gigresult;
+            model.Profiles = profileresult;
+            model.Ensembles = ensembleresult;
+            model.Gigs = gigresult;
+            model.Venues = venueresult;
+         
+            return View(model);
         }
 
     }

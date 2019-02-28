@@ -65,13 +65,8 @@ namespace server.Models
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
 
-        public List<Profile> Profiles { get; set; }
+        public ICollection<Profile> Profiles { get; set; }
 
-    }
-
-    public class AuditionSearch
-    {
-        public List<Audition> Auditions { get; set; }
     }
 
     public class GigModel
@@ -93,5 +88,14 @@ namespace server.Models
         //public int ViewID { get; set; }
         public bool IsLoggedIn { get; set; }
         public string PrevAction { get; set; }
+    }
+
+    public class SearchModel {
+        public HashSet<Audition> Auditions { get; set; }
+        public HashSet<Gig> Gigs { get; set; }
+        public HashSet<Profile> Profiles { get; set; }
+        public HashSet<Ensemble> Ensembles { get; set; }
+        public HashSet<Venue> Venues { get; set; }
+        public String BugMessage { get; set; }
     }
 }
