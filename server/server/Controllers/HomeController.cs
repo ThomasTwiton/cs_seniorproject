@@ -1023,9 +1023,30 @@ namespace server.Controllers
 
         }
         
-        public IActionResult Dashboard()
+        public IActionResult Dashboard(int id)
         {
-            return View();
+            SessionModel s = GetSessionInfo(HttpContext.Session);
+
+            if (s.IsLoggedIn)
+            {
+                Ensemble ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).First();
+
+                if (s.UserID == ensemble.UserId)
+                {
+                    EnsembleDashModel model = new EnsembleDashModel();
+
+                    model.Ensemble = ensemble;
+                    model.AuditionList = _context.Auditions.Where(u => u.EnsembleId == id).ToList();
+                    model.Members = _context.ProfileEnsembles.Include("Profile").Where(pe => pe.EnsembleId == ensemble.EnsembleId).ToList();
+
+                    return View(model);
+                }
+
+                return RedirectToAction("Ensemble", new { id = id });
+            }
+
+            return RedirectToAction("Login");
+
         }
     }
 }

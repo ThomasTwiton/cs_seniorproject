@@ -1,4 +1,4 @@
-﻿@*@model server.Models.DashModel*@
+﻿@model server.Models.EnsembleDashModel
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -7,6 +7,7 @@
 
 @section Stylesheets {
     <link href="https://unpkg.com/react-tabs@3/style/react-tabs.css" rel="stylesheet">
+    <link href="~/css/dash.css" rel="stylesheet" />
 }
 
 @section Scripts {
@@ -20,55 +21,25 @@
 
 <div class="container">
     <div class="row">
-        <h2>Dashboard</h2>
+        <h2>@Model.Ensemble.Ensemble_Name Dashboard</h2>
     </div>
 
     <div id="tabCC" class="row">
 
     </div>
+    <!--Model.AuditionNumbers[Model.AuditionList[i].AuditionId]-->
 </div>
 
 <script type="text/jsx">
     const { Tabs, TabList, Tab, TabPanel } = ReactTabs;
 
     const Component = (
-    <Tabs defaultIndex={0}>
+    <Tabs defaultIndex={1}>
         <TabList>
-            <Tab>Previous ______</Tab>
-            <Tab>Pending ______</Tab>
-            <Tab>Manage _-_-_-_-</Tab>
+            <Tab>Previous Auditions</Tab>
+            <Tab>Pending Auditions</Tab>
+            <Tab>Manage Members</Tab>
         </TabList>
-
-        <TabPanel>
-            <div class="row">
-                <table>
-                    <tr>
-                        <th>Instrument</th>
-                        <th>Date Posted</th>
-                        <th>Closing Date</th>
-                        <th>Number Applicants</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                    @foreach (var a in Model.Auditions)
-                    {
-                    <tr>
-                        <td>@a.Instrument_Name</td>
-                        <td>@a.Open_Date</td>
-                        <td>@a.Closed_Date</td>
-                        <td>@a.Instrument</td>
-                        <td>@a.NumApplicants</td>
-                        <td><span class="glyphicon glyphicon-pencil"></span></td>
-                        <td><span class="glyphicon-remove"></span></td>
-
-                    </tr>
-                    }
-
-
-                </table>
-            </div>
-
-        </TabPanel>
 
         <TabPanel>
             <p>
@@ -92,24 +63,65 @@
         </TabPanel>
 
         <TabPanel>
-            <p>
-                <b>Peach</b> (<i>Japanese: マリオ Hepburn: Mario, [ma.ɾʲi.o]</i>) (<i>
-                    English:
-                    /ˈmɑːrioʊ/; Italian: [ˈmaːrjo]
-                </i>) is a fictional character in the Mario video
-                game franchise, owned by Nintendo and created by Japanese video game designer
-                Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist
-                of the series, Mario has appeared in over 200 video games since his creation.
-                Depicted as a short, pudgy, Italian plumber who resides in the Mushroom
-                Kingdom, his adventures generally center upon rescuing Princess Peach from the
-                Koopa villain Bowser. His younger brother and sidekick is Luigi.
-            </p>
-            <p>
-                Source:{' '}
-                <a href="https://en.wikipedia.org/wiki/Mario" target="_blank">
-                    Wikipedia
-                </a>
-            </p>
+            <div class="container">
+                <div class="row">
+                    <h2>Auditions</h2>
+                </div>
+                <div class="row">
+                    <table class="table nonfluid-table">
+                        <tr>
+                            <th>Instrument</th>
+                            <th>Date Posted</th>
+                            <th>Closing Date</th>
+                            <th>Number Applicants</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                        @for (var i = 0; i < Model.AuditionList.Count; i++)
+                        {
+                            <tr>
+                                <td>@Model.AuditionList[i].Instrument_Name</td>
+                                <td>@Model.AuditionList[i].Open_Date</td>
+                                <td>@Model.AuditionList[i].Closed_Date</td>
+                                <td>NotCalculated</td>
+                                <td><span class="glyphicon glyphicon-pencil"></span></td>
+                                <td><span class="glyphicon-remove"></span></td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div id="profiles" class="row">
+
+                </div>
+            </div>
+        </TabPanel>
+
+        <TabPanel>
+            <div class="container">
+                <div class="row">
+                    <h2>Members</h2>
+                </div>
+                <div class="row">
+                    <table class="table nonfluid-table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Instrument</th>
+                            <th>Date Joined</th>
+                            <th>Remove</th>
+                        </tr>
+
+                        @foreach (var mem in Model.Members)
+                        {
+                            <tr>
+                                <td>@mem.Profile.First_Name @mem.Profile.Last_Name</td>
+                                <td>How do we display mulitple entries? Is this necessary?</td>
+                                <td>@mem.Start_Date</td>
+                                <td><span class="glyphicon-remove"></span></td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
         </TabPanel>
     </Tabs>
     );
