@@ -73,8 +73,8 @@ namespace server.Models
     {
         //Stores "profile", "ensemble", or "venue" so our View knows how to format
         public String ViewType { get; set; }
-        public Venue venue { get; set; }
-        public Gig gig { get; set; }
+        public Venue Venue { get; set; }
+        public Gig Gig { get; set; }
     }
 
     public class SessionModel
@@ -96,6 +96,6 @@ namespace server.Models
         public HashSet<Profile> Profiles { get; set; }
         public HashSet<Ensemble> Ensembles { get; set; }
         public HashSet<Venue> Venues { get; set; }
-        public String BugMessage { get; set; }
+        public String Query { get; set; }
     }
 }

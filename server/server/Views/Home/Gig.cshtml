@@ -1,0 +1,99 @@
+﻿@model server.Models.GigModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/profile.css" />
+}
+
+@section Scripts {
+    <script src="~/js/ensemble.js" type="text/jsx">
+    </script>
+    <script>
+        var profileType = "@Model.ViewType";
+    </script>
+}
+
+<div class="container">
+    <div class="row">
+        <div id="profile" class="col-md-3">
+            <img id="profPic" src="@Model.Venue.Pic_Url" />
+            <div id="bio">
+                @Model.Venue.Bio
+            </div>
+            <div id="location">
+                <span class="glyphicon glyphicon-map-marker"></span>
+                @Model.Venue.City
+            </div>
+            <hr />
+        </div>
+
+        <div id="posts" class="col-md-9">
+            <div class="row">
+                <div class="col">
+                    <h1 id="name">@Model.Venue.Venue_Name</h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <hr />
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="audInfo" class="container bordered">
+                    <div class="row">
+                        <h2 id="name">We're looking for a performer!</h2>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Type:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @Model.Gig.Genre
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Gig begins:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @Model.Gig.Gig_Date
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Gig completes:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @Model.Gig.Closed_Date
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Location:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @Model.Venue.Venue_Name
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <span class="bold">Description:</span>
+                        </div>
+                        <div class="col-xs-6">
+                            @Model.Gig.Description
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

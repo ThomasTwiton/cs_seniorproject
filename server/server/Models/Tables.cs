@@ -38,6 +38,18 @@ namespace server.Models
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email).IsUnique();
 
+            modelBuilder.Entity<Profile>()
+                .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+            modelBuilder.Entity<Ensemble>()
+                 .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+            modelBuilder.Entity<Venue>()
+                .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+
+            modelBuilder.Entity<Gig>()
+                .Property(g => g.Closed_Date).HasDefaultValue(System.DateTime.Now.AddMonths(1));
+            modelBuilder.Entity<Audition>()
+                .Property(g => g.Closed_Date).HasDefaultValue(System.DateTime.Now.AddMonths(1));
+
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasKey(em => new { em.ProfileId, em.EnsembleId });
 

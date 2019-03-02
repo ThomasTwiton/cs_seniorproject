@@ -516,15 +516,19 @@ namespace server.Controllers
                 HttpContext.Session.SetInt32(SessionUserId, user.UserId);
                 SessionModel s = GetSessionInfo(HttpContext.Session);
 
-                var lst = new List<string>();
-                foreach (Instrument i in _context.Instruments)
-                {
-                    lst.Add(i.Instrument_Name);
-                }
 
-                ViewData["Instruments"] = lst;
+                ProfileModel model = new ProfileModel();
+
+                model.Instruments = new List<SelectListItem>();
+                model.SelectedInsIds = new List<String>();
+                foreach (Instrument i in _context.Instruments.ToList())
+                {
+                    var ins_name = i.Instrument_Name;
+                    SelectListItem chk_ins = new SelectListItem { Text = i.Instrument_Name, Value = i.InstrumentId.ToString() };
+                    model.Instruments.Add(chk_ins);
+                }
                 ViewData["id"] = user.UserId;
-                return View("CreateProfile");
+                return View("CreateProfile", model);
             }
 
             return View("index");
@@ -532,7 +536,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateProfile(string pName, System.DateTime pBirthday, string pCity, string pState, string pBio, int userID)
+        public async Task<IActionResult> CreateProfile(string pName, string pCity, string pState, string pBio, int userID, ProfileModel model)
         {
             if (ModelState.IsValid)
             {
@@ -542,8 +546,16 @@ namespace server.Controllers
                 {
                     Profile profile = new Profile();
                     string[] nameList = pName.Split();
-                    profile.First_Name = nameList[0];
-                    profile.Last_Name = nameList[1];
+                    if (nameList.Count()< 2)
+                    {
+                        profile.First_Name = nameList[0];
+                    } else
+                    {
+                        profile.First_Name = nameList[0];
+                        profile.Last_Name = nameList[nameList.Length-1];
+                    }
+
+                    
                     profile.City = pCity;
                     profile.State = pState;
                     profile.Bio = pBio;
@@ -551,6 +563,39 @@ namespace server.Controllers
 
                     _context.Add(profile);
                     await _context.SaveChangesAsync();
+
+                    Console.WriteLine("***");
+                    profile.Plays_Instrument = new List<Plays_Instrument>();
+
+                    foreach (String ins in model.SelectedInsIds)
+                    {
+
+                        Plays_Instrument pi = new Plays_Instrument();
+                        pi.Profile = profile;
+                        pi.ProfileId = pi.Profile.ProfileId;
+                        pi.Instrument = _context.Instruments.Find(int.Parse(ins));
+                        pi.InstrumentId = int.Parse(ins);
+
+                        profile.Plays_Instrument.Add(pi);
+                    }
+                    await _context.SaveChangesAsync();
+
+                    if (model.File != null)
+                    {
+                        string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                        var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
+                        var filePath = Path.Combine(uploads, fileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.File.CopyToAsync(fileStream);
+                        }
+                        profile.Pic_Url = "/images/uploads/" + fileName;
+
+
+                        await _context.SaveChangesAsync();
+                    }
+
+                    Console.WriteLine("***");
 
                     return RedirectToAction("Profile", new { id = profile.ProfileId });
                 }
@@ -566,7 +611,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateEnsemble(string eName, System.DateTime eFormed, System.DateTime eDisbanded, string eCity, string eBio, string eState, string eType, string eGenre, int userID)
+        public async Task<IActionResult> CreateEnsemble(string eName, System.DateTime eFormed, System.DateTime eDisbanded, string eCity, string eBio, string eState, string eType, string eGenre, int userID, ProfileModel model)
         {
 
             if (ModelState.IsValid)
@@ -585,6 +630,21 @@ namespace server.Controllers
                     ensemble.City = eCity;
                     ensemble.State = eState;
                     ensemble.User = _context.Users.Find(userID);
+
+                    if (model.File != null)
+                    {
+                        string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                        var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
+                        var filePath = Path.Combine(uploads, fileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.File.CopyToAsync(fileStream);
+                        }
+                        ensemble.Pic_Url = "/images/uploads/" + fileName;
+
+
+                        await _context.SaveChangesAsync();
+                    }
 
                     if (ModelState.IsValid)
                     {
@@ -606,7 +666,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateVenue(string vName, System.DateTime vFormed, string vAddr1, string vCity, string vState, string vPhone, string vWeb, string vBio, int userID)
+        public async Task<IActionResult> CreateVenue(string vName, System.DateTime vFormed, string vAddr1, string vCity, string vState, string vPhone, string vWeb, string vBio, int userID, ProfileModel model)
         {
             if (ModelState.IsValid)
             {
@@ -621,6 +681,22 @@ namespace server.Controllers
                     venue.State = vState;
                     venue.Bio = vBio;
                     venue.User = _context.Users.Find(userID);
+
+                    if (model.File != null)
+                    {
+                        string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                        var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
+                        var filePath = Path.Combine(uploads, fileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.File.CopyToAsync(fileStream);
+                        }
+                        venue.Pic_Url = "/images/uploads/" + fileName;
+
+
+                        await _context.SaveChangesAsync();
+                    }
+
                     _context.Venues.Add(venue);
                     await _context.SaveChangesAsync();
 
@@ -689,6 +765,30 @@ namespace server.Controllers
             
         }
 
+        public async Task<IActionResult> Gig(int id)
+        {
+            SessionModel s = GetSessionInfo(HttpContext.Session);
+
+            if (s.IsLoggedIn)
+            {
+                GigModel model = new GigModel();
+
+                var gig = _context.Gigs.Where(g => g.GigId == id).ToList()[0];
+                var ven = _context.Venues.Where(v => v.VenueId == gig.VenueId).ToList()[0];
+
+                model.Gig = gig;
+                model.Venue = ven;
+                model.ViewType = "venue";
+
+                return View(model);
+
+            }
+
+            // If not logged in
+            HttpContext.Session.SetString(SessionPrevAct, "/Home/Audition/" + id.ToString());
+            return RedirectToAction("Login");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAudition(System.DateTime audition_date, System.DateTime closed_date, string location, string description, string eCity, int userID, int ensId, int selectedInsId)
@@ -740,53 +840,47 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateGig(System.DateTime start_date, System.DateTime end_date, string repeat, string genre, string description, int userID, int PosterIndex)
-        {
-            if (ModelState.IsValid)
+        public async Task<IActionResult> CreateGig(System.DateTime start_date, System.DateTime end_date, System.TimeSpan time, string repeat, string genre, string description, int userID, int PosterIndex)
+        {            
+            SessionModel s = GetSessionInfo(HttpContext.Session);
+
+            if (s.IsLoggedIn)
             {
-                SessionModel s = GetSessionInfo(HttpContext.Session);
-
-                if (s.IsLoggedIn)
+                Console.WriteLine("***");
+                Gig gig = new Gig();
+                gig.Gig_Date = start_date + time;
+                Console.WriteLine(end_date);
+                gig.Closed_Date = end_date;
+                gig.Genre = genre;
+                gig.Description = description;
+                gig.Venue = _context.Venues.Find(PosterIndex);
+                if (repeat == "Yes")
                 {
-                    Console.WriteLine("***");
-                    Console.WriteLine(PosterIndex);
-                    Gig gig = new Gig();
-                    gig.Gig_Date = start_date;
-                    gig.Closed_Date = end_date;
-                    gig.Genre = genre;
-                    gig.Description = description;
-                    gig.Venue = _context.Venues.Find(PosterIndex);
-                    if (repeat == "Yes")
-                    {
-                        gig.Description = gig.Description + "\n This is a repeating gig";
-                    }
-
-                    Post post = new Post();
-                    post.Text = description;
-                    post.PosterType = "venue";
-                    post.PosterIndex = PosterIndex;
-                    post.Type = "gig";
-
-
-                    _context.Add(gig);
-                    await _context.SaveChangesAsync();
-
-                    //can't get the audition id until audition is saved to the database
-                    post.Ref_Id = gig.GigId;
-                    _context.Add(post);
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction("Venue", new { id = PosterIndex });
+                    gig.Description = gig.Description + "\n This is a repeating gig";
                 }
 
-                // If not logged in
-                HttpContext.Session.SetString(SessionPrevAct, "/Home/Venue/" + PosterIndex.ToString());
-                return RedirectToAction("Login");
+                Post post = new Post();
+                post.Text = description;
+                post.PosterType = "venue";
+                post.PosterIndex = PosterIndex;
+                post.Type = "gig";
 
+
+                _context.Add(gig);
+                await _context.SaveChangesAsync();
+
+                //can't get the audition id until audition is saved to the database
+                post.Ref_Id = gig.GigId;
+                _context.Add(post);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Venue", new { id = PosterIndex });
             }
 
-            // If ModelState is not valid
-            return RedirectToAction("Index"); ;
+            // If not logged in
+            HttpContext.Session.SetString(SessionPrevAct, "/Home/Venue/" + PosterIndex.ToString());
+            return RedirectToAction("Login");
+
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -1051,7 +1145,7 @@ namespace server.Controllers
                     profileresult.Add(_context.Profiles.Find(pi.ProfileId));
                 }
                 //Ensembles--find by name, genre
-                List<Ensemble> ensembles = _context.Ensembles.Where(e => e.Ensemble_Name == word || e.Ensemble_Name == query || e.Genre == word || e.Genre == query || e.Type == word || e.Genre == query).ToList();
+                List<Ensemble> ensembles = _context.Ensembles.Where(e => e.Ensemble_Name == word || e.Ensemble_Name == query || e.Genre == word || e.Genre == query || e.Type == word || e.Type == query).ToList();
                 foreach (Ensemble e in ensembles)
                 {
                     ensembleresult.Add(e);
@@ -1070,6 +1164,7 @@ namespace server.Controllers
             model.Ensembles = ensembleresult;
             model.Gigs = gigresult;
             model.Venues = venueresult;
+            model.Query = query;
          
             return View(model);
         }
