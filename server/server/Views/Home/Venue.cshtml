@@ -90,7 +90,7 @@
 
                     @if (p.Type == "gig")
                     {
-                        <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-hasmedia="@false" data-text="@p.Text" data-gigid="@p.Gig.GigId" data-start="@p.Gig.Gig_Date" data-seeking="@p.Gig.Genre" data-end="@p.Gig.Closed_Date"/>
+                        <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-hasmedia="@false" data-text="@p.Text" data-gigid="@p.Gig.GigId" data-start="@p.Gig.Gig_Date" data-genre="@p.Gig.Genre" data-end="@p.Gig.Closed_Date"/>
                     }
                     else if (p.Type == "aud")
                     {

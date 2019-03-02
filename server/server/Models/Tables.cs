@@ -49,6 +49,8 @@ namespace server.Models
                 .Property(g => g.Closed_Date).HasDefaultValue(System.DateTime.Now.AddMonths(1));
             modelBuilder.Entity<Audition>()
                 .Property(g => g.Closed_Date).HasDefaultValue(System.DateTime.Now.AddMonths(1));
+            modelBuilder.Entity<Ensemble>()
+                .Property(e => e.Disbanded_Date).HasDefaultValue(new System.DateTime(9999, 12, 31));
 
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasKey(em => new { em.ProfileId, em.EnsembleId });

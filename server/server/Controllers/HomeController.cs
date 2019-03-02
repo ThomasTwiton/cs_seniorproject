@@ -507,6 +507,12 @@ namespace server.Controllers
             /* This action method creates a new user in the database
              *  and moves the user to the profile creation view.
              */
+
+            //if email already registered
+            if (_context.Users.Where(u => u.Email == email).ToList().Count() > 0) {
+                return View("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(user);
@@ -1060,7 +1066,7 @@ namespace server.Controllers
                         img_extensions.Add("jpg");
                         img_extensions.Add("gif");
                         audio_extensions.Add("mp3");
-                        audio_extensions.Add("mp4");
+                        video_extensions.Add("mp4");
                         video_extensions.Add("mov");
                         if (img_extensions.Contains(fileName.Substring(fileName.Length - 3)))
                         {
