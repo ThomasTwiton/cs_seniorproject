@@ -148,10 +148,29 @@ namespace server.Controllers
             public string EnsembleId { get; set; }
         }
 
+        public class AddProfiletoAudition
+        {
+            public string ProfileId { get; set; }
+            public string AuditionId { get; set; }
+        }
+
         public class RemoveProfileEnsemble
         {
             public string ProfileId { get; set; }
             public string EnsembleId { get; set; }
+        }
+
+        public class AcceptApplicant
+        {
+            public string AuditionId { get; set; }
+            public string ProfileId { get; set; }
+            public string EnsembleId { get; set; }
+        }
+
+        public class RemoveApplicant
+        {
+            public string AuditionId { get; set; }
+            public string ProfileId { get; set; }
         }
 
         //Add a profile to an ensemble
@@ -159,9 +178,6 @@ namespace server.Controllers
         public async Task<IActionResult> addProfile(AddProfiletoEnsemble addition)
         {
             var name = addition.name.Split();
-            Console.WriteLine(name[0]);
-            Console.WriteLine(name[1]);
-            Console.WriteLine(addition.EnsembleId);
             var Profiles = _context.Profiles.Where(p => p.First_Name == name[0] && p.Last_Name == name[1]).ToList();
 
             foreach(Profile profile in Profiles)
@@ -186,6 +202,53 @@ namespace server.Controllers
 
         }
 
+        //Add a profile to an audition
+        [HttpPost("addApplicant")]
+        public async Task<IActionResult> addApplicant(AddProfiletoAudition addition)
+        {
+
+            AuditionProfile audprof = new AuditionProfile();
+            audprof.AuditionId = int.Parse(addition.AuditionId);
+            audprof.Audition = _context.Auditions.Find(int.Parse(addition.AuditionId));
+            audprof.ProfileId = int.Parse(addition.ProfileId);
+            audprof.Profile = _context.Profiles.Find(int.Parse(addition.ProfileId));
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(audprof);
+                await _context.SaveChangesAsync();
+            }
+
+            return NoContent();
+
+        }
+
+        //Accept a profile from an audition into an ensemble.
+        [HttpPost("acceptApplicant")]
+        public async Task<IActionResult> acceptApplicant(AcceptApplicant applicant)
+        {
+
+            var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
+
+            ProfileEnsemble profens = new ProfileEnsemble();
+            profens.Start_Date = System.DateTime.Now;
+            profens.End_Date = System.DateTime.MaxValue;
+            profens.ProfileId = profile.ProfileId;
+            profens.Profile = profile;
+            profens.Ensemble = _context.Ensembles.Find(int.Parse(applicant.EnsembleId));
+            profens.EnsembleId = int.Parse(applicant.EnsembleId);
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(profens);
+                await _context.SaveChangesAsync();
+            }
+
+            return NoContent();
+
+        }
+
+
 
         //Remove a profile from an ensemble.
         [HttpPost("remProfile")]
@@ -193,6 +256,19 @@ namespace server.Controllers
         {
             var prof_ens = _context.ProfileEnsembles.Where(p => p.EnsembleId == int.Parse(rm.EnsembleId) && p.ProfileId == int.Parse(rm.ProfileId)).ToList()[0];
             _context.Remove(prof_ens);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+
+        }
+
+
+        //Remove an applicant from an audition.
+        [HttpPost("remApplicant")]
+        public async Task<IActionResult> removeApplicant(RemoveApplicant rm)
+        {
+            var aud_prof = _context.AuditionProfiles.Where(p => p.AuditionId == int.Parse(rm.AuditionId) && p.ProfileId == int.Parse(rm.ProfileId)).ToList()[0];
+            _context.Remove(aud_prof);
             await _context.SaveChangesAsync();
 
             return NoContent();
