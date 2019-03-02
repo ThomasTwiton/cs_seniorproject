@@ -2,3 +2,11 @@
     max-width: 80% !important;
     margin: auto;
 }
+
+.glyphicon-pencil {
+    color: var(--bkg-gold);
+}
+
+.glyphicon-remove {
+    color: var(--bkg-red);
+}
