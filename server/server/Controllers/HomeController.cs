@@ -163,7 +163,7 @@ namespace server.Controllers
 
                 var userList = _context.Users.Where(u => u.Email == email && u.Password == password).ToList();
                 if (userList.Count() == 0){
-                    return RedirectToAction("Login");
+                    return RedirectToAction("Index");
                 }
                 User user = userList[0];
                 model.User = user;
@@ -1062,12 +1062,14 @@ namespace server.Controllers
                         HashSet<string> img_extensions = new HashSet<string>();
                         HashSet<string> audio_extensions = new HashSet<string>();
                         HashSet<string> video_extensions = new HashSet<string>();
+                        HashSet<string> resume_extensions = new HashSet<string>();
                         img_extensions.Add("png");
                         img_extensions.Add("jpg");
                         img_extensions.Add("gif");
                         audio_extensions.Add("mp3");
                         video_extensions.Add("mp4");
                         video_extensions.Add("mov");
+                        resume_extensions.Add("pdf");
                         if (img_extensions.Contains(fileName.Substring(fileName.Length - 3)))
                         {
                             post.MediaType = "img";
@@ -1079,6 +1081,10 @@ namespace server.Controllers
                         if (video_extensions.Contains(fileName.Substring(fileName.Length - 3)))
                         {
                             post.MediaType = "video";
+                        }
+                        if (resume_extensions.Contains(fileName.Substring(fileName.Length - 3)))
+                        {
+                            post.MediaType = "resume";
                         }
                     }
 

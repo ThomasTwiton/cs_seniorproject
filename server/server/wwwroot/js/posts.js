@@ -233,6 +233,10 @@ function PostMedia(props) {
         media = (
             <a href={props.media.url}>Watch!</a>
             //<video src={props.media.url} />
+        );
+    } else if (mediaType === "resume") {
+        media = (
+            <a href={props.media.url}>Resume</a>
             );
     }
     return (
