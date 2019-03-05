@@ -163,7 +163,8 @@ namespace server.Controllers
 
                 var userList = _context.Users.Where(u => u.Email == email && u.Password == password).ToList();
                 if (userList.Count() == 0){
-                    return RedirectToAction("Index");
+                    ViewData["Error"] = "Username and password do not match";
+                    return View("Index");
                 }
                 User user = userList[0];
                 model.User = user;
@@ -510,6 +511,7 @@ namespace server.Controllers
 
             //if email already registered
             if (_context.Users.Where(u => u.Email == email).ToList().Count() > 0) {
+                ViewData["Error"] = "Email already registered";
                 return View("Index");
             }
 
