@@ -1,0 +1,197 @@
+﻿@model server.Models.EnsembleDashModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link href="https://unpkg.com/react-tabs@3/style/react-tabs.css" rel="stylesheet">
+    <link href="~/css/dash.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/dash.js" type="text/javascript">
+    </script>
+    <!-- Load the react tabs component -->
+    <script src="https://unpkg.com/prop-types/prop-types.js"></script>
+    <script src="https://unpkg.com/react-tabs/dist/react-tabs.development.js"></script>
+
+}
+
+    <div class="container">
+        <div class="row">
+            <h2>@Model.Ensemble.Ensemble_Name Dashboard</h2>
+        </div>
+
+        <div id="tabCC" class="row">
+
+        </div>
+        <!--Model.AuditionNumbers[Model.AuditionList[i].AuditionId]-->
+
+        <div id="createModal" class="modal">
+
+            <div class="modal-content">
+                <span class="close" onclick="hideModal()">&times;</span>
+                <form class="container-fluid">
+                    <div style="display:none">
+                        <input name="audID" type="text" />
+                        <!-- This value should get set via javascript before the modal is displayed -->
+                    </div>
+                    <h2 style="text-align:center;font-weight:bold;">Update Audition Information</h2>
+                    <hr />
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="audition_date">Auditions Begin<span class="red-ast">*</span></label>
+                                    <input type="date" name="audition_date" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="closed_date">Auditions Close<span class="red-ast">*</span></label>
+                                    <input type="date" name="closed_date" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <small class="form-text text-muted">
+                                The closing date should be the day <em>after</em> the last day of auditions. No auditions should be held on the closed date.
+                            </small>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="location">Audition Location<span class="red-ast">*</span></label>
+                                <input type="text" class="form-control" name="location" placeholder="Nobal Recital Hall, 1234 N. West St., etc..." required />
+                            </div>
+                            <div class="form-group">
+                                <label for="instrument">What instrument are you looking for?<span class="red-ast">*</span></label>
+                                <input type="text" name="instrument" class="form-control" placeholder="Trumpet, Vocalist etc..." required />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:20px;">
+                            <button id="modalButton" onclick="updateAud()" style="width:50%;font-size:20px;" class="btn btn-danger center-block">Update Audition</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="description">Audition Description</label>
+                            <textarea id="desc" name="description" class="form-control" placeholder="Prepared materials, contact information etc..."></textarea>
+                            <small class="form-text text-muted">Some useful information to include might be ways to sign up for an audition; What materials should be prepared; Your contact information; How long the audition slots are etc...</small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+<script type="text/jsx">
+    const { Tabs, TabList, Tab, TabPanel } = ReactTabs;
+    const _EnsembleId = @Model.Ensemble.EnsembleId;
+
+    const Component = (
+    <Tabs defaultIndex={1}>
+        <TabList>
+            <Tab>Previous Auditions</Tab>
+            <Tab>Pending Auditions</Tab>
+            <Tab>Manage Members</Tab>
+        </TabList>
+
+        <TabPanel>
+            <p>
+                <b>Mario</b> (<i>Japanese: マリオ Hepburn: Mario, [ma.ɾʲi.o]</i>) (<i>
+                    English:
+                    /ˈmɑːrioʊ/; Italian: [ˈmaːrjo]
+                </i>) is a fictional character in the Mario video
+                game franchise, owned by Nintendo and created by Japanese video game designer
+                Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist
+                of the series, Mario has appeared in over 200 video games since his creation.
+                Depicted as a short, pudgy, Italian plumber who resides in the Mushroom
+                Kingdom, his adventures generally center upon rescuing Princess Peach from the
+                Koopa villain Bowser. His younger brother and sidekick is Luigi.
+            </p>
+            <p>
+                Source:{' '}
+                <a href="https://en.wikipedia.org/wiki/Mario" target="_blank">
+                    Wikipedia
+                </a>
+            </p>
+        </TabPanel>
+
+        <TabPanel>
+            <div className="container">
+                <div className="row">
+                    <h2>Auditions</h2>
+                </div>
+                <div className="row">
+                    <table className="table nonfluid-table">
+                        <tbody>
+                            <tr>
+                                <th>Instrument</th>
+                                <th>Date Posted</th>
+                                <th>Closing Date</th>
+                                <th>Number Applicants</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                            @for (var i = 0; i < Model.AuditionList.Count; i++)
+                            {
+                            <tr>
+                                <td>@Model.AuditionList[i].Instrument_Name</td>
+                                <td>@Model.AuditionList[i].Open_Date</td>
+                                <td>@Model.AuditionList[i].Closed_Date</td>
+                                <td>NotCalculated</td>
+                                <td><span className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
+                                <td><span className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div id="profiles" className="row">
+
+                </div>
+            </div>
+        </TabPanel>
+
+        <TabPanel>
+            <div className="container">
+                <div className="row">
+                    <h2>Members</h2>
+                </div>
+                <div className="row">
+                    <table className="table nonfluid-table">
+                        <tbody>
+                            <tr>
+                                <th>Name</th>
+                                <th>Instrument</th>
+                                <th>Date Joined</th>
+                                <th>Remove</th>
+                            </tr>
+
+                            @foreach (var mem in Model.Members)
+                            {
+                                <tr>
+                                    <td>@mem.Profile.First_Name @mem.Profile.Last_Name</td>
+                                    <td>How do we display mulitple entries? Is this necessary?</td>
+                                    <td>@mem.Start_Date</td>
+                                    <td><span className="glyphicon glyphicon-remove" onClick={() => delMem(@mem.ProfileId)} ></span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </TabPanel>
+    </Tabs>
+    );
+
+
+    ReactDOM.render(Component,
+    document.getElementById('tabCC')
+    );
+</script>
+
+
