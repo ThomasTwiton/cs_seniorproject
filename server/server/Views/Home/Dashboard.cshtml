@@ -36,7 +36,7 @@
                 <form class="container-fluid">
                     <div style="display:none">
                         <input name="audID" type="text" />
-                        <!-- This value should get set via javascript before the modal is displayed-->
+                        <!-- This value should get set via javascript before the modal is displayed -->
                     </div>
                     <h2 style="text-align:center;font-weight:bold;">Update Audition Information</h2>
                     <hr />
@@ -143,8 +143,8 @@
                                 <td>@Model.AuditionList[i].Open_Date</td>
                                 <td>@Model.AuditionList[i].Closed_Date</td>
                                 <td>NotCalculated</td>
-                                <td><span className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)} ></span></td>
-                                <td><span className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)} ></span></td>
+                                <td><span className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
+                                <td><span className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
                             </tr>
                             }
                         </tbody>
@@ -163,22 +163,24 @@
                 </div>
                 <div className="row">
                     <table className="table nonfluid-table">
-                        <tr>
-                            <th>Name</th>
-                            <th>Instrument</th>
-                            <th>Date Joined</th>
-                            <th>Remove</th>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <th>Name</th>
+                                <th>Instrument</th>
+                                <th>Date Joined</th>
+                                <th>Remove</th>
+                            </tr>
 
-                        @foreach (var mem in Model.Members)
-                        {
-                        <tr>
-                            <td>@mem.Profile.First_Name @mem.Profile.Last_Name</td>
-                            <td>How do we display mulitple entries? Is this necessary?</td>
-                            <td>@mem.Start_Date</td>
-                            <td><span className="glyphicon glyphicon-remove" onClick={() => delMem(@mem.ProfileId)} >></span></td>
-                        </tr>
-                        }
+                            @foreach (var mem in Model.Members)
+                            {
+                                <tr>
+                                    <td>@mem.Profile.First_Name @mem.Profile.Last_Name</td>
+                                    <td>How do we display mulitple entries? Is this necessary?</td>
+                                    <td>@mem.Start_Date</td>
+                                    <td><span className="glyphicon glyphicon-remove" onClick={() => delMem(@mem.ProfileId)} ></span></td>
+                                </tr>
+                            }
+                        </tbody>
                     </table>
                 </div>
             </div>
