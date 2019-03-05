@@ -158,12 +158,8 @@ function GigBody(props) {
                             <td>{props.post.info.end}</td>
                         </tr>
                         <tr>
-                            <td>Time:</td>
-                            <td>{props.post.info.time}</td>
-                        </tr>
-                        <tr>
                             <td>Looking for:</td>
-                            <td>{props.post.info.seeking}</td>
+                            <td>{props.post.info.genre}</td>
                         </tr></tbody>
                 </table>
                 <a href={link} className="btn btn-danger">Plug-In</a>
@@ -230,10 +226,18 @@ function PostMedia(props) {
         );
     } else if (mediaType === "audio") {
         media = (
-            <audio
-                src={props.media.url}
-            />
+            <a href={props.media.url}>Listen!</a>
+            //<audio src={props.media.url}/>
         );
+    } else if (mediaType === "video") {
+        media = (
+            <a href={props.media.url}>Watch!</a>
+            //<video src={props.media.url} />
+        );
+    } else if (mediaType === "resume") {
+        media = (
+            <a href={props.media.url}>Resume</a>
+            );
     }
     return (
         <div className="mediaContainer">

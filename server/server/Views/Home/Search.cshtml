@@ -1,0 +1,48 @@
+﻿
+@model server.Models.SearchModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h1>Auditions</h1>
+    <ul>
+        @foreach (var aud in Model.Auditions)
+        {
+        <li><a href="../Home/Audition/@aud.AuditionId">@aud.Audition_Description </a></li>
+        }
+    </ul>
+    <h1>Gigs</h1>
+    <ul>
+        @foreach (var gig in Model.Gigs)
+        {
+            <li><a href="../Home/Gig/@gig.GigId">@gig.Description</a></li>
+        }
+    </ul>
+    <h1>Profiles</h1>
+    <ul>
+        @foreach (var p in Model.Profiles)
+        {
+            <li><a href="../Home/Profile/@p.ProfileId">@p.First_Name @p.Last_Name</a></li>
+        }
+    </ul>
+    <h1>Ensembles</h1>
+    <ul>
+        @foreach (var e in Model.Ensembles)
+        {
+        <li><a href="../Home/Ensemble/@e.EnsembleId">@e.Ensemble_Name</a></li>
+        }
+    </ul>
+    <h1>Venues</h1>
+    <ul>
+    @foreach (var v in Model.Venues)
+    {
+        <li><a href="../Home/Venue/@v.VenueId">@v.Venue_Name</a></li>
+    }
+    </ul>
+</div> 
+
+<script>
+    var searchbar = document.getElementById("searchbar")
+    searchbar.value = "@Model.Query"
+</script>

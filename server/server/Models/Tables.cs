@@ -36,6 +36,20 @@ namespace server.Models
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email).IsUnique();
 
+            modelBuilder.Entity<Profile>()
+                .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+            modelBuilder.Entity<Ensemble>()
+                 .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+            modelBuilder.Entity<Venue>()
+                .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+
+            modelBuilder.Entity<Gig>()
+                .Property(g => g.Closed_Date).HasDefaultValue(System.DateTime.Now.AddMonths(1));
+            modelBuilder.Entity<Audition>()
+                .Property(g => g.Closed_Date).HasDefaultValue(System.DateTime.Now.AddMonths(1));
+            modelBuilder.Entity<Ensemble>()
+                .Property(e => e.Disbanded_Date).HasDefaultValue(new System.DateTime(9999, 12, 31));
+
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasKey(em => new { em.ProfileId, em.EnsembleId });
 
@@ -98,19 +112,19 @@ namespace server.Models
                 );
             //seed the database (for testing)
             modelBuilder.Entity<User>().HasData(
-                new User() { UserId = 1, Email = "miley@cyrus.com", Password = "bestObothWorlds" },
-                new User() { UserId = 2, Email = "billy@cyrus.com", Password = "bestDad" }
+                new User() { UserId = 1, Email = "tjtwiton@gmail.com", Password = "faketom" },
+                new User() { UserId = 2, Email = "tyler@conzett.cmon", Password = "bestRA" }
             );
             modelBuilder.Entity<Profile>().HasData(
                 new Profile()
                 {
                     ProfileId = 11,
                     UserId = 1,
-                    First_Name = "Miley",
-                    Last_Name = "Cyrus",
+                    First_Name = "Thomas",
+                    Last_Name = "Twiton",
                     Preferred_Name = "The Wrecking Ball",
-                    Pic_Url = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/170526-N-EO381-052_Miley_Cyrus_on_Today_show.jpg/330px-170526-N-EO381-052_Miley_Cyrus_on_Today_show.jpg",
-                    Bio = "Miley Ray Cyrus (born Destiny Hope Cyrus; November 23, 1992) is an American singer, songwriter, and actress.",
+                    Bio = "A senior at Luther College eager to get back into playing the piano",
+                    Pic_Url = "/images/uploads/default.png",
                     City = "Los Angeles",
                     State = "Caliornia"
                 },
@@ -118,11 +132,11 @@ namespace server.Models
                 {
                     ProfileId = 12,
                     UserId = 2,
-                    First_Name = "Billy Ray",
+                    First_Name = "Tyler",
                     Last_Name = "Cyrus",
-                    Preferred_Name = "Dad",
-                    Pic_Url = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Billy_Ray_Cyrus_2009_%28cropped%29.jpg/330px-Billy_Ray_Cyrus_2009_%28cropped%29.jpg",
-                    Bio = "William Ray Cyrus (born August 25, 1961)[1][2] is an American singer, songwriter and actor.",
+                    Pic_Url = "/images/uploads/default.png",
+                    Preferred_Name = "Lord of the RAs",
+                    Bio = "One RA to rule them all, and in the darkness bind them",
                     City = "Flatwoods",
                     State = "Kentucky"
                 }
@@ -131,27 +145,27 @@ namespace server.Models
                 new Ensemble()
                 {
                     EnsembleId = 21,
-                    UserId = 1,
-                    Ensemble_Name = "Hannah Montana Show",
+                    UserId = 2,
+                    Ensemble_Name = "RA Show",
                     Formed_Date = new System.DateTime(2006, 3, 1),
                     Type = "TV Show",
                     Genre = "Pop",
+                    Pic_Url = "/images/uploads/default.png",
                     City = "Disneyworld",
                     State = "Disney",
-                    Bio = "Is it really the best of both worlds?",
-                    Pic_Url = "https://upload.wikimedia.org/wikipedia/en/2/2b/Hannah_Montana_Logo.PNG"
+                    Bio = "Is it real?",
                 },
                 new Ensemble()
                 {
                     EnsembleId = 22,
-                    UserId = 2,
-                    Ensemble_Name = "Cyrus Family Band",
+                    UserId = 1,
+                    Ensemble_Name = "Sad Pianos",
                     Formed_Date = new System.DateTime(2006, 3, 1),
-                    Type = "Family Band",
-                    Genre = "Country",
+                    Type = "Cover Band",
+                    Genre = "Alternative",
                     City = "Flatwoods",
                     State = "Kentucky",
-                    Pic_Url = "http://cdn.gospelherald.com/data/images/full/3611/miley-cyrus-and-billy-ray-cyrus.jpg"
+                    Pic_Url = "/images/uploads/default.png"
                 }
                 );
 
@@ -196,10 +210,9 @@ namespace server.Models
                 );
 
             modelBuilder.Entity<Plays_Instrument>().HasData(
-                new Plays_Instrument() { Id = 1, ProfileId = 11, InstrumentId = 2 },
-                new Plays_Instrument() { Id = 2, ProfileId = 12, InstrumentId = 2 },
-                new Plays_Instrument() { Id = 3, ProfileId = 12, InstrumentId = 1 },
-                new Plays_Instrument() { Id = 4, ProfileId = 12, InstrumentId = 7 }
+                new Plays_Instrument() { Id = 1, ProfileId = 11, InstrumentId = 1 },
+                new Plays_Instrument() { Id = 2, ProfileId = 11, InstrumentId = 10 },
+                new Plays_Instrument() { Id = 3, ProfileId = 12, InstrumentId = 2 }
                 );
 
             modelBuilder.Entity<ProfileEnsemble>().HasData(
@@ -208,7 +221,7 @@ namespace server.Models
                 new ProfileEnsemble() { ProfileId = 11, EnsembleId = 22, Start_Date = new System.DateTime(2006, 3, 1) },
                 new ProfileEnsemble() { ProfileId = 12, EnsembleId = 22, Start_Date = new System.DateTime(2006, 3, 1) }
                 );
-
+            /*
             modelBuilder.Entity<Post>().HasData(
                 new Post()
                 {
@@ -238,6 +251,7 @@ namespace server.Models
 
                 }
                 );
+        */
         }
     }
 
