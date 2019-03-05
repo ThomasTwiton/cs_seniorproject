@@ -77,10 +77,32 @@ namespace server.Models
         public Gig Gig { get; set; }
     }
 
+    public class EnsembleDashModel
+    {
+        public Ensemble Ensemble { get; set; }
+        public List<ProfileEnsemble> Members { get; set; }
+
+        /* The AuditionList is a list containing all of the
+         * PENDING auditions for a particular ensemble. 
+         * 
+         * The AuditionNumbers is a dictionary where the key
+         * is an Audition Id and the value is the number of 
+         * applicants there are for that audition.
+         */
+        public List<Audition> AuditionList { get; set; }
+        public Dictionary<int,int> AuditionNumbers { get; set; }
+    }
+
+    public class VenueDashModel
+    {
+
+    }
+
     public class SessionModel
     {
-        /* This is not a view object, but rather a container for data 
-         * that is stored in HttpContext.Session.
+        /* This is not a view object, but rather 
+         * a container for data that is stored in
+         * HttpContext.Session.
          */
         
         public int UserID { get; set; }

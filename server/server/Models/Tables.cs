@@ -28,10 +28,8 @@ namespace server.Models
         public virtual DbSet<Gig> Gigs { get; set; }
         public virtual DbSet<Booked_Gig> Booked_Gigs { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
-        //public DbSet<PostMedia> PostMedias { get; set; }
-        //public DbSet<E_Has_Media> E_Has_Medias { get; set; }
-        //public DbSet<P_Has_Media> P_Has_Medias { get; set; }
-        //public DbSet<V_Has_Media> V_Has_Medias { get; set; }
+        public virtual DbSet<AuditionProfile> AuditionProfiles { get; set; }
+        public virtual DbSet<GigApp> GigApps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,6 +53,12 @@ namespace server.Models
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasKey(em => new { em.ProfileId, em.EnsembleId });
 
+            modelBuilder.Entity<AuditionProfile>()
+                .HasKey(em => new { em.AuditionId, em.ProfileId });
+
+            modelBuilder.Entity<GigApp>()
+                .HasKey(em => new { em.GigId, em.ViewId, em.ViewType });
+
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasOne(em => em.Profile)
                 .WithMany(b => b.ProfileEnsemble)
@@ -64,6 +68,11 @@ namespace server.Models
                 .HasOne(em => em.Ensemble)
                 .WithMany(c => c.ProfileEnsemble)
                 .HasForeignKey(em => em.EnsembleId);
+
+            modelBuilder.Entity<GigApp>()
+                .HasOne(em => em.Gig)
+                .WithMany(b => b.GigApp)
+                .HasForeignKey(em => em.GigId);
 
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
@@ -158,6 +167,46 @@ namespace server.Models
                     State = "Kentucky",
                     Pic_Url = "/images/uploads/default.png"
                 }
+                );
+
+            modelBuilder.Entity<Venue>().HasData(
+                new Venue()
+                {
+                    VenueId = 31,
+                    Venue_Name = "Marty's Grill",
+                    Pic_Url = "https://www.luther.edu/dining/locations/martys/?module_api=image_detail&module_identifier=module_identifier-mcla-ImageSidebarLutherModule-mloc-pre_sidebar_2-mpar-ef4662c86566ec724cf9704273e6b54c&image_id=802151",
+                    UserId = 1,
+                    Address1 = "400 College Dr.",
+                    Bio = "We do food.",
+                    City = "Decorah",
+                    State = "IA",
+                    Website = "https://www.luther.edu/dining/locations/martys/",
+                    Phone = "(563) 387-1395"
+                }
+                );
+
+            modelBuilder.Entity<Gig>().HasData(
+                new Gig()
+                {
+                    GigId = 41,
+                    Gig_Date = new System.DateTime(2019, 12, 1),
+                    Closed_Date = new System.DateTime(2006, 12, 30),
+                    Genre = "Jazz",
+                    Description = "We're looking for some live entertainment!",
+
+                    VenueId = 31
+                });
+
+            modelBuilder.Entity<AuditionProfile>().HasData(
+                new AuditionProfile() { AuditionId = 1, ProfileId = 11 },
+                new AuditionProfile() { AuditionId = 1, ProfileId = 12 }
+                );
+
+            modelBuilder.Entity<GigApp>().HasData(
+                new GigApp { GigId = 41, ViewType = "profile", ViewId = 11 },
+                new GigApp { GigId = 41, ViewType = "profile", ViewId = 12 },
+                new GigApp { GigId = 41, ViewType = "ensemble", ViewId = 21 },
+                new GigApp { GigId = 41, ViewType = "ensemble", ViewId = 22 }
                 );
 
             modelBuilder.Entity<Plays_Instrument>().HasData(
@@ -338,6 +387,8 @@ namespace server.Models
         public int EnsembleId { get; set; }
         public Ensemble Ensemble { get; set; }
 
+        public ICollection<AuditionProfile> AuditionProfile { get; set; }
+
         //POSTS
     }
 
@@ -352,6 +403,7 @@ namespace server.Models
         public int VenueId { get; set; }
         public Venue Venue { get; set; }
 
+        public ICollection<GigApp> GigApp { get; set; }
         //posts
     }
 
@@ -391,45 +443,19 @@ namespace server.Models
         public Profile Profile { get; set; }
     }
 
-    /*
-    public ICollection<P_Has_Media> P_Has_Media { get; set; }
-    public ICollection<E_Has_Media> E_Has_Media { get; set; }
-    public ICollection<V_Has_Media> V_Has_Media { get; set; }
-}
+    public class AuditionProfile
+    {
+        public int AuditionId { get; set; }
+        public Audition Audition { get; set; }
+        public int ProfileId { get; set; }
+        public Profile Profile { get; set; }
+    }
 
-public class P_Has_Media
-{
-    public int Id { get; set; }
-
-    public int ProfileId { get; set; }
-    public Profile Profile { get; set; }
-
-    public int MediaId { get; set; }
-    public PostMedia Media { get; set; }
-}
-
-public class E_Has_Media
-{
-    public int Id { get; set; }
-
-    public int ProfileId { get; set; }
-    public Profile Profile { get; set; }
-
-    public int MediaId { get; set; }
-    public PostMedia Media { get; set; }
-}
-
-public class V_Has_Media
-{
-    public int Id { get; set; }
-
-    public int ProfileId { get; set; }
-    public Profile Profile { get; set; }
-
-    public int MediaId { get; set; }
-    public PostMedia Media { get; set; }
-}
-*/
-
-
+    public class GigApp
+    {
+        public int GigId { get; set; }
+        public Gig Gig { get; set; }
+        public string ViewType { get; set; }
+        public int ViewId { get; set; }
+    }
 }

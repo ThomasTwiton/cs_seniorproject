@@ -1117,8 +1117,34 @@ namespace server.Controllers
             return View("Index");
 
         }
+        
+        public IActionResult Dashboard(int id)
+        {
+            SessionModel s = GetSessionInfo(HttpContext.Session);
 
-        public IActionResult Search(string type, string query)
+            if (s.IsLoggedIn)
+            {
+                Ensemble ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).First();
+
+                if (s.UserID == ensemble.UserId)
+                {
+                    EnsembleDashModel model = new EnsembleDashModel();
+
+                    model.Ensemble = ensemble;
+                    model.AuditionList = _context.Auditions.Where(u => u.EnsembleId == id).ToList();
+                    model.Members = _context.ProfileEnsembles.Include("Profile").Where(pe => pe.EnsembleId == ensemble.EnsembleId).ToList()
+       
+                    return View(model);
+                }
+
+                return RedirectToAction("Ensemble", new { id = id });
+            }
+
+            return RedirectToAction("Login");
+
+        }
+        
+         public IActionResult Search(string type, string query)
         {
             Console.WriteLine("***");
             Console.WriteLine(query);
