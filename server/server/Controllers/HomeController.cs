@@ -1132,7 +1132,7 @@ namespace server.Controllers
 
                     model.Ensemble = ensemble;
                     model.AuditionList = _context.Auditions.Where(u => u.EnsembleId == id).ToList();
-                    model.Members = _context.ProfileEnsembles.Include("Profile").Where(pe => pe.EnsembleId == ensemble.EnsembleId).ToList()
+                    model.Members = _context.ProfileEnsembles.Include("Profile").Where(pe => pe.EnsembleId == ensemble.EnsembleId).ToList();
        
                     return View(model);
                 }
