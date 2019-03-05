@@ -1,17 +1,8 @@
 ﻿function editAud(id) {
     console.log("Editing Audition:", id);
-    // get info from the api
-    $.ajax({
-        url: "../../api/PluggedAPI/auditions/1",
-        method: "GET",
-        data: id
-    }).done(
-        data => displayModal(data)
-    );
-    
-    // with that info, populate the modal
 
-    // display moda
+    callAPI("auditions/" + id, "GET", id, displayModal);
+
 }
 
 function delAud(id) {
@@ -51,13 +42,7 @@ function updateAud() {
         instrument_Name: document.getElementById("audIns").value,
     };
 
-    $.ajax({
-        url: "../../api/PluggedAPI/auditions/" + aid,
-        method: "Post",
-        data: audObject
-    }).done(
-        () => hideModal()
-    );
+    callAPI("auditions/" + aid, "POST", audObject, hideModal);
 
     console.log(audObject);
 

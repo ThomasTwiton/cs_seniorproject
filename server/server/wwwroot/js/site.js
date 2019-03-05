@@ -94,3 +94,30 @@ function submitForm() {
     }
     console.log("Done");
 }
+
+/* ================================================== */
+/* ============= Base API Call Function ============= */
+/* ================================================== */
+
+function callAPI(apiStr, method, data, sucFun) {
+    console.log("Calling API:", method, apiStr);
+
+    let dfd = new $.Deferred();
+    // creating a deferred object allows functions that
+    //  call this function not to hang and wait for a 
+    //  server response.
+
+    $.ajax({
+        url: "../../api/PluggedAPI/" + apiStr,
+        method: method,
+        data: data,
+        success: (data) => sucFun(data),
+        error: (error) => console.log("AJAX Error:",error)
+
+    }).done(function () {
+        dfd.resolve();  // Resolve the deferred object
+
+    });
+
+    return dfd;
+}
