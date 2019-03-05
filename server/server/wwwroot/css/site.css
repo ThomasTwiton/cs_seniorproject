@@ -55,7 +55,11 @@ footer hr {
 }
 
 .red-ast {
-    color: red;
+    color: var(--bkg-red);
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 #search {
