@@ -112,7 +112,7 @@ function callAPI(apiStr, method, data, sucFun) {
         method: method,
         data: data,
         success: (data) => sucFun(data),
-        error: (error) => console.log("AJAX Error:",error)
+        error: (error) => console.log("AJAX Error:", error)
 
     }).done(function () {
         dfd.resolve();  // Resolve the deferred object
