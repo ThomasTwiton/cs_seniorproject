@@ -1199,11 +1199,17 @@ namespace server.Controllers
             }
 
             model.Auditions = audresult;
+            model.AuditionCount = audresult.Count();
             model.Gigs = gigresult;
+            model.GigCount = gigresult.Count();
             model.Profiles = profileresult;
+            model.ProfileCount = profileresult.Count();
             model.Ensembles = ensembleresult;
+            model.EnsembleCount = ensembleresult.Count();
             model.Gigs = gigresult;
+            model.GigCount = gigresult.Count();
             model.Venues = venueresult;
+            model.VenueCount = venueresult.Count();
             model.Query = query;
          
             return View(model);
