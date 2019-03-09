@@ -86,6 +86,7 @@
             </div>
 
         </div>
+    </div>
 
 <script type="text/jsx">
     const { Tabs, TabList, Tab, TabPanel } = ReactTabs;
@@ -94,34 +95,14 @@
     const Component = (
     <Tabs defaultIndex={1}>
         <TabList>
-            <Tab disabled>Previous Auditions</Tab>
+            <Tab>Previous Auditions</Tab>
             <Tab>Pending Auditions</Tab>
             <Tab>Manage Members</Tab>
         </TabList>
 
         <TabPanel>
-            <p>
-                <b>Mario</b> (<i>Japanese: マリオ Hepburn: Mario, [ma.ɾʲi.o]</i>) (<i>
-                    English:
-                    /ˈmɑːrioʊ/; Italian: [ˈmaːrjo]
-                </i>) is a fictional character in the Mario video
-                game franchise, owned by Nintendo and created by Japanese video game designer
-                Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist
-                of the series, Mario has appeared in over 200 video games since his creation.
-                Depicted as a short, pudgy, Italian plumber who resides in the Mushroom
-                Kingdom, his adventures generally center upon rescuing Princess Peach from the
-                Koopa villain Bowser. His younger brother and sidekick is Luigi.
-            </p>
-            <p>
-                Source:{' '}
-                <a href="https://en.wikipedia.org/wiki/Mario" target="_blank">
-                    Wikipedia
-                </a>
-            </p>
-        </TabPanel>
-
-        <TabPanel>
             <div className="container">
+
                 <div className="row">
                     <h2>Auditions</h2>
                 </div>
@@ -133,25 +114,159 @@
                                 <th>Date Posted</th>
                                 <th>Closing Date</th>
                                 <th>Number Applicants</th>
+                                <th>View</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
                             @for (var i = 0; i < Model.AuditionList.Count; i++)
                             {
-                            <tr>
-                                <td>@Model.AuditionList[i].Instrument_Name</td>
-                                <td>@Model.AuditionList[i].Open_Date</td>
-                                <td>@Model.AuditionList[i].Closed_Date</td>
-                                <td>NotCalculated</td>
-                                <td><span className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
-                                <td><span className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
-                            </tr>
+                                <tr>
+                                    <td>@Model.AuditionList[i].Instrument_Name</td>
+                                    <td>@Model.AuditionList[i].Open_Date</td>
+                                    <td>@Model.AuditionList[i].Closed_Date</td>
+                                    <td>NotCalculated</td>
+                                    <td><span title="View Applicants" className="glyphicon glyphicon-eye-open pointer" onClick={() => getProfiles(@Model.AuditionList[i].AuditionId)}></span></td>
+                                    <td><span title="Edit Audition" className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
+                                    <td><span title="Delete Audition" className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
+                                </tr>
                             }
                         </tbody>
                     </table>
                 </div>
-                <div id="profiles" className="row">
 
+                <div className="row">
+                    <hr />
+                </div>
+
+                <div className="row">
+                    <h2>Applicants</h2>
+                </div>
+                <div id="profiles" className="row">
+                    Select an audition above to display applicants
+                </div>
+            </div>
+        </TabPanel>
+
+        <TabPanel>
+            <div className="container">
+
+                <div className="row">
+                    <h2>Auditions</h2>
+                </div>
+                <div className="row">
+                    <table className="table nonfluid-table">
+                        <tbody>
+                            <tr>
+                                <th>Instrument</th>
+                                <th>Date Posted</th>
+                                <th>Closing Date</th>
+                                <th>Number Applicants</th>
+                                <th>View</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                            @for (var i = 0; i < Model.AuditionList.Count; i++)
+                            {
+                                <tr>
+                                    <td>@Model.AuditionList[i].Instrument_Name</td>
+                                    <td>@Model.AuditionList[i].Open_Date</td>
+                                    <td>@Model.AuditionList[i].Closed_Date</td>
+                                    <td>NotCalculated</td>
+                                    <td><span title="View Applicants" className="glyphicon glyphicon-eye-open pointer" onClick={() => getProfiles(@Model.AuditionList[i].AuditionId)}></span></td>
+                                    <td><span title="Edit Audition" className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
+                                    <td><span title="Delete Audition" className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="row">
+                    <hr />
+                </div>
+
+                <div className="row">
+                    <h2>Applicants</h2>
+                </div>
+                <div id="profiles" className="row">
+                    <div className="row" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <div className="col-xs-10">
+                            Tyler Conzett
+                        </div>
+                        <div className="col-xs-1">
+                            <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(1)}></span>
+                        </div>
+                        <div className="col-xs-1">
+                            <span className="glyphicon glyphicon-remove pointer" title="Reject Applicant" onClick={() => rejectProfile(1)}></span>
+                        </div>
+                    </div>
+                    <div className="collapse" id="collapseExample">
+                        <div className="card card-body row">
+                            <div className="col-xs-3">
+                                <img className="mediumPic" src="../../images/uploads/default.png" />
+                            </div>
+                            <div className="col-xs-4">
+                                <div className="row">
+                                    <span class="glyphicon glyphicon-map-marker"></span> Decorah
+                                </div>
+                                <div className="row instruments">
+                                    <b>Instruments:</b> Trumpet, Trombone, Voice, Drums etc...
+                                </div>
+                            </div>
+                            <div className="col-xs-5">
+                                <b>Bio: </b>
+                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">
+                        <div className="col-xs-10">
+                            Tyler Conzett
+                        </div>
+                        <div className="col-xs-1">
+                            <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(1)}></span>
+                        </div>
+                        <div className="col-xs-1">
+                            <span className="glyphicon glyphicon-remove pointer" title="Reject Applicant" onClick={() => rejectProfile(1)}></span>
+                        </div>
+                    </div>
+                    <div className="collapse" id="collapseExample2">
+                        <div className="card card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                        </div>
+                    </div>
+                    <div className="row" data-toggle="collapse" data-target="#collapseExample3" aria-expanded="false" aria-controls="collapseExample3">
+                        <div className="col-xs-10">
+                            Tyler Conzett
+                        </div>
+                        <div className="col-xs-1">
+                            <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(1)}></span>
+                        </div>
+                        <div className="col-xs-1">
+                            <span className="glyphicon glyphicon-remove pointer" title="Reject Applicant" onClick={() => rejectProfile(1)}></span>
+                        </div>
+                    </div>
+                    <div className="collapse" id="collapseExample3">
+                        <div className="card card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                        </div>
+                    </div>
+                    <div className="row" data-toggle="collapse" data-target="#collapseExample4" aria-expanded="false" aria-controls="collapseExample4">
+                        <div className="col-xs-10">
+                            Tyler Conzett
+                        </div>
+                        <div className="col-xs-1">
+                            <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(1)}></span>
+                        </div>
+                        <div className="col-xs-1">
+                            <span className="glyphicon glyphicon-remove pointer" title="Reject Applicant" onClick={() => rejectProfile(1)}></span>
+                        </div>
+                    </div>
+                    <div className="collapse" id="collapseExample4">
+                        <div className="card card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                        </div>
+                    </div>
                 </div>
             </div>
         </TabPanel>
@@ -182,6 +297,29 @@
                             }
                         </tbody>
                     </table>
+                </div>
+
+                <div className="row">
+                    <hr />
+                </div>
+
+                <div className="row">
+                    <div className="col-sm-3 col-sm-offset-2">
+                        <div className="row">
+                            <h3>Add Member</h3>
+                        </div>
+                        <div className="row">
+                            <input type="text" /> <button className="btn btn-danger" type="button">Add</button>
+                        </div>
+                    </div>
+                    <div className="col-sm-3 col-sm-offset-2">
+                        <div className="row">
+                            <h3>Transfer Ownership</h3>
+                        </div>
+                        <div className="row">
+                            <input type="text" /> <button className="btn btn-danger" type="button">Transfer</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </TabPanel>

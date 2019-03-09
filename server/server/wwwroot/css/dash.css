@@ -3,10 +3,58 @@
     margin: auto;
 }
 
-.glyphicon-pencil {
-    color: var(--bkg-gold);
+#profiles {
+    border: 1px solid var(--bkg-dark-grey);
+    margin: auto;
+    width: 80%;
+    max-height: 400px;
+    min-height: 40px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-.glyphicon-remove {
-    color: var(--bkg-red);
+#profiles > div:nth-child(2n+1) {
+    min-height: 20px;
+    border: 1px solid var(--bkg-dark-grey);
+    padding: 5px;
+    margin: auto;
+}
+
+#profiles > div:nth-child(2n+1):hover {
+    background-color: var(--bkg-grey);
+}
+
+#profiles > div:nth-child(2n+1) > div:first-child:hover {
+    cursor: pointer;
+}
+
+#profiles div {
+    padding: 5px;
+}
+
+.collapse .row {
+    margin: auto;
+}
+
+.mediumPic {
+    width: 200px;
+    height: 200px;
+    border: var(--bkg-gold) solid 2px;
+    border-radius: 10px;
+    margin: auto;
+}
+
+.card .col-xs-5 {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /*border-left: 1px solid var(--bkg-dark-grey);
+    border-top: 1px solid var(--bkg-dark-grey);
+    border-radius: 5px 0 0 0;*/
+}
+
+.card .col-xs-4 .instruments {
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
