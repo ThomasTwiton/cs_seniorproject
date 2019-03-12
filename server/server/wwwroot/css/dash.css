@@ -13,23 +13,31 @@
     overflow-x: hidden;
 }
 
-#profiles > div:nth-child(2n+1) {
+#profiles .detCont .collection > div:nth-child(2n+1) {
     min-height: 20px;
     border: 1px solid var(--bkg-dark-grey);
     padding: 5px;
     margin: auto;
 }
 
-#profiles > div:nth-child(2n+1):hover {
+#profiles .detCont .collection > div:nth-child(2n+1):hover {
     background-color: var(--bkg-grey);
 }
 
-#profiles > div:nth-child(2n+1) > div:first-child:hover {
+#profiles .detCont .collection > div:nth-child(2n+1) > div:first-child:hover {
     cursor: pointer;
 }
 
-#profiles div {
+#profiles .detCont .collection div {
     padding: 5px;
+}
+
+.collection > .row {
+    background-color: var(--bkg-grey);
+}
+
+.collection > .collapsed {
+    background-color: #FFF;
 }
 
 .collapse .row {

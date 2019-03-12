@@ -13,6 +13,8 @@
 @section Scripts {
     <script src="~/js/dash.js" type="text/javascript">
     </script>
+    <script src="~/js/dashreact.jsx" type="text/jsx">
+    </script>
     <!-- Load the react tabs component -->
     <script src="https://unpkg.com/prop-types/prop-types.js"></script>
     <script src="https://unpkg.com/react-tabs/dist/react-tabs.development.js"></script>
@@ -189,84 +191,7 @@
                     <h2>Applicants</h2>
                 </div>
                 <div id="profiles" className="row">
-                    <div className="row" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        <div className="col-xs-10">
-                            Tyler Conzett
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(1)}></span>
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-remove pointer" title="Reject Applicant" onClick={() => rejectProfile(1)}></span>
-                        </div>
-                    </div>
-                    <div className="collapse" id="collapseExample">
-                        <div className="card card-body row">
-                            <div className="col-xs-3">
-                                <img className="mediumPic" src="../../images/uploads/default.png" />
-                            </div>
-                            <div className="col-xs-4">
-                                <div className="row">
-                                    <span class="glyphicon glyphicon-map-marker"></span> Decorah
-                                </div>
-                                <div className="row instruments">
-                                    <b>Instruments:</b> Trumpet, Trombone, Voice, Drums etc...
-                                </div>
-                            </div>
-                            <div className="col-xs-5">
-                                <b>Bio: </b>
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">
-                        <div className="col-xs-10">
-                            Tyler Conzett
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(1)}></span>
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-remove pointer" title="Reject Applicant" onClick={() => rejectProfile(1)}></span>
-                        </div>
-                    </div>
-                    <div className="collapse" id="collapseExample2">
-                        <div className="card card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                        </div>
-                    </div>
-                    <div className="row" data-toggle="collapse" data-target="#collapseExample3" aria-expanded="false" aria-controls="collapseExample3">
-                        <div className="col-xs-10">
-                            Tyler Conzett
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(1)}></span>
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-remove pointer" title="Reject Applicant" onClick={() => rejectProfile(1)}></span>
-                        </div>
-                    </div>
-                    <div className="collapse" id="collapseExample3">
-                        <div className="card card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                        </div>
-                    </div>
-                    <div className="row" data-toggle="collapse" data-target="#collapseExample4" aria-expanded="false" aria-controls="collapseExample4">
-                        <div className="col-xs-10">
-                            Tyler Conzett
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(1)}></span>
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-remove pointer" title="Reject Applicant" onClick={() => rejectProfile(1)}></span>
-                        </div>
-                    </div>
-                    <div className="collapse" id="collapseExample4">
-                        <div className="card card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </TabPanel>
