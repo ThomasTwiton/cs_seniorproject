@@ -6,9 +6,10 @@
 }
 
 function delAud(id) {
-    console.log("Deleting Audition:", id);
-    alert("Are you sure you would like to close this audition?\n\nThe audition can be reinstated in the 'Previous Auditions' tab.")
-    console.log(id, _EnsembleId);
+    if (confirm("Are you sure you would like to close this audition?\n\nThe audition can be reinstated in the 'Previous Auditions' tab.")) {
+        console.log("Deleting Audition:", id);
+        console.log(id, _EnsembleId);
+    }
 }
 
 function delMem(id) {
@@ -48,3 +49,26 @@ function updateAud() {
 
 }
 
+function transOwner() {
+    let i = document.getElementById("transInput");
+
+    if (confirm("Are you sure you would like to transfer ownership of this ensemble to '" + i.value + "'?\n\nYou're account will lose all permissions with regards to this ensemble.")) {
+        console.log("Transfering Ownership to:", i.value);
+
+    }
+
+    i.value = "";
+}
+
+function addMember() {
+    let i = document.getElementById("addInput");
+
+    if (confirm("Are you sure you would like to add '" + i.value + "' as a member of this ensemble?")) {
+        console.log("Adding Member:", i.value, "To EnsembleId:",_EnsembleId);
+
+        data = { name: i.value, EnsembleId: _EnsembleId };
+        callAPI("addProfile", "POST", data, (a) => console.log(a));
+    }
+
+    i.value = "";
+}

@@ -110,7 +110,9 @@ function callAPI(apiStr, method, data, sucFun) {
     $.ajax({
         url: "../../api/PluggedAPI/" + apiStr,
         method: method,
-        data: data,
+        data: JSON.stringify(data),
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
         success: (data) => sucFun(data),
         error: (error) => console.log("AJAX Error:", error)
 

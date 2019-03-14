@@ -191,7 +191,7 @@
                     <h2>Applicants</h2>
                 </div>
                 <div id="profiles" className="row">
-
+                    Select an audition above to display applicants
                 </div>
             </div>
         </TabPanel>
@@ -234,7 +234,7 @@
                             <h3>Add Member</h3>
                         </div>
                         <div className="row">
-                            <input type="text" /> <button className="btn btn-danger" type="button">Add</button>
+                            <input id="addInput" type="text" /> <button className="btn btn-danger" type="button" onClick={() => addMember()}>Add</button>
                         </div>
                     </div>
                     <div className="col-sm-3 col-sm-offset-2">
@@ -242,7 +242,7 @@
                             <h3>Transfer Ownership</h3>
                         </div>
                         <div className="row">
-                            <input type="text" /> <button className="btn btn-danger" type="button">Transfer</button>
+                            <input id="transInput" type="text" /> <button className="btn btn-danger" type="button" onClick={() => transOwner()}>Transfer</button>
                         </div>
                     </div>
                 </div>
