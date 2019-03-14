@@ -1,4 +1,8 @@
-﻿function editAud(id) {
+﻿/* ================================================== */
+/* ================= Modal Functions ================ */
+/* ================================================== */
+
+function editAud(id) {
     console.log("Editing Audition:", id);
 
     callAPI("auditions/" + id, "GET", id, displayModal);
@@ -13,7 +17,12 @@ function delAud(id) {
 }
 
 function delMem(id) {
-    console.log("Deleting Member:", id);
+
+    if (confirm("Are you sure you would like to remove this member?\n\nThe page will be refreshed.")) {
+        console.log("Removing Member:", id);
+
+        callAPI("remProfile", "POST", data, location.reload);
+    }
 }
 
 function displayModal(data) {
@@ -55,6 +64,8 @@ function transOwner() {
     if (confirm("Are you sure you would like to transfer ownership of this ensemble to '" + i.value + "'?\n\nYou're account will lose all permissions with regards to this ensemble.")) {
         console.log("Transfering Ownership to:", i.value);
 
+        data = { name: i.value, EnsembleId: _EnsembleId };
+        callAPI("transOwner", "POST", data, (a) => console.log(a));
     }
 
     i.value = "";
