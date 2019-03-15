@@ -4,12 +4,24 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace server.Models
 {
     public class PluggedContext : DbContext
     {
+        private static string CreatePasswordHash(string pwd, string salt)
+        {
+            string saltAndPwd = pwd + salt;
+            byte[] bytes = Encoding.ASCII.GetBytes(saltAndPwd);
+            SHA512 shaM = new SHA512Managed();
+            byte[] hashedPwdbytes = shaM.ComputeHash(bytes);
+            string hashedPwd = Convert.ToBase64String(hashedPwdbytes);
+            return hashedPwd;
+        }
+
         public PluggedContext() { }
 
         public PluggedContext(DbContextOptions<PluggedContext> options)
@@ -112,8 +124,8 @@ namespace server.Models
                 );
             //seed the database (for testing)
             modelBuilder.Entity<User>().HasData(
-                new User() { UserId = 1, Email = "tjtwiton@gmail.com", Password = "faketom" },
-                new User() { UserId = 2, Email = "tyler@conzett.cmon", Password = "bestRA" }
+                new User() { UserId = 1, Email = "tjtwiton@gmail.com", Password = CreatePasswordHash("faketom", "badpractice3"), Salt = "badpractice3" },
+                new User() { UserId = 2, Email = "tyler@conzett.cmon", Password = CreatePasswordHash("bestRA", "unsafe3"), Salt = "unsafe3" }
             );
             modelBuilder.Entity<Profile>().HasData(
                 new Profile()
@@ -258,6 +270,8 @@ namespace server.Models
 
         [Required]
         public string Password { get; set; }
+
+        public string Salt { get; set; }
 
         public ICollection<Profile> Profile { get; set; }
         public ICollection<Ensemble> Ensemble { get; set; }
