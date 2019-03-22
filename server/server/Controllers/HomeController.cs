@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
+using System.Text;
 
 namespace server.Controllers
 {
@@ -71,6 +73,27 @@ namespace server.Controllers
                 return ret;
             }
 
+        }
+
+        private static string CreateSalt(int size)
+        {
+            //Generate a cryptographic random number.
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            byte[] buff = new byte[size];
+            rng.GetBytes(buff);
+
+            // Return a Base64 string representation of the random number.
+            return Convert.ToBase64String(buff);
+        }
+
+        private static string CreatePasswordHash(string pwd, string salt)
+        {
+            string saltAndPwd = pwd + salt;
+            byte[] bytes = Encoding.ASCII.GetBytes(saltAndPwd);
+            SHA512 shaM = new SHA512Managed();
+            byte[] hashedPwdbytes = shaM.ComputeHash(bytes);
+            string hashedPwd = Convert.ToBase64String(hashedPwdbytes);
+            return hashedPwd;
         }
 
         public HomeController(PluggedContext context, IHostingEnvironment environment)
@@ -161,12 +184,21 @@ namespace server.Controllers
             {
                 ProfileModel model = new ProfileModel();
 
-                var userList = _context.Users.Where(u => u.Email == email && u.Password == password).ToList();
-                if (userList.Count() == 0){
+                List<User> users = _context.Users.Where(u => u.Email == email).ToList();
+                if(users.Count() == 0)
+                {
+                    ViewData["Error"] = "Email not registered";
+                    return View("Index");
+                }
+                User user = users[0];
+
+                string salt = user.Salt;
+
+                if (user.Password != CreatePasswordHash(password, salt)){
                     ViewData["Error"] = "Username and password do not match";
                     return View("Index");
                 }
-                User user = userList[0];
+                
                 model.User = user;
 
                 HttpContext.Session.SetInt32(SessionUserId, user.UserId);
@@ -503,7 +535,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password)
+        public async Task<IActionResult> Create(string email, string password)
         {
             /* This action method creates a new user in the database
              *  and moves the user to the profile creation view.
@@ -517,6 +549,11 @@ namespace server.Controllers
 
             if (ModelState.IsValid)
             {
+                User user = new User();
+                user.Email = email;
+                string salt = CreateSalt(32);
+                user.Salt = salt;
+                user.Password = CreatePasswordHash(password, salt);
                 _context.Add(user);
                 await _context.SaveChangesAsync(); //wait until DB is saved for this result
 
@@ -1199,11 +1236,17 @@ namespace server.Controllers
             }
 
             model.Auditions = audresult;
+            model.AuditionCount = audresult.Count();
             model.Gigs = gigresult;
+            model.GigCount = gigresult.Count();
             model.Profiles = profileresult;
+            model.ProfileCount = profileresult.Count();
             model.Ensembles = ensembleresult;
+            model.EnsembleCount = ensembleresult.Count();
             model.Gigs = gigresult;
+            model.GigCount = gigresult.Count();
             model.Venues = venueresult;
+            model.VenueCount = venueresult.Count();
             model.Query = query;
          
             return View(model);

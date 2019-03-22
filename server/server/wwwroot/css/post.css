@@ -14,6 +14,7 @@
     height: 50px;
     border: var(--bkg-gold) solid 2px;
     border-radius: 3px;
+    object-fit: cover;
 }
 
 .textContainer {
@@ -68,6 +69,7 @@ form.row {
 #postContainer .row hr {
     float: left;
     left: 0px;
+    margin-right: 20px;
 }
 
 .postTable {
@@ -86,4 +88,9 @@ form.row {
     float: right;
     padding-left: 25px;
     padding-right: 25px;
+}
+
+.mediaContainer img{
+    max-width:90%;
+    max-height: 400px;
 }

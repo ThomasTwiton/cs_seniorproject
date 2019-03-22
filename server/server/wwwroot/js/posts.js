@@ -158,9 +158,10 @@ function GigBody(props) {
                             <td>{props.post.info.end}</td>
                         </tr>
                         <tr>
-                            <td>Looking for:</td>
+                            <td>Seeking:</td>
                             <td>{props.post.info.genre}</td>
-                        </tr></tbody>
+                        </tr>
+                    </tbody>
                 </table>
                 <a href={link} className="btn btn-danger">Plug-In</a>
             </div>
@@ -276,7 +277,7 @@ function aggPosts() {
                     start: m.dataset.start,
                     end: m.dataset.end,
                     time: m.dataset.time,
-                    seeking: m.dataset.pos
+                    genre: m.dataset.genre
                 };
                 props.post.info = info;
                 break;

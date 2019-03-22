@@ -4,12 +4,24 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace server.Models
 {
     public class PluggedContext : DbContext
     {
+        private static string CreatePasswordHash(string pwd, string salt)
+        {
+            string saltAndPwd = pwd + salt;
+            byte[] bytes = Encoding.ASCII.GetBytes(saltAndPwd);
+            SHA512 shaM = new SHA512Managed();
+            byte[] hashedPwdbytes = shaM.ComputeHash(bytes);
+            string hashedPwd = Convert.ToBase64String(hashedPwdbytes);
+            return hashedPwd;
+        }
+
         public PluggedContext() { }
 
         public PluggedContext(DbContextOptions<PluggedContext> options)
@@ -112,8 +124,8 @@ namespace server.Models
                 );
             //seed the database (for testing)
             modelBuilder.Entity<User>().HasData(
-                new User() { UserId = 1, Email = "tjtwiton@gmail.com", Password = "faketom" },
-                new User() { UserId = 2, Email = "tyler@conzett.cmon", Password = "bestRA" }
+                new User() { UserId = 1, Email = "tjtwiton@gmail.com", Password = CreatePasswordHash("faketom", "badpractice3"), Salt = "badpractice3" },
+                new User() { UserId = 2, Email = "tyler@conzett.cmon", Password = CreatePasswordHash("bestRA", "unsafe3"), Salt = "unsafe3" }
             );
             modelBuilder.Entity<Profile>().HasData(
                 new Profile()
@@ -133,7 +145,7 @@ namespace server.Models
                     ProfileId = 12,
                     UserId = 2,
                     First_Name = "Tyler",
-                    Last_Name = "Cyrus",
+                    Last_Name = "Conzett",
                     Pic_Url = "/images/uploads/default.png",
                     Preferred_Name = "Lord of the RAs",
                     Bio = "One RA to rule them all, and in the darkness bind them",
@@ -174,7 +186,7 @@ namespace server.Models
                 {
                     VenueId = 31,
                     Venue_Name = "Marty's Grill",
-                    Pic_Url = "https://www.luther.edu/dining/locations/martys/?module_api=image_detail&module_identifier=module_identifier-mcla-ImageSidebarLutherModule-mloc-pre_sidebar_2-mpar-ef4662c86566ec724cf9704273e6b54c&image_id=802151",
+                    Pic_Url = "https://www.luther.edu/reason/images/802151.jpg",
                     UserId = 1,
                     Address1 = "400 College Dr.",
                     Bio = "We do food.",
@@ -197,6 +209,20 @@ namespace server.Models
                     VenueId = 31
                 });
 
+            modelBuilder.Entity<Audition>().HasData(
+               new Audition()
+               {
+                   AuditionId = 1,
+                   Open_Date = new System.DateTime(2018, 12, 6),
+                   Audition_Location = "Marty's Grill",
+                   Audition_Description = "We need RAs... Musical RAs!",
+                   Instrument_Name = "Voice",
+                   InstrumentId = 2,
+                   EnsembleId = 21
+
+               }
+               );
+            
             modelBuilder.Entity<AuditionProfile>().HasData(
                 new AuditionProfile() { AuditionId = 1, ProfileId = 11 },
                 new AuditionProfile() { AuditionId = 1, ProfileId = 12 }
@@ -221,37 +247,17 @@ namespace server.Models
                 new ProfileEnsemble() { ProfileId = 11, EnsembleId = 22, Start_Date = new System.DateTime(2006, 3, 1) },
                 new ProfileEnsemble() { ProfileId = 12, EnsembleId = 22, Start_Date = new System.DateTime(2006, 3, 1) }
                 );
-            /*
+
             modelBuilder.Entity<Post>().HasData(
                 new Post()
                 {
                     PostId = 1,
                     PosterType = "profile",
                     PosterIndex = 1,
-                    MediaType = "img",
-                    MediaUrl = "https://upload.wikimedia.org/wikipedia/en/0/06/Miley_Cyrus_-_Wrecking_Ball.jpg",
-                    Text = "No longer a Disney gal!"
+                    Text = "Hi everybody!"
                 },
-                new Post() { PostId = 2, PosterType = "profile", PosterIndex = 11, Text = "Screw you dad @BillyRayCyrus" },
-                new Post() { PostId = 3, PosterType = "profile", PosterIndex = 11, MediaType = "img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" },
-                new Post() { PostId = 4, PosterType = "ensemble", PosterIndex = 21, Type = "aud", Ref_Id = 1, Text = "We're looking for a new member!" }
+                new Post() { PostId = 2, PosterType = "ensemble", PosterIndex = 21, Type = "aud", Ref_Id = 1, Text = "We're looking for a new member!" }
                 );
-
-            modelBuilder.Entity<Audition>().HasData(
-                new Audition()
-                {
-                    AuditionId = 1,
-                    Open_Date = new System.DateTime(2018, 12, 6),
-                    Audition_Location = "Marty's Grill",
-                    Audition_Description = "She's a diva and left us... We need a new Hannah Montana! (Not required to be from Montana)",
-                    Instrument_Name = "Voice",
-                    InstrumentId = 2,
-                    EnsembleId = 21
-
-
-                }
-                );
-        */
         }
     }
 
@@ -264,6 +270,8 @@ namespace server.Models
 
         [Required]
         public string Password { get; set; }
+
+        public string Salt { get; set; }
 
         public ICollection<Profile> Profile { get; set; }
         public ICollection<Ensemble> Ensemble { get; set; }
