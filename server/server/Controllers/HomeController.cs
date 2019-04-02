@@ -1198,7 +1198,7 @@ namespace server.Controllers
                     EnsembleDashModel model = new EnsembleDashModel();
 
                     model.Ensemble = ensemble;
-                    model.AuditionList = _context.Auditions.Where(u => u.EnsembleId == id).ToList();
+                    model.AuditionList = _context.Auditions.Where(u => u.EnsembleId == id && u.Closed_Date > System.DateTime.Now).ToList();
                     model.Members = _context.ProfileEnsembles.Include("Profile").Where(pe => pe.EnsembleId == ensemble.EnsembleId).ToList();
        
                     return View(model);
