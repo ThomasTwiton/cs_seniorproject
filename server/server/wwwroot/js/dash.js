@@ -12,7 +12,7 @@ function editAud(id) {
 function delAud(id) {
     if (confirm("Are you sure you would like to close this audition?\n\nThe audition can be reinstated in the 'Previous Auditions' tab.")) {
         console.log("Deleting Audition:", id);
-        console.log(id, _EnsembleId);
+        callAPI("closeAud/" + id.toString(), "GET", "", () => window.location.reload());
     }
 }
 
@@ -31,7 +31,7 @@ function displayModal(data) {
     document.getElementById("audID").value = data.auditionId;
     document.getElementById("audOpen").value = data.open_Date.split("T")[0];
     document.getElementById("audClose").value = data.closed_Date.split("T")[0];
-    document.getElementById("audLoc").value = data.audition_location;
+    document.getElementById("audLoc").value = data.audition_Location;
     document.getElementById("audIns").value = data.instrument_Name;
     document.getElementById("audID").value = data.auditionId;
     document.getElementById("desc").value = data.audition_Description;
@@ -83,3 +83,9 @@ function addMember() {
 
     i.value = "";
 }
+
+function getProfiles(audID) {
+    console.log("Getting Profiles for Audition:", audID);
+    callAPI("applicants/" + audID.toString(), "GET", "", popApplicants);
+}
+
