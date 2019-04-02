@@ -25,6 +25,12 @@
                 @Model.Venue.Bio
             </div>
             <hr />
+            @if (Model.isOwner == true)
+            {
+                <div class="row">
+                    <a asp-action="EditEnsemble" asp-route-id="@Model.Venue.VenueId">Edit</a>
+                </div>
+            }
             <table id="info">
                 <tr>
                     <td>Phone:</td>

@@ -958,7 +958,7 @@ namespace server.Controllers
 
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditProfile(int? id)
         {
             /* This action method displays view for editing the profile
              *  with the provided id. Here the users should be able to 
@@ -1033,7 +1033,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ProfileModel model)
+        public async Task<IActionResult> EditProfile(int id, ProfileModel model)
         {
             /* This action method takes the updated info of the user's
              *  profile and saves it. There is no view associated with
@@ -1045,12 +1045,14 @@ namespace server.Controllers
 
             if (s.IsLoggedIn)
             {
-                var profile = _context.Profiles.Find(model.Profile.ProfileId);
-
+                Console.WriteLine(model.Profile.ProfileId);
                 Profile userprofile = _context.Profiles.Find(model.Profile.ProfileId);
+                Console.WriteLine(userprofile.ProfileId);
                 userprofile.First_Name = model.Profile.First_Name;
                 userprofile.Last_Name = model.Profile.Last_Name;
-                userprofile.Preferred_Name = model.Profile.Preferred_Name;
+                userprofile.City = model.Profile.City;
+                userprofile.State = model.Profile.State;
+                userprofile.Bio = model.Profile.Bio;
 
                 //handle uploading the image file to our directory
                 //Console.WriteLine(model.File.FileName);
@@ -1095,12 +1097,26 @@ namespace server.Controllers
                 }
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Edit", id = model.Profile.ProfileId);
+                return RedirectToAction("Profile", new { id = model.Profile.ProfileId });
             }
 
             return RedirectToAction("Login");
 
         }
+
+        /*
+        public async Task<IActionResult> EditEnsemble(int? id) { }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditEnsemble(int id, EnsembleModel model) { }
+
+        public async Task<IActionResult> EditVenue(int? id) { }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVenue(int id, EnsembleModel model) { }
+        */
 
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -102,7 +102,7 @@
                             {
                                 <div class="checkLabel">
                                     <label>
-                                        <input type="checkbox" name="SelectedInsIds" value="@ins.Value" checked /> @ins.Text
+                                        <input type="checkbox" name="SelectedInsIds" value="@ins.Value" checked onchange="changeCheck(this)" /> @ins.Text
                                     </label>
                                 </div>
                             }
@@ -110,7 +110,7 @@
                             {
                                 <div class="checkLabel">
                                     <label>
-                                        <input type="checkbox" name="SelectedInsIds" value="@ins.Value" /> @ins.Text
+                                        <input type="checkbox" name="SelectedInsIds" value="@ins.Value" onchange="changeCheck(this)" /> @ins.Text
                                     </label>
                                 </div>
                             }
@@ -256,3 +256,4 @@
     </form>
 
 </div>
+
