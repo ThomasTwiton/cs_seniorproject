@@ -181,8 +181,9 @@ namespace server.Controllers
 
                 CookieOptions option = new CookieOptions();
                 option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
                 Response.Cookies.Append(CookieUserId, encUID, option);
-
+            
                 SessionModel s = GetSessionInfo(Request);
                 Console.WriteLine(s.PrevAction);
 
@@ -249,6 +250,7 @@ namespace server.Controllers
         {
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddDays(-10);
+            option.IsEssential = true;
             Response.Cookies.Append(CookieUserId, "", option);
 
             return RedirectToAction("Index");
@@ -542,6 +544,7 @@ namespace server.Controllers
                 string encUID = user.UserId.ToString();
                 CookieOptions option = new CookieOptions();
                 option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
                 Response.Cookies.Append(CookieUserId, encUID, option);
 
                 SessionModel s = GetSessionInfo(Request);
@@ -635,6 +638,7 @@ namespace server.Controllers
 
                 CookieOptions option = new CookieOptions();
                 option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
                 Response.Cookies.Append(CookiePrevAct, encPA, option);
 
                 return RedirectToAction("Login");
@@ -694,6 +698,7 @@ namespace server.Controllers
 
                 CookieOptions option = new CookieOptions();
                 option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
                 Response.Cookies.Append(CookiePrevAct, encPA, option);
 
                 return RedirectToAction("Login");
@@ -747,6 +752,7 @@ namespace server.Controllers
 
                 CookieOptions option = new CookieOptions();
                 option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
                 Response.Cookies.Append(CookiePrevAct, encPA, option);
 
                 return RedirectToAction("Login");
@@ -808,6 +814,7 @@ namespace server.Controllers
 
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
             Response.Cookies.Append(CookiePrevAct, encPA, option);
             
             return RedirectToAction("Login");
@@ -839,6 +846,7 @@ namespace server.Controllers
 
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
             Response.Cookies.Append(CookiePrevAct, encPA, option);
             
             return RedirectToAction("Login");
@@ -887,6 +895,7 @@ namespace server.Controllers
 
                 CookieOptions option = new CookieOptions();
                 option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
                 Response.Cookies.Append(CookiePrevAct, encPA, option);
                 
                 return RedirectToAction("Login");
@@ -942,6 +951,7 @@ namespace server.Controllers
 
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
             Response.Cookies.Append(CookiePrevAct, encPA, option);
             
             return RedirectToAction("Login");
