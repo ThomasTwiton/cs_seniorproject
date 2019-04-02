@@ -12,16 +12,7 @@ function editAud(id) {
 function delAud(id) {
     if (confirm("Are you sure you would like to close this audition?\n\nThe audition can be reinstated in the 'Previous Auditions' tab.")) {
         console.log("Deleting Audition:", id);
-        callAPI("closeAud/" + id.toString(), "GET", "", () => window.location.reload());
-    }
-}
-
-function delMem(id) {
-
-    if (confirm("Are you sure you would like to remove this member?\n\nThe page will be refreshed.")) {
-        console.log("Removing Member:", id);
-
-        callAPI("remProfile", "POST", data, location.reload);
+        callAPI("closeAud/" + id.toString(), "GET", "", location.reload);
     }
 }
 
@@ -58,6 +49,54 @@ function updateAud() {
 
 }
 
+
+
+/* ================================================== */
+/* ============== Auditions Functions =============== */
+/* ================================================== */
+
+function getProfiles(audID) {
+    console.log("Getting Profiles for Audition:", audID);
+    _AudId = audID;
+    callAPI("applicants/" + audID.toString(), "GET", "", popApplicants);
+}
+
+function acceptProfile(pID) {
+    console.log("Accepting Profile:", pID);
+    let data = {
+        AuditionId: _AudId,
+        ProfileId: pID,
+        EnsembleId: _EnsembleId
+    }
+
+    callAPI("acceptApplicant", "POST", data, () => window.location.reload());
+}
+
+function rejectProfile(pID) {
+    console.log("Rejecting Profile:", pID);
+    let data = {
+        AuditionId: _AudId,
+        ProfileId: pID
+    }
+
+    callAPI("remApplicant", "POST", data, () => getProfiles(_AudId));
+}
+
+
+
+/* ================================================== */
+/* ============ Manage Members Functions ============ */
+/* ================================================== */
+
+function delMem(id) {
+
+    if (confirm("Are you sure you would like to remove this member?\n\nThe page will be refreshed.")) {
+        console.log("Removing Member:", id);
+
+        callAPI("remProfile", "POST", { ProfileId: id, EnsembleId: _EnsembleId }, window.location.reload);
+    }
+}
+
 function transOwner() {
     let i = document.getElementById("transInput");
 
@@ -84,8 +123,12 @@ function addMember() {
     i.value = "";
 }
 
-function getProfiles(audID) {
-    console.log("Getting Profiles for Audition:", audID);
-    callAPI("applicants/" + audID.toString(), "GET", "", popApplicants);
+function getMembers() {
+    console.log("Getting Members for Ensemble:", _EnsembleId);
+    callAPI("members/" + _EnsembleId, "GET", null, popMembers);
+}
+
+function popMembers(data) {
+    console.log(data);
 }
 

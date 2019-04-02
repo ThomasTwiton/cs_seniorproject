@@ -27,7 +27,7 @@ function DetailRow(props) {
                 </div>
 
                 <div className="col-xs-1">
-                    <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(props.profile.id)}></span>
+                    <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => acceptProfile(props.profile.id)}></span>
                 </div>
 
                 <div className="col-xs-1">
