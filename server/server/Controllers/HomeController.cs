@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
+using System.Text;
 
 namespace server.Controllers
 {
@@ -20,57 +22,54 @@ namespace server.Controllers
         private readonly PluggedContext _context;
         private IHostingEnvironment _hostingEnvironment;
 
-        const string SessionUserId = "_UserID";
-        const string SessionPrevAct = "_PrevAction";
-        //const string SessionViewId = "_ViewID";
-        //const string SessionViewType = "_ViewType";
+        private const string CookieUserId = "_UserID";
+        private const string CookiePrevAct = "_PrevAction";
 
-        public SessionModel GetSessionInfo(Microsoft.AspNetCore.Http.ISession s)
+        public SessionModel GetSessionInfo(HttpRequest s)
         {
             SessionModel ret = new SessionModel();
 
-            /*
-            Console.WriteLine("=1=1=1=1=1=1=1=1=1=1=1=1=1");
-            Console.WriteLine(HttpContext.Session.GetInt32(SessionUserId));
-            Console.WriteLine(HttpContext.Session.GetInt32(SessionViewId));
-            Console.WriteLine(HttpContext.Session.GetString(SessionViewType));
-            */
+            // Get the encrypted values
+            string uidString = s.Cookies[CookieUserId];
 
-            int? uid = HttpContext.Session.GetInt32(SessionUserId);
-            string prevAction = HttpContext.Session.GetString(SessionPrevAct);
-            ret.PrevAction = prevAction;
+            // Decrypt PrevAction
+            ret.PrevAction = s.Cookies[CookiePrevAct];
 
-            if (uid != null)
+            if (uidString != null & uidString != "")
             {
-                /*
-                Console.WriteLine("+++++++++++");
-                Console.WriteLine(s.GetString(SessionViewType));
-                Console.WriteLine(s.GetInt32(SessionViewId));
-                */
 
-                ret.UserID = uid ?? default(int);
-                //ret.ViewType = s.GetString(SessionViewType);
-                //ret.ViewID = s.GetInt32(SessionViewId) ?? default(int);
                 ret.IsLoggedIn = true;
-
-                /*
-                Console.WriteLine("Return Object");
-                Console.WriteLine(ret.UserID);
-                Console.WriteLine(ret.ViewType);
-                Console.WriteLine(ret.ViewID);
-                Console.WriteLine(ret.IsLoggedIn);
-                */
-
-                return ret;
+                ret.UserID = ret.UserID = Int32.Parse(uidString);
 
             } else
             {
-                //Console.WriteLine("----------");
+                // No UserID means the user is not logged in
                 ret.IsLoggedIn = false;
-                //Console.WriteLine(ret.IsLoggedIn);
-                return ret;
             }
 
+            return ret;
+
+        }
+
+        private static string CreateSalt(int size)
+        {
+            //Generate a cryptographic random number.
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            byte[] buff = new byte[size];
+            rng.GetBytes(buff);
+
+            // Return a Base64 string representation of the random number.
+            return Convert.ToBase64String(buff);
+        }
+
+        private static string CreatePasswordHash(string pwd, string salt)
+        {
+            string saltAndPwd = pwd + salt;
+            byte[] bytes = Encoding.ASCII.GetBytes(saltAndPwd);
+            SHA512 shaM = new SHA512Managed();
+            byte[] hashedPwdbytes = shaM.ComputeHash(bytes);
+            string hashedPwd = Convert.ToBase64String(hashedPwdbytes);
+            return hashedPwd;
         }
 
         public HomeController(PluggedContext context, IHostingEnvironment environment)
@@ -91,7 +90,7 @@ namespace server.Controllers
              *      - Profile   --> By entering their information for a new account.
              */
 
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
 
             if (s.IsLoggedIn)
             {
@@ -161,26 +160,38 @@ namespace server.Controllers
             {
                 ProfileModel model = new ProfileModel();
 
-                var userList = _context.Users.Where(u => u.Email == email && u.Password == password).ToList();
-                if (userList.Count() == 0){
+                List<User> users = _context.Users.Where(u => u.Email == email).ToList();
+                if(users.Count() == 0)
+                {
+                    ViewData["Error"] = "Email not registered";
+                    return View("Index");
+                }
+                User user = users[0];
+
+                string salt = user.Salt;
+
+                if (user.Password != CreatePasswordHash(password, salt)){
                     ViewData["Error"] = "Username and password do not match";
                     return View("Index");
                 }
-                User user = userList[0];
+                
                 model.User = user;
 
-                HttpContext.Session.SetInt32(SessionUserId, user.UserId);
-                //HttpContext.Session.SetInt32(SessionViewId, profile.ProfileId);
-                //HttpContext.Session.SetString(SessionViewType, "profile");
-                SessionModel s = GetSessionInfo(HttpContext.Session);
+                string encUID = user.UserId.ToString();
+
+                CookieOptions option = new CookieOptions();
+                option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
+                Response.Cookies.Append(CookieUserId, encUID, option);
+            
+                SessionModel s = GetSessionInfo(Request);
                 Console.WriteLine(s.PrevAction);
 
                 if (s.PrevAction != null && s.PrevAction != "")
                 {
                     // If the user tried to do something without being logged in,
                     //  then they should be redirected back to that thing.
-                    string pv = s.PrevAction;
-                    HttpContext.Session.SetString(SessionPrevAct, "");
+                    
                     return Redirect(s.PrevAction);
                 }
 
@@ -237,7 +248,11 @@ namespace server.Controllers
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(-10);
+            option.IsEssential = true;
+            Response.Cookies.Append(CookieUserId, "", option);
+
             return RedirectToAction("Index");
         }
 
@@ -250,7 +265,7 @@ namespace server.Controllers
              *      - Ensemble  --> any ensemble img in the ensembles area
              */
 
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
 
             ProfileModel model = new ProfileModel();
 
@@ -339,7 +354,7 @@ namespace server.Controllers
              *      - Audition  --> clicking on an audition posting
              */
 
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
             EnsembleModel model = new EnsembleModel();
 
             /* The following lines are the previous way in which we looked up an ensemble
@@ -463,7 +478,7 @@ namespace server.Controllers
              *      - Gig  --> clicking on a gig posting
              */
 
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
             VenueModel model = new VenueModel();
 
             var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
@@ -503,7 +518,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId, Email, Password")] User user, string email, string password)
+        public async Task<IActionResult> Create(string email, string password)
         {
             /* This action method creates a new user in the database
              *  and moves the user to the profile creation view.
@@ -517,12 +532,22 @@ namespace server.Controllers
 
             if (ModelState.IsValid)
             {
+                User user = new User();
+                user.Email = email;
+                string salt = CreateSalt(32);
+                user.Salt = salt;
+                user.Password = CreatePasswordHash(password, salt);
                 _context.Add(user);
                 await _context.SaveChangesAsync(); //wait until DB is saved for this result
 
                 // Once the user is created and saved, log them in
-                HttpContext.Session.SetInt32(SessionUserId, user.UserId);
-                SessionModel s = GetSessionInfo(HttpContext.Session);
+                string encUID = user.UserId.ToString();
+                CookieOptions option = new CookieOptions();
+                option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
+                Response.Cookies.Append(CookieUserId, encUID, option);
+
+                SessionModel s = GetSessionInfo(Request);
 
 
                 ProfileModel model = new ProfileModel();
@@ -548,7 +573,7 @@ namespace server.Controllers
         {
             if (ModelState.IsValid)
             {
-                SessionModel s = GetSessionInfo(HttpContext.Session);
+                SessionModel s = GetSessionInfo(Request);
 
                 if (s.IsLoggedIn)
                 {
@@ -609,7 +634,13 @@ namespace server.Controllers
                 }
 
                 // If not logged in
-                HttpContext.Session.SetString(SessionPrevAct, "/Home/CreateProfile");
+                string encPA = "/Home/CreateProfile";
+
+                CookieOptions option = new CookieOptions();
+                option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
+                Response.Cookies.Append(CookiePrevAct, encPA, option);
+
                 return RedirectToAction("Login");
             }
 
@@ -624,7 +655,7 @@ namespace server.Controllers
 
             if (ModelState.IsValid)
             {
-                SessionModel s = GetSessionInfo(HttpContext.Session);
+                SessionModel s = GetSessionInfo(Request);
 
                 if (s.IsLoggedIn)
                 {
@@ -663,7 +694,13 @@ namespace server.Controllers
                     return RedirectToAction("Ensemble", new { id = ensemble.EnsembleId });
                 }
                 // If not logged in
-                HttpContext.Session.SetString(SessionPrevAct, "/Home/CreateProfile");
+                string encPA = "/Home/CreateProfile";
+
+                CookieOptions option = new CookieOptions();
+                option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
+                Response.Cookies.Append(CookiePrevAct, encPA, option);
+
                 return RedirectToAction("Login");
 
             }
@@ -678,7 +715,7 @@ namespace server.Controllers
         {
             if (ModelState.IsValid)
             {
-                SessionModel s = GetSessionInfo(HttpContext.Session);
+                SessionModel s = GetSessionInfo(Request);
 
                 if (s.IsLoggedIn)
                 {
@@ -711,7 +748,13 @@ namespace server.Controllers
                     return RedirectToAction("Venue", new { id = venue.VenueId });
                 }
                 // If not logged in
-                HttpContext.Session.SetString(SessionPrevAct, "/Home/CreateProfile");
+                string encPA = "/Home/CreateProfile";
+
+                CookieOptions option = new CookieOptions();
+                option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
+                Response.Cookies.Append(CookiePrevAct, encPA, option);
+
                 return RedirectToAction("Login");
             }
             // If ModelState is invalid
@@ -721,7 +764,7 @@ namespace server.Controllers
 
         public async Task<IActionResult> Audition(int id)
         {
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
 
             if (s.IsLoggedIn)
             {
@@ -765,9 +808,15 @@ namespace server.Controllers
                 return View(model);
 
             }
-            
+
             // If not logged in
-            HttpContext.Session.SetString(SessionPrevAct, "/Home/Audition/"+id.ToString());
+            string encPA = "/Home/Audition/" + id.ToString();
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
+            Response.Cookies.Append(CookiePrevAct, encPA, option);
+            
             return RedirectToAction("Login");
             
             
@@ -775,7 +824,7 @@ namespace server.Controllers
 
         public async Task<IActionResult> Gig(int id)
         {
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
 
             if (s.IsLoggedIn)
             {
@@ -793,7 +842,13 @@ namespace server.Controllers
             }
 
             // If not logged in
-            HttpContext.Session.SetString(SessionPrevAct, "/Home/Audition/" + id.ToString());
+            string encPA = "/Home/Gig/" + id.ToString();
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
+            Response.Cookies.Append(CookiePrevAct, encPA, option);
+            
             return RedirectToAction("Login");
         }
 
@@ -804,7 +859,7 @@ namespace server.Controllers
 
             if (ModelState.IsValid)
             {
-                SessionModel s = GetSessionInfo(HttpContext.Session);
+                SessionModel s = GetSessionInfo(Request);
 
                 if (s.IsLoggedIn)
                 {
@@ -836,7 +891,13 @@ namespace server.Controllers
                 }
 
                 // If not logged in
-                HttpContext.Session.SetString(SessionPrevAct, "/Home/Ensemble/" + ensId.ToString());
+                string encPA = "/Home/Ensemble/" + ensId.ToString();
+
+                CookieOptions option = new CookieOptions();
+                option.Expires = DateTime.Now.AddDays(1);
+                option.IsEssential = true;
+                Response.Cookies.Append(CookiePrevAct, encPA, option);
+                
                 return RedirectToAction("Login");
 
             }
@@ -850,7 +911,7 @@ namespace server.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateGig(System.DateTime start_date, System.DateTime end_date, System.TimeSpan time, string repeat, string genre, string description, int userID, int PosterIndex)
         {            
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
 
             if (s.IsLoggedIn)
             {
@@ -886,7 +947,13 @@ namespace server.Controllers
             }
 
             // If not logged in
-            HttpContext.Session.SetString(SessionPrevAct, "/Home/Venue/" + PosterIndex.ToString());
+            string encPA = "/Home/Venue/" + PosterIndex.ToString();
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
+            Response.Cookies.Append(CookiePrevAct, encPA, option);
+            
             return RedirectToAction("Login");
 
         }
@@ -900,7 +967,7 @@ namespace server.Controllers
              *      - Edit[Post]--> submitting changes to the page
              */
 
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
 
             if (s.IsLoggedIn)
             {
@@ -974,7 +1041,7 @@ namespace server.Controllers
              *  respective profile page.
              */
 
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
 
             if (s.IsLoggedIn)
             {
@@ -1042,7 +1109,7 @@ namespace server.Controllers
 
             if (ModelState.IsValid)
             {
-                SessionModel s = GetSessionInfo(HttpContext.Session);
+                SessionModel s = GetSessionInfo(Request);
 
                 if (s.IsLoggedIn)
                 {
@@ -1120,7 +1187,7 @@ namespace server.Controllers
         
         public IActionResult Dashboard(int id)
         {
-            SessionModel s = GetSessionInfo(HttpContext.Session);
+            SessionModel s = GetSessionInfo(Request);
 
             if (s.IsLoggedIn)
             {
@@ -1199,11 +1266,17 @@ namespace server.Controllers
             }
 
             model.Auditions = audresult;
+            model.AuditionCount = audresult.Count();
             model.Gigs = gigresult;
+            model.GigCount = gigresult.Count();
             model.Profiles = profileresult;
+            model.ProfileCount = profileresult.Count();
             model.Ensembles = ensembleresult;
+            model.EnsembleCount = ensembleresult.Count();
             model.Gigs = gigresult;
+            model.GigCount = gigresult.Count();
             model.Venues = venueresult;
+            model.VenueCount = venueresult.Count();
             model.Query = query;
          
             return View(model);
