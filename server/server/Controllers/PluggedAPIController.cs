@@ -234,12 +234,16 @@ namespace server.Controllers
         public async Task<IActionResult> acceptApplicant(AcceptApplicant applicant)
         {
 
+
+            var alreadyMember = _context.ProfileEnsembles.Where(p => p.EnsembleId == int.Parse(applicant.EnsembleId) && p.ProfileId == int.Parse(applicant.ProfileId)).ToList()[0];
+
+            if (alreadyMember != null)
+            {
+                return NoContent();
+            }
+
             var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
 
-            if (profile != null)
-            {
-                return NotFound();
-            }
 
             ProfileEnsemble profens = new ProfileEnsemble();
             profens.Start_Date = System.DateTime.Now;
