@@ -23,14 +23,14 @@
             <hr />
             <div id="bio">
                 @Model.Venue.Bio
+                <br />
+                @if (Model.isOwner == true)
+                {                    
+                    <a asp-action="EditVenue" asp-route-id="@Model.Venue.VenueId">Edit</a>
+                }
             </div>
+            
             <hr />
-            @if (Model.isOwner == true)
-            {
-                <div class="row">
-                    <a asp-action="EditEnsemble" asp-route-id="@Model.Venue.VenueId">Edit</a>
-                </div>
-            }
             <table id="info">
                 <tr>
                     <td>Phone:</td>
@@ -40,12 +40,13 @@
                     <td>Address:</td>
                     <td>
                         @Model.Venue.Address1
+                        @Model.Venue.Address2 <br>
                         @Model.Venue.City, @Model.Venue.State
                     </td>
                 </tr>
                 <tr>
                     <td>Website:</td>
-                    <td><a href=@*@Model.Venue.Website*@>@Model.Venue.Venue_Name</a></td>
+                    <td><a href=@Model.Venue.Website>@Model.Venue.Venue_Name</a></td>
                 </tr>
             </table>
             @if (Model.isOwner == true)

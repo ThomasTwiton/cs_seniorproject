@@ -569,7 +569,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateProfile(string pName, string pCity, string pState, string pBio, int userID, ProfileModel model)
+        public async Task<IActionResult> CreateProfile(string pName, string pSurname, string pCity, string pState, string pBio, int userID, ProfileModel model)
         {
             if (ModelState.IsValid)
             {
@@ -578,17 +578,9 @@ namespace server.Controllers
                 if (s.IsLoggedIn)
                 {
                     Profile profile = new Profile();
-                    string[] nameList = pName.Split();
-                    if (nameList.Count()< 2)
-                    {
-                        profile.First_Name = nameList[0];
-                    } else
-                    {
-                        profile.First_Name = nameList[0];
-                        profile.Last_Name = nameList[nameList.Length-1];
-                    }
 
-                    
+                    profile.First_Name = pName;
+                    profile.Last_Name = pSurname;             
                     profile.City = pCity;
                     profile.State = pState;
                     profile.Bio = pBio;
@@ -711,7 +703,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateVenue(string vName, System.DateTime vFormed, string vAddr1, string vCity, string vState, string vPhone, string vWeb, string vBio, int userID, ProfileModel model)
+        public async Task<IActionResult> CreateVenue(string vName, string vAddr1, string vAddr2, string vCity, string vState, string vPhone, string vWeb, string vBio, int userID, ProfileModel model)
         {
             if (ModelState.IsValid)
             {
@@ -722,9 +714,12 @@ namespace server.Controllers
                     Venue venue = new Venue();
                     venue.Venue_Name = vName;
                     venue.Address1 = vAddr1;
+                    venue.Address2 = vAddr2;
                     venue.City = vCity;
                     venue.State = vState;
                     venue.Bio = vBio;
+                    venue.Website = vWeb;
+                    venue.Phone = vPhone;
                     venue.User = _context.Users.Find(userID);
 
                     if (model.File != null)
@@ -1104,19 +1099,140 @@ namespace server.Controllers
 
         }
 
-        /*
-        public async Task<IActionResult> EditEnsemble(int? id) { }
+        public async Task<IActionResult> EditEnsemble(int? id) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                EnsembleModel model = new EnsembleModel();
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var ensemble = await _context.Ensembles.FindAsync(id);
+
+                if (ensemble == null)
+                {
+                    return NotFound();
+                }
+
+                model.Ensemble = ensemble;
+
+                return View(model);
+            }
+
+            return RedirectToAction("Login");
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditEnsemble(int id, EnsembleModel model) { }
+        public async Task<IActionResult> EditEnsemble(int id, EnsembleModel model) {
+            SessionModel s = GetSessionInfo(Request);
 
-        public async Task<IActionResult> EditVenue(int? id) { }
+            if (s.IsLoggedIn)
+            {
+                Ensemble ensemble = _context.Ensembles.Find(model.Ensemble.EnsembleId);
+                ensemble.Ensemble_Name = model.Ensemble.Ensemble_Name;
+                ensemble.City = model.Ensemble.City;
+                ensemble.State = model.Ensemble.State;
+                ensemble.Genre = model.Ensemble.Genre;
+                ensemble.Type = model.Ensemble.Type;
+                ensemble.Bio = model.Ensemble.Bio;
+                ensemble.Formed_Date = model.Ensemble.Formed_Date;
+                ensemble.Disbanded_Date = model.Ensemble.Disbanded_Date;
+
+                //handle uploading the image file to our directory
+                //Console.WriteLine(model.File.FileName);
+
+                if (model.File != null)
+                {
+                    string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                    var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
+                    var filePath = Path.Combine(uploads, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+                    ensemble.Pic_Url = "/images/uploads/" + fileName;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Ensemble", new { id = model.Ensemble.EnsembleId });
+            }
+
+            return RedirectToAction("Login");
+        }
+
+        
+        public async Task<IActionResult> EditVenue(int? id) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                VenueModel model = new VenueModel();
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var venue = await _context.Venues.FindAsync(id);
+
+                if (venue== null)
+                {
+                    return NotFound();
+                }
+
+                model.Venue = venue;
+
+                return View(model);
+            }
+
+            return RedirectToAction("Login");
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditVenue(int id, EnsembleModel model) { }
-        */
+        public async Task<IActionResult> EditVenue(int id, VenueModel model) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                Venue venue = _context.Venues.Find(model.Venue.VenueId);
+                venue.Venue_Name = model.Venue.Venue_Name;
+                venue.City = model.Venue.City;
+                venue.State = model.Venue.State;
+                venue.Address1 = model.Venue.Address1;
+                venue.Address2 = model.Venue.Address2;
+                venue.Bio = model.Venue.Bio;
+                venue.Website = model.Venue.Website;
+                venue.Phone = model.Venue.Phone;
+
+                //handle uploading the image file to our directory
+                //Console.WriteLine(model.File.FileName);
+
+                if (model.File != null)
+                {
+                    string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                    var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
+                    var filePath = Path.Combine(uploads, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+                    venue.Pic_Url = "/images/uploads/" + fileName;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Venue", new { id = model.Venue.VenueId });
+            }
+
+            return RedirectToAction("Login");
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
