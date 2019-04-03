@@ -227,12 +227,19 @@ namespace server.Controllers
 
         }
 
+
+
         //Accept a profile from an audition into an ensemble.
         [HttpPost("acceptApplicant")]
         public async Task<IActionResult> acceptApplicant(AcceptApplicant applicant)
         {
 
             var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
+
+            if (profile != null)
+            {
+                return NotFound();
+            }
 
             ProfileEnsemble profens = new ProfileEnsemble();
             profens.Start_Date = System.DateTime.Now;
