@@ -1,0 +1,131 @@
+﻿@model server.Models.ProfileModel;
+
+@{
+    ViewData["Title"] = "Edit Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/create.css" />
+}
+
+
+@* Title Row *@
+<div id="titleRow" class="row">
+    <h2 style="float:left;">Edit Profile</h2>
+    <button style="float:right;" class="btn btn-danger" onclick="submitForm()">Save Changes</button>
+    <hr style="width:100%;" />
+</div>
+
+@* Profile Type Row *@
+<div id="profRow" class="row">
+    @*<div id="active" class="col-xs-4 align-middle p" onclick="switchView('profile')">*@
+    <div id="active" class="col-xs-4 p" onclick="switchView('profile')">
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-user"></span>
+        </div>
+        <div class="col-xs-9">
+            Profile<br />
+            A personal profile
+        </div>
+    </div>
+
+    <div class="col-xs-4 e">
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-cd"></span>
+        </div>
+        <div class="col-xs-9">
+            Ensemble<br />
+            A profile for your group
+        </div>
+    </div>
+    <div class="col-xs-4 v">
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-home"></span>
+        </div>
+        <div class="col-xs-9">
+            Venue<br />
+            A profile for your business
+        </div>
+    </div>
+
+
+</div>
+
+@* Information Row *@
+<div id="infoRow" class="row">
+    <!-- Profile form -->
+    <form id="profileForm" asp-action="EditProfile" enctype="multipart/form-data">
+        <div style="display:none">
+            <input asp-for="Profile.ProfileId" type="text" />
+        </div>
+        <div class="col-xs-6">
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label asp-for="Profile.First_Name">First Name<span class="red-ast">*</span></label>
+                    <input asp-for="Profile.First_Name" type="text" class="form-control" placeholder="What is your name?" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label asp-for="Profile.Last_Name">Last Name</label>
+                    <input asp-for="Profile.Last_Name" type="text" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-8">
+                    <label asp-for="Profile.City">City<span class="red-ast">*</span></label>
+                    <input asp-for="Profile.City" type="text" class="form-control" placeholder="Where are you based out of?" required />
+                </div>
+                <div class="col-xs-4">
+                    <label asp-for="Profile.State">State<span class="red-ast">*</span></label>
+                    <input asp-for="Profile.State" type="text" class="form-control" placeholder="Ss" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="File" class="control-label">Profile Picture</label>
+                <input asp-for="File" type="file" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label asp-for="Instruments" class="control-label"></label>
+                    <div id="instruments" class="form-group">
+                        <span asp-validation-for="Instruments" class="text-danger"></span>
+                        @foreach (var ins in Model.Instruments)
+                        {
+                            if (ins.Selected)
+                            {
+                                <div class="checkLabel selected">
+                                    <label>
+                                        <input type="checkbox" name="SelectedInsIds" value="@ins.Value" checked onchange="changeCheck(this)" /> @ins.Text
+                                    </label>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="checkLabel">
+                                    <label>
+                                        <input type="checkbox" name="SelectedInsIds" value="@ins.Value" onchange="changeCheck(this)" /> @ins.Text
+                                    </label>
+                                </div>
+                            }
+
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label asp-for="Profile.Bio">Bio<span class="red-ast">*</span></label>
+                    <textarea asp-for="Profile.Bio" type="text" class="form-control" placeholder="Who are you? What is your brand?" required></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
