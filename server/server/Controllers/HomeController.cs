@@ -677,11 +677,14 @@ namespace server.Controllers
                         await _context.SaveChangesAsync();
                     }
 
+
                     if (ModelState.IsValid)
                     {
                         _context.Add(ensemble);
                         await _context.SaveChangesAsync();
                     }
+
+                   
 
                     return RedirectToAction("Ensemble", new { id = ensemble.EnsembleId });
                 }
@@ -697,8 +700,67 @@ namespace server.Controllers
 
             }
             // If not a valid model state
-            return View("CreateProfile");
+            return View("Create Profile");
 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateEnsembleModal(string eName, System.DateTime eFormed, System.DateTime? eDisbanded, string eCity, string eBio, string eState, string eType, string eGenre, int userID)
+        {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                Ensemble ensemble = new Ensemble();
+                ensemble.Ensemble_Name = eName;
+                ensemble.Formed_Date = eFormed;
+                if (eDisbanded!= null)
+                {
+                    ensemble.Disbanded_Date = (System.DateTime) eDisbanded;
+                }                
+                ensemble.Type = eType;
+                ensemble.Genre = eGenre;
+                ensemble.Bio = eBio;
+                ensemble.City = eCity;
+                ensemble.State = eState;
+                ensemble.User = _context.Users.Find(userID);
+                if (ModelState.IsValid)
+                {
+                    _context.Add(ensemble);
+                    await _context.SaveChangesAsync();
+                }
+
+                try
+                {
+                    Profile profile = _context.Profiles.Where(p => p.UserId == userID).First();
+                    if (profile != null)
+                    {
+                        Console.WriteLine("ITS HAPPENING");
+                        ProfileEnsemble membership = new ProfileEnsemble();
+                        membership.EnsembleId = ensemble.EnsembleId;
+                        membership.ProfileId = profile.ProfileId;
+                        membership.Start_Date = ensemble.Formed_Date;
+                        _context.Add(membership);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                catch { }
+                Console.WriteLine("***");
+                Console.WriteLine(ensemble.EnsembleId);
+                Console.WriteLine("***");
+
+                return RedirectToAction("Ensemble", new { id = ensemble.EnsembleId });
+            }
+            // If not logged in
+            string encPA = "/";
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
+            Response.Cookies.Append(CookiePrevAct, encPA, option);
+
+            return RedirectToAction("Login");
         }
 
         [HttpPost]
