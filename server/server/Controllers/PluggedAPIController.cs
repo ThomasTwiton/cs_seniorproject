@@ -50,10 +50,15 @@ namespace server.Controllers
             return applicantProfiles;
         }
 
-        //Load all of the Profiles who are members of a given ensemble (id)
+
         [HttpGet("members/{id}")]
         public async Task<ActionResult<IEnumerable<Profile>>> GetMembers(int id)
         {
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine(id);
             var profileEnsemble = _context.ProfileEnsembles.Where(a => a.EnsembleId == id).ToList();
 
             var memberProfiles = new List<Profile>();
@@ -146,6 +151,11 @@ namespace server.Controllers
 
         }
 
+        public class GetMembersHelper
+        {
+            public int id { get; set; }
+        }
+
         public class AddProfiletoEnsemble
         {
             public string name { get; set; }
@@ -234,12 +244,15 @@ namespace server.Controllers
         public async Task<IActionResult> acceptApplicant(AcceptApplicant applicant)
         {
 
-            var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
 
-            if (profile != null)
+            var alreadyMember = _context.ProfileEnsembles.Where(p => p.EnsembleId == int.Parse(applicant.EnsembleId) && p.ProfileId == int.Parse(applicant.ProfileId)).ToList();
+
+            if (alreadyMember.Count() >= 1)
             {
-                return NotFound();
+                return NoContent();
             }
+
+            var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
 
             ProfileEnsemble profens = new ProfileEnsemble();
             profens.Start_Date = System.DateTime.Now;
@@ -254,6 +267,8 @@ namespace server.Controllers
                 _context.Add(profens);
                 await _context.SaveChangesAsync();
             }
+
+            CloseAudition(int.Parse(applicant.AuditionId));
 
             return NoContent();
 

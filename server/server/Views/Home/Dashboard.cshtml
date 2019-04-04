@@ -98,7 +98,7 @@
     const Component = (
     <Tabs defaultIndex={1}>
         <TabList>
-            <Tab>Previous Auditions</Tab>
+            <Tab onClick={getClosedAuds}>Previous Auditions</Tab>
             <Tab>Pending Auditions</Tab>
             <Tab>Manage Members</Tab>
         </TabList>
@@ -203,7 +203,7 @@
                     <h2>Members</h2>
                 </div>
                 <div className="row">
-                    <table className="table nonfluid-table">
+                    <table id="memTable" className="table nonfluid-table">
                         <tbody>
                             <tr>
                                 <th>Name</th>
