@@ -21,10 +21,6 @@
     margin-bottom: 15px;
 }
 
-.glyphicon-map-marker {
-    color: var(--bkg-teal);
-}
-
 #ensembleContainer {
     padding: 0;
 }
