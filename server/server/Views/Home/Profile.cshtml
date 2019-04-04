@@ -193,7 +193,7 @@
 
                 <div class="modal-content">
                     <span class="close" onclick="hideModal()">&times;</span>
-                    <form asp-controller="Home" asp-action="CreateEnsembleModal" method="post" class="container-fluid">
+                    <form asp-controller="Home" asp-action="CreateEnsemble" method="post" class="container-fluid">
                         <div style="display:none">
                             <input name="userID" type="text" value="@Model.Profile.UserId" />
                         </div>
@@ -236,13 +236,14 @@
                                 <div class="col-sm-8">
                                     <div class="form-group">
                                         <label for="eCity">City<span class="red-ast">*</span></label>
-                                        <input type="text" name="city" class="form-control" required />
+                                        <input type="text" name="eCity" class="form-control" required />
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="eState">State<span class="red-ast">*</span></label>
-                                        <input type="text" name="state" class="form-control" required />
+                                        <input type="text" name="eState" class="form-control" required />
+
                                     </div>
                                 </div>
                             </div>
@@ -252,7 +253,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="description">Ensemble Bio</label>
+                                <label for="eBio">Ensemble Bio</label>
                                 <textarea id="desc" name="eBio" class="form-control" placeholder="Tell us about you!"></textarea>
                             </div>
                         </div>

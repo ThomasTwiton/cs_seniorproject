@@ -50,10 +50,15 @@ namespace server.Controllers
             return applicantProfiles;
         }
 
-        //Load all of the Profiles who are members of a given ensemble (id)
+
         [HttpGet("members/{id}")]
         public async Task<ActionResult<IEnumerable<Profile>>> GetMembers(int id)
         {
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine(id);
             var profileEnsemble = _context.ProfileEnsembles.Where(a => a.EnsembleId == id).ToList();
 
             var memberProfiles = new List<Profile>();
@@ -81,17 +86,30 @@ namespace server.Controllers
             return audition;
         }
 
+        public class ChangeAudition
+        {
+            public string auditionId { get; set; }
+            public string audition_Description { get; set; }
+            public string audition_Location { get; set; }
+            public string closed_Date { get; set; }
+            public string instrument_Name { get; set; }
+            public string open_Date { get; set; }
+        }
+
         //Change any information about a given audition (id)
         [HttpPost("auditions/{id}")]
-        public async Task<IActionResult> PostAudition(int id, Audition aud)
+        public async Task<IActionResult> PostAudition(int id, ChangeAudition aud)
         {
+            var audition =  _context.Auditions.Find(id);
+            audition.Audition_Description = aud.audition_Description;
+            audition.Audition_Location = aud.audition_Location;
+            audition.Closed_Date = DateTime.ParseExact(aud.closed_Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            audition.Open_Date = DateTime.ParseExact(aud.open_Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            var inst = _context.Instruments.Where(p => p.Instrument_Name == aud.instrument_Name).ToList()[0];
+            audition.InstrumentId = inst.InstrumentId;
+            audition.Instrument_Name = inst.Instrument_Name;
 
-            if (id != aud.AuditionId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(aud).State = EntityState.Modified;
+            //_context.Entry(aud).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -105,11 +123,6 @@ namespace server.Controllers
         {
 
             var audition = await _context.Auditions.FindAsync(id);
-
-            if (audition == null)
-            {
-                return NotFound();
-            }
 
             audition.Closed_Date = System.DateTime.Now;
 
@@ -127,10 +140,6 @@ namespace server.Controllers
 
             var audition = await _context.Auditions.FindAsync(id);
 
-            if (audition == null)
-            {
-                return NotFound();
-            }
 
             System.DateTime today = System.DateTime.Now;
             System.TimeSpan duration = new System.TimeSpan(30, 0, 0, 0);
@@ -140,6 +149,11 @@ namespace server.Controllers
 
             return NoContent();
 
+        }
+
+        public class GetMembersHelper
+        {
+            public int id { get; set; }
         }
 
         public class AddProfiletoEnsemble
@@ -223,10 +237,20 @@ namespace server.Controllers
 
         }
 
+
+
         //Accept a profile from an audition into an ensemble.
         [HttpPost("acceptApplicant")]
         public async Task<IActionResult> acceptApplicant(AcceptApplicant applicant)
         {
+
+
+            var alreadyMember = _context.ProfileEnsembles.Where(p => p.EnsembleId == int.Parse(applicant.EnsembleId) && p.ProfileId == int.Parse(applicant.ProfileId)).ToList();
+
+            if (alreadyMember.Count() >= 1)
+            {
+                return NoContent();
+            }
 
             var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
 
@@ -243,6 +267,8 @@ namespace server.Controllers
                 _context.Add(profens);
                 await _context.SaveChangesAsync();
             }
+
+            CloseAudition(int.Parse(applicant.AuditionId));
 
             return NoContent();
 
