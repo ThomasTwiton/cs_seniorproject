@@ -9,6 +9,7 @@
     border: var(--bkg-gold) solid 2px;
     border-radius: 5px;
     margin-bottom: 15px;
+    object-fit: cover;
 }
 
 #profile div {
@@ -31,6 +32,7 @@
     border-radius: 3px;
     margin: 5px;
     float: left;
+    object-fit: cover;
 }
 
 #ensembleContainer .row {

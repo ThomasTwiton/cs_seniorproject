@@ -27,7 +27,7 @@ function DetailRow(props) {
                 </div>
 
                 <div className="col-xs-1">
-                    <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => rejectProfile(props.profile.id)}></span>
+                    <span className="glyphicon glyphicon-ok pointer" title="Accept Applicant" onClick={() => acceptProfile(props.profile.id)}></span>
                 </div>
 
                 <div className="col-xs-1">
@@ -38,7 +38,7 @@ function DetailRow(props) {
             <div className="collapse" id={props.collapseID}>
                 <div className="card card-body row">
                     <div className="col-xs-3">
-                        <img className="mediumPic" src={props.profile.pic} />
+                        <a href={"../../Home/Profile/"+props.profile.id.toString()}><img className="mediumPic" src={props.profile.pic} /></a>
                     </div>
 
                     <div className="col-xs-4">
@@ -46,7 +46,7 @@ function DetailRow(props) {
                             <span className="glyphicon glyphicon-map-marker"></span> {props.profile.loc}
                         </div>
                         <div className="row instruments">
-                            <b>Instruments:</b> {props.profile.inst.join(", ")}
+                            <b>Instruments:</b> 
                         </div>
                     </div>
 
@@ -72,35 +72,34 @@ const p0 = {
     }
 };
 
-const p1 = {
-    collapseID: "collapse1",
-    profile: {
-        type: "profile",
-        id: 1,
-        name: "Tyler Conzett",
-        pic: "../../images/uploads/default.png",
-        loc: "Decorah, IA",
-        inst: ["Trumpet1", "Trombone1", "Voice1", "Drums1"],
-        bio: "Yo"
+
+
+/* ================================================== */
+/* ================== jsx Functions ================= */
+/* ================================================== */
+
+function popApplicants(data) {
+    let res = [];
+    let colID = 0;
+    for (let a of data) {
+        console.log(a);
+        res.push({
+            collapseID: "collapse" + colID.toString(),
+            profile: {
+                type: "profile",
+                id: a.profileId,
+                name: a.first_Name + " " + a.last_Name,
+                pic: a.pic_Url,
+                inst: a.plays_Instrument,
+                bio: a.bio,
+                loc: a.city + ", " + a.state
+            }
+        });
+        colID++;
     }
-};
 
-const p2 = {
-    collapseID: "collapse2",
-    profile: {
-        type: "profile",
-        id: 2,
-        name: "Tyler Conzett",
-        pic: "../../images/uploads/default.png",
-        loc: "Decorah, IA",
-        inst: ["Trumpet2", "Trombone2", "Voice2", "Drums2"],
-        bio: "Yo"
-    }
-};
-
-const rList = [p0, p1, p2];
-
-ReactDOM.render(
-    <DetailContainer res={rList} />,
-    document.getElementById('profiles')
-);
+    ReactDOM.render(
+        <DetailContainer res={res} />,
+        document.getElementById('profiles')
+    );
+}

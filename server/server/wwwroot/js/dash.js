@@ -1,4 +1,8 @@
-﻿function editAud(id) {
+﻿/* ================================================== */
+/* ================= Modal Functions ================ */
+/* ================================================== */
+
+function editAud(id) {
     console.log("Editing Audition:", id);
 
     callAPI("auditions/" + id, "GET", id, displayModal);
@@ -8,12 +12,8 @@
 function delAud(id) {
     if (confirm("Are you sure you would like to close this audition?\n\nThe audition can be reinstated in the 'Previous Auditions' tab.")) {
         console.log("Deleting Audition:", id);
-        console.log(id, _EnsembleId);
+        callAPI("closeAud/" + id.toString(), "GET", "", location.reload);
     }
-}
-
-function delMem(id) {
-    console.log("Deleting Member:", id);
 }
 
 function displayModal(data) {
@@ -22,7 +22,7 @@ function displayModal(data) {
     document.getElementById("audID").value = data.auditionId;
     document.getElementById("audOpen").value = data.open_Date.split("T")[0];
     document.getElementById("audClose").value = data.closed_Date.split("T")[0];
-    document.getElementById("audLoc").value = data.audition_location;
+    document.getElementById("audLoc").value = data.audition_Location;
     document.getElementById("audIns").value = data.instrument_Name;
     document.getElementById("audID").value = data.auditionId;
     document.getElementById("desc").value = data.audition_Description;
@@ -49,12 +49,62 @@ function updateAud() {
 
 }
 
+
+
+/* ================================================== */
+/* ============== Auditions Functions =============== */
+/* ================================================== */
+
+function getProfiles(audID) {
+    console.log("Getting Profiles for Audition:", audID);
+    _AudId = audID;
+    callAPI("applicants/" + audID.toString(), "GET", "", popApplicants);
+}
+
+function acceptProfile(pID) {
+    console.log("Accepting Profile:", pID);
+    let data = {
+        AuditionId: _AudId,
+        ProfileId: pID,
+        EnsembleId: _EnsembleId
+    }
+
+    callAPI("acceptApplicant", "POST", data, () => window.location.reload());
+}
+
+function rejectProfile(pID) {
+    console.log("Rejecting Profile:", pID);
+    let data = {
+        AuditionId: _AudId,
+        ProfileId: pID
+    }
+
+    callAPI("remApplicant", "POST", data, () => getProfiles(_AudId));
+}
+
+
+
+/* ================================================== */
+/* ============ Manage Members Functions ============ */
+/* ================================================== */
+
+function delMem(id) {
+
+    if (confirm("Are you sure you would like to remove this member?\n\nThe page will be refreshed.")) {
+        console.log("Removing Member:", id);
+
+        callAPI("remProfile", "POST", { ProfileId: id, EnsembleId: _EnsembleId }, window.location.reload);
+    }
+}
+
 function transOwner() {
     let i = document.getElementById("transInput");
 
     if (confirm("Are you sure you would like to transfer ownership of this ensemble to '" + i.value + "'?\n\nYou're account will lose all permissions with regards to this ensemble.")) {
         console.log("Transfering Ownership to:", i.value);
 
+        data = { name: i.value, EnsembleId: _EnsembleId };
+        callAPI("transOwner", "POST", data, (a) => console.log(a));
     }
 
     i.value = "";
@@ -72,3 +122,13 @@ function addMember() {
 
     i.value = "";
 }
+
+function getMembers() {
+    console.log("Getting Members for Ensemble:", _EnsembleId);
+    callAPI("members/" + _EnsembleId, "GET", null, popMembers);
+}
+
+function popMembers(data) {
+    console.log(data);
+}
+

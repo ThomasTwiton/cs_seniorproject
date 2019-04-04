@@ -114,10 +114,15 @@ namespace server.Models
 
     public class SearchModel {
         public HashSet<Audition> Auditions { get; set; }
+        public int AuditionCount { get; set; }
         public HashSet<Gig> Gigs { get; set; }
+        public int GigCount { get; set; }
         public HashSet<Profile> Profiles { get; set; }
+        public int ProfileCount { get; set; }
         public HashSet<Ensemble> Ensembles { get; set; }
+        public int EnsembleCount { get; set; }
         public HashSet<Venue> Venues { get; set; }
+        public int VenueCount { get; set; }
         public String Query { get; set; }
     }
 }

@@ -93,6 +93,7 @@
 <script type="text/jsx">
     const { Tabs, TabList, Tab, TabPanel } = ReactTabs;
     const _EnsembleId = @Model.Ensemble.EnsembleId;
+    var _AudId;
 
     const Component = (
     <Tabs defaultIndex={1}>
@@ -217,7 +218,7 @@
                                     <td>@mem.Profile.First_Name @mem.Profile.Last_Name</td>
                                     <td>How do we display mulitple entries? Is this necessary?</td>
                                     <td>@mem.Start_Date</td>
-                                    <td><span className="glyphicon glyphicon-remove" onClick={() => delMem(@mem.ProfileId)} ></span></td>
+                                    <td><span className="glyphicon glyphicon-remove pointer" title="Remove Member" onClick={() => delMem(@mem.ProfileId)} ></span></td>
                                 </tr>
                             }
                         </tbody>
