@@ -235,9 +235,9 @@ namespace server.Controllers
         {
 
 
-            var alreadyMember = _context.ProfileEnsembles.Where(p => p.EnsembleId == int.Parse(applicant.EnsembleId) && p.ProfileId == int.Parse(applicant.ProfileId)).ToList()[0];
+            var alreadyMember = _context.ProfileEnsembles.Where(p => p.EnsembleId == int.Parse(applicant.EnsembleId) && p.ProfileId == int.Parse(applicant.ProfileId)).ToList();
 
-            if (alreadyMember != null)
+            if (alreadyMember.Count()>=1)
             {
                 return NoContent();
             }
@@ -263,6 +263,58 @@ namespace server.Controllers
 
         }
 
+
+
+        //get all open auditions for a particular ensemble
+        [HttpGet("getOpenAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getOpenAuditions(int id)
+        {
+            var ensemble = _context.Ensembles.Find(id);
+            var openlist = new List<Audition>();
+            var auditionlist = ensemble.Audition;
+            foreach(Audition aud in auditionlist)
+            {
+                if (aud.Closed_Date > System.DateTime.Now)
+                {
+                    openlist.Add(aud);
+                }
+            }
+
+            return openlist;
+        }
+
+        //get all closed auditions for a particular ensemble
+        [HttpGet("getClosedAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getClosedAuditions(int id)
+        {
+            var ensemble = _context.Ensembles.Find(id);
+            var donelist = new List<Audition>();
+            var auditionlist = ensemble.Audition;
+            foreach (Audition aud in auditionlist)
+            {
+                if (aud.Closed_Date < System.DateTime.Now)
+                {
+                    donelist.Add(aud);
+                }
+            }
+
+            return donelist;
+        }
+
+        //get all auditions for a particular ensemble
+        [HttpGet("getAllAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getAllAuditions(int id)
+        {
+            var ensemble = _context.Ensembles.Find(id);
+            var audlist = new List<Audition>();
+            var auditionlist = ensemble.Audition;
+            foreach (Audition aud in auditionlist)
+            {
+                audlist.Add(aud);         
+            }
+
+            return audlist;
+        }
 
 
         //Remove a profile from an ensemble.
