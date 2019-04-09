@@ -29,6 +29,9 @@ namespace server.Controllers
         {
             SessionModel ret = new SessionModel();
 
+            Console.WriteLine("=================");
+            Console.WriteLine(s.Cookies);
+            Console.WriteLine(s.ContentType);
             // Get the encrypted values
             string uidString = s.Cookies[CookieUserId];
 
@@ -116,7 +119,7 @@ namespace server.Controllers
                 }
             }
 
-            return View();
+            return View("Index");
         }
 
         public IActionResult Privacy()

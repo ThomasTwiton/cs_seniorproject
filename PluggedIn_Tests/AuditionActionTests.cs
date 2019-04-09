@@ -11,7 +11,6 @@ namespace PluggedIn_Tests
 {
     public class AuditionActionTests
     {
-        protected IHostingEnvironment HostingEnvironment { get; private set; }
 
         [Fact]
         public void Audition_Always_DisplaysAppropriateEnsemble()

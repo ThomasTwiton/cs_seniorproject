@@ -3,30 +3,19 @@ using Xunit;
 using System.Linq;
 using server.Models;
 using server.Controllers;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace PluggedIn_Tests
 {
-
-    public class IndexLoginActionTests
+    public class LoginActionTests
     {
 
         private readonly PluggedContext LoadedContext;
-
-        [Fact]
-        public void Index_Always_ReturnsValidView()
-        {
-            /* Arrange */
-            var controller = new HomeController(LoadedContext);
-
-            /* Act */
-            var result = controller.Index();
-
-            /* Assert */
-            var viewResult = Assert.IsType<ViewResult>(result);
-        }
+        private const string CookieUserId = "_UserID";
+        private const string CookiePrevAct = "_PrevAction";
 
         [Fact]
         public void Login_Always_ReturnsRedirect()
@@ -75,9 +64,12 @@ namespace PluggedIn_Tests
             mockDB.Setup(x => x.Profiles)
                 .Returns(mockProfile.Object);
 
+            // Create a Mocked IHostingEnviornment
+            var mockHostEnv = new Mock<IHostingEnvironment>();
 
-            var controller = new HomeController(mockDB.Object);
-            
+            var controller = new HomeController(mockDB.Object, mockHostEnv.Object);
+
+
             /* Act */
             var result = controller.Login("ElijasReshmi@unit.test", "reshel01");
 
@@ -86,9 +78,9 @@ namespace PluggedIn_Tests
 
             Assert.Equal("Profile", redirectResult.ActionName);
             Assert.Equal(11, redirectResult.RouteValues["id"]);
-            
+
         }
-        
+
         [Fact]
         public void Login_Always_HandlesUnknownEmailandPassword() { }
 
