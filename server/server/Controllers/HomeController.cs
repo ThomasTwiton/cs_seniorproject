@@ -700,7 +700,7 @@ namespace server.Controllers
 
             }
             // If not a valid model state
-            return View("Create Profile");
+            return View("CreateProfile");
 
         }
 
@@ -877,6 +877,36 @@ namespace server.Controllers
             return RedirectToAction("Login");
             
             
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApplyAudition(AuditionModel model) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn) {
+                AuditionProfile application = new AuditionProfile();
+                application.AuditionId = model.Audition.AuditionId;
+                
+                Profile profile = _context.Profiles.Where(p => p.UserId == s.UserID).First();
+                application.ProfileId = profile.ProfileId;
+                _context.Add(application);
+                await _context.SaveChangesAsync();
+               
+
+                return RedirectToAction("Audition", new { id = model.Audition.AuditionId });
+
+            }
+
+            string encPA = "/Home/Audition/" + model.Audition.AuditionId.ToString();
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
+            Response.Cookies.Append(CookiePrevAct, encPA, option);
+
+            return RedirectToAction("Login");
+
         }
 
         public async Task<IActionResult> Gig(int id)

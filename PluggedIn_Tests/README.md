@@ -115,5 +115,3 @@ To run tests via the command line, navigate to the
 `
 $ dotnet test
 `
-
-

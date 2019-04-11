@@ -96,9 +96,18 @@
                             @Model.Audition.Audition_Description
                         </div>
                     </div>
+                    <div style="float:right">
+                        <form asp-controller="Home" asp-action="ApplyAudition" method="post">
+                            <div style="display:none">
+                                <input asp-for=@Model.Audition.AuditionId type="text" />
+                            </div>
+                            <button style="font-size:20px;" class="btn btn-danger center-block">Apply</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
