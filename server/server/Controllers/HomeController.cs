@@ -25,7 +25,7 @@ namespace server.Controllers
         private const string CookieUserId = "_UserID";
         private const string CookiePrevAct = "_PrevAction";
 
-        public SessionModel GetSessionInfo(HttpRequest s)
+        public virtual SessionModel GetSessionInfo(HttpRequest s)
         {
             SessionModel ret = new SessionModel();
 
