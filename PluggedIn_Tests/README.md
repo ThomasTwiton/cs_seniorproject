@@ -51,6 +51,53 @@ Third, **Assert** that the expected results have occurred.
 
 For an example of how this might look, see `CSharpTests.cs`.
 
+### Testing Against the Login System
+
+Since many of the actions within our controllers check to see
+if the user is logged in, it would be unnecessary and time
+consuming to create all of the necessary setup information
+for the method `GetSessionInfo()` each time it is called. 
+As such, when creating a unit test on an action that calls 
+this method, the convention that is to be used is to mock 
+the behavior of this method. The following lines outline
+how to properly accomplish this for a `HomeController`.
+
+```csharp
+// Create a Mocked HomeController
+var controllerMock = new Mock<HomeController>(mockedDB.Object, mockedHostEnv.Object);
+
+// Create a ControllerContext and set the HttpContext to be the default
+//  This is done so that we can setup the behavior for GetSessionInfo()
+var controller = controllerMock.Object;
+controller.ControllerContext = new ControllerContext();
+controller.ControllerContext.HttpContext = new DefaultHttpContext();
+var specifiedReq = controller.ControllerContext.HttpContext.Request;
+
+// Create the appropriate SessionModel to be returned by GetSessionInfo()
+SessionModel returnedSM = new SessionModel();
+fakeSM.IsLoggedIn = aLoggedIn;
+fakeSM.UserID = aUserId;
+
+// Set up GetSessionInfo method
+controllerMock.Setup(x => x.GetSessionInfo(specifiedReq)).Returns(returnedSM);
+controllerMock.CallBase = true;
+```
+
+When executing the **Act** stage of the unit test, the action
+can be called on `controller` as in the following example:
+
+```csharp
+var result = controller.Index();
+```
+
+One important detail when mocking a controller is that the
+`CallBase` attribute on the mocked controller must be set to 
+`true`. This line tells Moq that if a mocked method/action 
+has not been specified, then it should call the method on an 
+actual instance of the controller. In doing so, it is possible
+to test the appropriate methods/actions while mocking the 
+login system.
+
 
 ## Running Tests
 
