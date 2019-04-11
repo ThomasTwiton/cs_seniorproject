@@ -1,12 +1,15 @@
 ﻿using Moq;
 using Xunit;
 using System.Linq;
+using System.Text;
 using server.Models;
 using server.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace PluggedIn_Tests
 {
@@ -14,23 +17,60 @@ namespace PluggedIn_Tests
     {
 
         private readonly PluggedContext LoadedContext;
-        private const string CookieUserId = "_UserID";
-        private const string CookiePrevAct = "_PrevAction";
 
         [Fact]
-        public void Login_Always_ReturnsRedirect()
+        public void Login_ProfileAssociatedWithUser_ReturnsRedirectToProfile()
         {
             /* Arrange */
 
-            // Create DB data
-            var uData = new List<User>
+            // The following convention will be used for users and passwords:
+            //                  email : FirstnameLastname@unit.test
+            //      unhashed password : FirstnameLastname
+
+            var userEmails = new List<string>() {
+                "ElijasReshmi@unit.test",
+                "EugeniaCornelius@unit.test",
+                "JaysonFerruccio@unit.test",
+                "HoratioRajendra@unit.test",
+                "SaraRachyl@unit.test"
+            };
+
+            // Create the user DB with appropriate salts
+            var rawUData = new List<User>();
+            var uid = 1;
+            foreach (var email in userEmails)
             {
-                new User { UserId = 1, Password = "reshel01", Email = "ElijasReshmi@unit.test" },
-                new User { UserId = 2, Password = "corneu01", Email = "EugeniaCornelius@unit.test" },
-                new User { UserId = 3, Password = "ferrja01", Email = "JaysonFerruccio@unit.test" },
-                new User { UserId = 4, Password = "rajeho01", Email = "HoratioRajendra@unit.test" },
-                new User { UserId = 5, Password = "rachsa01", Email = "SaraRachyl@unit.test" }
-            }.AsQueryable();
+                // Create new user
+                User user = new User();
+                user.UserId = uid;
+                user.Email = email;
+
+                var pwd = email.Split("@")[0];
+
+                //Generate a cryptographic random number.
+                RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+                byte[] buff = new byte[32];
+                rng.GetBytes(buff);
+
+                string salt = System.Convert.ToBase64String(buff);
+
+                // Set the user's salt
+                user.Salt = salt;
+
+                string saltAndPwd = pwd + salt;
+                byte[] bytes = Encoding.ASCII.GetBytes(saltAndPwd);
+                SHA512 shaM = new SHA512Managed();
+                byte[] hashedPwdbytes = shaM.ComputeHash(bytes);
+                string hashedPwd = System.Convert.ToBase64String(hashedPwdbytes);
+                user.Password = hashedPwd;
+
+                uid++;
+
+                rawUData.Add(user);
+
+            }
+
+            var uData = rawUData.AsQueryable();
 
             var pData = new List<Profile>
             {
@@ -40,6 +80,7 @@ namespace PluggedIn_Tests
                 new Profile { ProfileId = 14, First_Name = "Horatio", Last_Name = "Rajendra", UserId = 4 },
                 new Profile { ProfileId = 15, First_Name = "Sara", Last_Name = "Rachyl", UserId = 5 }
             }.AsQueryable();
+
 
             // Create Mocked DB Sets
             var mockUsers = new Mock<DbSet<User>>();
@@ -82,7 +123,21 @@ namespace PluggedIn_Tests
         }
 
         [Fact]
+        public void Login_EnsembleAssociatedWithUser_ReturnsRedirectToEnsemble() { }
+
+        [Fact]
+        public void Login_VenueAssociatedWithUser_ReturnsRedirectToVenue() { }
+
+        [Fact]
         public void Login_Always_HandlesUnknownEmailandPassword() { }
 
+        [Fact]
+        public void Login_WhenPrevActionIsSet_ReturnsRedirectToThePrevAction() { }
+
+        [Fact]
+        public void Login_NoProfileEnsembleVenueAssociatedWithUser_ReturnsCreateProfileView() { }
+
+        [Fact]
+        public void Login_WhenErrorExistsInLoginData_ReturnsRedirectToLoginGetAction() { }
     }
 }
