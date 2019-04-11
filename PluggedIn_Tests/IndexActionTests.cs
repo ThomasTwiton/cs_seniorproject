@@ -17,8 +17,6 @@ namespace PluggedIn_Tests
     {
 
         private readonly PluggedContext LoadedContext;
-        private const string CookieUserId = "_UserID";
-        private const string CookiePrevAct = "_PrevAction";
 
         [Fact]
         public void Index_WhenNotLoggedIn_ReturnsLandingPage()
@@ -50,14 +48,15 @@ namespace PluggedIn_Tests
         {
             /* Arrange */
 
-            // Set desired UserId
-            var activeUserId = 1;
+            // Set active user parameters (For GetSessionInfo)
+            var aUserId = 1;
+            var aLoggedIn = true;
 
             // Create a Mocked Profile table
             var pData = new List<Profile>
             {
-                new Profile { ProfileId = 11, First_Name = "Elijas", Last_Name = "Reshmi", UserId = activeUserId },
-                new Profile { ProfileId = 12, First_Name = "Eugenia", Last_Name = "Cornelius", UserId = activeUserId + 1 }
+                new Profile { ProfileId = 11, First_Name = "Elijas", Last_Name = "Reshmi", UserId = aUserId },
+                new Profile { ProfileId = 12, First_Name = "Eugenia", Last_Name = "Cornelius", UserId = aUserId + 1 }
             }.AsQueryable();
 
 
@@ -97,26 +96,30 @@ namespace PluggedIn_Tests
              */
             var controllerMock = new Mock<HomeController>(mockDB.Object, mockHostEnv.Object);
 
-            // Mock the request object and the resulting login information
-            SessionModel fakeSM = new SessionModel();
-            fakeSM.IsLoggedIn = true;
-            fakeSM.UserID = activeUserId;
-
+            // Create a ControllerContext and set the HttpContext to be the default
+            //  This is done so that we can setup the behavior for GetSessionInfo()
             var controller = controllerMock.Object;
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
-            var mockReq = controller.ControllerContext.HttpContext.Request;
+            var specifiedReq = controller.ControllerContext.HttpContext.Request;
 
-            controllerMock.Setup(x => x.GetSessionInfo(mockReq)).Returns(fakeSM);
+            // Create the appropriate SessionModel to be returned by GetSessionInfo()
+            SessionModel fakeSM = new SessionModel();
+            fakeSM.IsLoggedIn = aLoggedIn;
+            fakeSM.UserID = aUserId;
+
+            // Set up GetSessionInfo method
+            controllerMock.Setup(x => x.GetSessionInfo(specifiedReq)).Returns(fakeSM);
             controllerMock.CallBase = true;
 
 
             /* Act */
             var result = controller.Index();
 
+
             /* Assert */
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("Profile", viewResult.ViewName);
+            var viewResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Profile", viewResult.ActionName);
 
         }
 
