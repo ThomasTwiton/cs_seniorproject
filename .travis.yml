@@ -8,3 +8,8 @@ script:
   - dotnet test PluggedIn_Tests/PluggedIn_Tests.sln
 notifications:
     slack: luthercs:28A3oEVAuBP0dVDsQWLKAZHh
+env:
+   - CODECOV_TOKEN="b58d022b-d74f-46dc-8d24-bf15f79574ad"
+   
+after_success:
+  - codecov 
