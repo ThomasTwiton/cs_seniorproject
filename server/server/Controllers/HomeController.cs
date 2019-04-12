@@ -29,6 +29,9 @@ namespace server.Controllers
         {
             SessionModel ret = new SessionModel();
 
+            Console.WriteLine("=================");
+            Console.WriteLine(s.Cookies);
+            Console.WriteLine(s.ContentType);
             // Get the encrypted values
             string uidString = s.Cookies[CookieUserId];
 
@@ -116,7 +119,7 @@ namespace server.Controllers
                 }
             }
 
-            return View();
+            return View("Index");
         }
 
         public IActionResult Privacy()
@@ -569,7 +572,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateProfile(string pName, string pCity, string pState, string pBio, int userID, ProfileModel model)
+        public async Task<IActionResult> CreateProfile(string pName, string pSurname, string pCity, string pState, string pBio, int userID, ProfileModel model)
         {
             if (ModelState.IsValid)
             {
@@ -578,17 +581,9 @@ namespace server.Controllers
                 if (s.IsLoggedIn)
                 {
                     Profile profile = new Profile();
-                    string[] nameList = pName.Split();
-                    if (nameList.Count()< 2)
-                    {
-                        profile.First_Name = nameList[0];
-                    } else
-                    {
-                        profile.First_Name = nameList[0];
-                        profile.Last_Name = nameList[nameList.Length-1];
-                    }
 
-                    
+                    profile.First_Name = pName;
+                    profile.Last_Name = pSurname;             
                     profile.City = pCity;
                     profile.State = pState;
                     profile.Bio = pBio;
@@ -685,11 +680,14 @@ namespace server.Controllers
                         await _context.SaveChangesAsync();
                     }
 
+
                     if (ModelState.IsValid)
                     {
                         _context.Add(ensemble);
                         await _context.SaveChangesAsync();
                     }
+
+                   
 
                     return RedirectToAction("Ensemble", new { id = ensemble.EnsembleId });
                 }
@@ -705,13 +703,72 @@ namespace server.Controllers
 
             }
             // If not a valid model state
-            return View("CreateProfile");
+            return View("Create Profile");
 
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateVenue(string vName, System.DateTime vFormed, string vAddr1, string vCity, string vState, string vPhone, string vWeb, string vBio, int userID, ProfileModel model)
+        public async Task<IActionResult> CreateEnsembleModal(string eName, System.DateTime eFormed, System.DateTime? eDisbanded, string eCity, string eBio, string eState, string eType, string eGenre, int userID)
+        {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                Ensemble ensemble = new Ensemble();
+                ensemble.Ensemble_Name = eName;
+                ensemble.Formed_Date = eFormed;
+                if (eDisbanded!= null)
+                {
+                    ensemble.Disbanded_Date = (System.DateTime) eDisbanded;
+                }                
+                ensemble.Type = eType;
+                ensemble.Genre = eGenre;
+                ensemble.Bio = eBio;
+                ensemble.City = eCity;
+                ensemble.State = eState;
+                ensemble.User = _context.Users.Find(userID);
+                if (ModelState.IsValid)
+                {
+                    _context.Add(ensemble);
+                    await _context.SaveChangesAsync();
+                }
+
+                try
+                {
+                    Profile profile = _context.Profiles.Where(p => p.UserId == userID).First();
+                    if (profile != null)
+                    {
+                        Console.WriteLine("ITS HAPPENING");
+                        ProfileEnsemble membership = new ProfileEnsemble();
+                        membership.EnsembleId = ensemble.EnsembleId;
+                        membership.ProfileId = profile.ProfileId;
+                        membership.Start_Date = ensemble.Formed_Date;
+                        _context.Add(membership);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                catch { }
+                Console.WriteLine("***");
+                Console.WriteLine(ensemble.EnsembleId);
+                Console.WriteLine("***");
+
+                return RedirectToAction("Ensemble", new { id = ensemble.EnsembleId });
+            }
+            // If not logged in
+            string encPA = "/";
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
+            Response.Cookies.Append(CookiePrevAct, encPA, option);
+
+            return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateVenue(string vName, string vAddr1, string vAddr2, string vCity, string vState, string vPhone, string vWeb, string vBio, int userID, ProfileModel model)
         {
             if (ModelState.IsValid)
             {
@@ -722,9 +779,12 @@ namespace server.Controllers
                     Venue venue = new Venue();
                     venue.Venue_Name = vName;
                     venue.Address1 = vAddr1;
+                    venue.Address2 = vAddr2;
                     venue.City = vCity;
                     venue.State = vState;
                     venue.Bio = vBio;
+                    venue.Website = vWeb;
+                    venue.Phone = vPhone;
                     venue.User = _context.Users.Find(userID);
 
                     if (model.File != null)
@@ -958,7 +1018,7 @@ namespace server.Controllers
 
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditProfile(int? id)
         {
             /* This action method displays view for editing the profile
              *  with the provided id. Here the users should be able to 
@@ -1033,7 +1093,7 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ProfileModel model)
+        public async Task<IActionResult> EditProfile(int id, ProfileModel model)
         {
             /* This action method takes the updated info of the user's
              *  profile and saves it. There is no view associated with
@@ -1045,12 +1105,14 @@ namespace server.Controllers
 
             if (s.IsLoggedIn)
             {
-                var profile = _context.Profiles.Find(model.Profile.ProfileId);
-
+                Console.WriteLine(model.Profile.ProfileId);
                 Profile userprofile = _context.Profiles.Find(model.Profile.ProfileId);
+                Console.WriteLine(userprofile.ProfileId);
                 userprofile.First_Name = model.Profile.First_Name;
                 userprofile.Last_Name = model.Profile.Last_Name;
-                userprofile.Preferred_Name = model.Profile.Preferred_Name;
+                userprofile.City = model.Profile.City;
+                userprofile.State = model.Profile.State;
+                userprofile.Bio = model.Profile.Bio;
 
                 //handle uploading the image file to our directory
                 //Console.WriteLine(model.File.FileName);
@@ -1095,11 +1157,146 @@ namespace server.Controllers
                 }
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Edit", id = model.Profile.ProfileId);
+                return RedirectToAction("Profile", new { id = model.Profile.ProfileId });
             }
 
             return RedirectToAction("Login");
 
+        }
+
+        public async Task<IActionResult> EditEnsemble(int? id) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                EnsembleModel model = new EnsembleModel();
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var ensemble = await _context.Ensembles.FindAsync(id);
+
+                if (ensemble == null)
+                {
+                    return NotFound();
+                }
+
+                model.Ensemble = ensemble;
+
+                return View(model);
+            }
+
+            return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditEnsemble(int id, EnsembleModel model) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                Ensemble ensemble = _context.Ensembles.Find(model.Ensemble.EnsembleId);
+                ensemble.Ensemble_Name = model.Ensemble.Ensemble_Name;
+                ensemble.City = model.Ensemble.City;
+                ensemble.State = model.Ensemble.State;
+                ensemble.Genre = model.Ensemble.Genre;
+                ensemble.Type = model.Ensemble.Type;
+                ensemble.Bio = model.Ensemble.Bio;
+                ensemble.Formed_Date = model.Ensemble.Formed_Date;
+                ensemble.Disbanded_Date = model.Ensemble.Disbanded_Date;
+
+                //handle uploading the image file to our directory
+                //Console.WriteLine(model.File.FileName);
+
+                if (model.File != null)
+                {
+                    string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                    var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
+                    var filePath = Path.Combine(uploads, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+                    ensemble.Pic_Url = "/images/uploads/" + fileName;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Ensemble", new { id = model.Ensemble.EnsembleId });
+            }
+
+            return RedirectToAction("Login");
+        }
+
+        
+        public async Task<IActionResult> EditVenue(int? id) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                VenueModel model = new VenueModel();
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var venue = await _context.Venues.FindAsync(id);
+
+                if (venue== null)
+                {
+                    return NotFound();
+                }
+
+                model.Venue = venue;
+
+                return View(model);
+            }
+
+            return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVenue(int id, VenueModel model) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn)
+            {
+                Venue venue = _context.Venues.Find(model.Venue.VenueId);
+                venue.Venue_Name = model.Venue.Venue_Name;
+                venue.City = model.Venue.City;
+                venue.State = model.Venue.State;
+                venue.Address1 = model.Venue.Address1;
+                venue.Address2 = model.Venue.Address2;
+                venue.Bio = model.Venue.Bio;
+                venue.Website = model.Venue.Website;
+                venue.Phone = model.Venue.Phone;
+
+                //handle uploading the image file to our directory
+                //Console.WriteLine(model.File.FileName);
+
+                if (model.File != null)
+                {
+                    string fileName = model.File.FileName.GetHashCode().ToString() + "." + model.File.FileName.Substring(model.File.FileName.Length - 3);
+                    var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "images/uploads");
+                    var filePath = Path.Combine(uploads, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+                    venue.Pic_Url = "/images/uploads/" + fileName;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Venue", new { id = model.Venue.VenueId });
+            }
+
+            return RedirectToAction("Login");
         }
 
         [HttpPost]

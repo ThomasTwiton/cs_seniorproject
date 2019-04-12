@@ -69,7 +69,7 @@ function acceptProfile(pID) {
         EnsembleId: _EnsembleId
     }
 
-    callAPI("acceptApplicant", "POST", data, () => window.location.reload());
+    callAPI("acceptApplicant", "POST", data, () => console.log("DONE"));
 }
 
 function rejectProfile(pID) {
@@ -82,6 +82,10 @@ function rejectProfile(pID) {
     callAPI("remApplicant", "POST", data, () => getProfiles(_AudId));
 }
 
+function getClosedAuds() {
+    console.log("Retrieving Previous Auditions for Ensemble:", _EnsembleId);
+
+}
 
 
 /* ================================================== */
@@ -125,7 +129,8 @@ function addMember() {
 
 function getMembers() {
     console.log("Getting Members for Ensemble:", _EnsembleId);
-    callAPI("members/" + _EnsembleId, "GET", null, popMembers);
+    //callAPI("members", "POST", { id: 21 }, popMembers);
+    callAPI("members/21", "GET", null, popMembers);
 }
 
 function popMembers(data) {

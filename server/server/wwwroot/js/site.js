@@ -39,9 +39,9 @@ if (document.getElementById('createModal')) {
 function changeCheck(cb) {
     if (cb.checked == true) {
         // parentNode is the label containing the checkbox.
-        cb.parentNode.style.backgroundColor = "cornflowerblue";
+        cb.parentNode.parentNode.classList.add("selected")
     } else {
-        cb.parentNode.style.backgroundColor = "inherit";
+        cb.parentNode.parentNode.classList.remove("selected");
     }
 }
 

@@ -54,6 +54,11 @@ namespace server.Controllers
         [HttpGet("members/{id}")]
         public async Task<ActionResult<IEnumerable<Profile>>> GetMembers(int id)
         {
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine("------------------------");
+            Console.WriteLine(id);
             var profileEnsemble = _context.ProfileEnsembles.Where(a => a.EnsembleId == id).ToList();
 
             var memberProfiles = new List<Profile>();
@@ -117,7 +122,7 @@ namespace server.Controllers
         public async Task<IActionResult> CloseAudition(int id)
         {
 
-            var audition = await _context.Auditions.FindAsync(id);
+            var audition =  _context.Auditions.Find(id); //April 11: Used to be FindAsync
 
             audition.Closed_Date = System.DateTime.Now;
 
@@ -133,7 +138,7 @@ namespace server.Controllers
         public async Task<IActionResult> OpenAudition(int id)
         {
 
-            var audition = await _context.Auditions.FindAsync(id);
+            var audition =  _context.Auditions.Find(id);
 
 
             System.DateTime today = System.DateTime.Now;
@@ -144,6 +149,11 @@ namespace server.Controllers
 
             return NoContent();
 
+        }
+
+        public class GetMembersHelper
+        {
+            public int id { get; set; }
         }
 
         public class AddProfiletoEnsemble
@@ -237,13 +247,13 @@ namespace server.Controllers
 
             var alreadyMember = _context.ProfileEnsembles.Where(p => p.EnsembleId == int.Parse(applicant.EnsembleId) && p.ProfileId == int.Parse(applicant.ProfileId)).ToList();
 
-            if (alreadyMember.Count()>=1)
+
+            if (alreadyMember.Count() >= 1)
             {
                 return NoContent();
             }
 
             var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
-
 
             ProfileEnsemble profens = new ProfileEnsemble();
             profens.Start_Date = System.DateTime.Now;
@@ -258,6 +268,8 @@ namespace server.Controllers
                 _context.Add(profens);
                 await _context.SaveChangesAsync();
             }
+
+            CloseAudition(int.Parse(applicant.AuditionId));
 
             return NoContent();
 

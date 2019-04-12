@@ -1,0 +1,124 @@
+﻿@model server.Models.VenueModel;
+
+@{
+    ViewData["Title"] = "Edit Venue";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/create.css" />
+}
+
+
+@* Title Row *@
+<div id="titleRow" class="row">
+    <h2 style="float:left;">Create Profile</h2>
+    <button style="float:right;" class="btn btn-danger" onclick="submitForm()">Save Changes</button>
+    <hr style="width:100%;" />
+</div>
+
+@* Profile Type Row *@
+<div id="profRow" class="row">
+    @*<div id="active" class="col-xs-4 align-middle p" onclick="switchView('profile')">*@
+    <div class="col-xs-4 p">
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-user"></span>
+        </div>
+        <div class="col-xs-9">
+            Profile<br />
+            A personal profile
+        </div>
+    </div>
+
+    <div class="col-xs-4 e" >
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-cd"></span>
+        </div>
+        <div class="col-xs-9">
+            Ensemble<br />
+            A profile for your group
+        </div>
+    </div>
+    <div id="active" class="col-xs-4 v" >
+        <div class="col-xs-3">
+            <span class="glyphicon glyphicon-home"></span>
+        </div>
+        <div class="col-xs-9">
+            Venue<br />
+            A profile for your business
+        </div>
+    </div>
+
+
+</div>
+
+@* Information Row *@
+<div id="infoRow" class="row">
+    <!-- Venue form -->
+    <form id="venueForm" asp-action="EditVenue" enctype="multipart/form-data">
+        <div style="display:none">
+            <input asp-for=Venue.VenueId type="text" />
+        </div>
+        <div class="col-xs-6">
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label asp-for=Venue.Venue_Name>Name<span class="red-ast">*</span></label>
+                    <input asp-for=Venue.Venue_Name type="text" class="form-control" placeholder="Name of Ensemble" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label asp-for="Venue.Address1">Address<span class="red-ast">*</span></label>
+                    <input asp-for="Venue.Address1" type="text" class="form-control" placeholder="Where is your business?" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label asp-for="Venue.Address2">Address Line 2</label>
+                    <input asp-for="Venue.Address2" type="text" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-8">
+                    <label asp-for="Venue.City">City<span class="red-ast">*</span></label>
+                    <input asp-for="Venue.City" type="text" class="form-control" required />
+                </div>
+                <div class="col-xs-4">
+                    <label asp-for="Venue.State">State<span class="red-ast">*</span></label>
+                    <input asp-for="Venue.State" type="text" class="form-control" placeholder="Ss" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="File" class="control-label">Profile Picture</label>
+                <input asp-for="File" type="file" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label asp-for="Venue.Phone">Phone</label>
+                    <input asp-for="Venue.Phone" type="tel" class="form-control" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label asp-for="Venue.Website">Website</label>
+                    <input asp-for="Venue.Website" type="text" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <label asp-for="Venue.Bio">Bio<span class="red-ast">*</span></label>
+                    <textarea asp-for="Venue.Bio" type="text" class="form-control" placeholder="Who are you? What is your brand?" required></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+

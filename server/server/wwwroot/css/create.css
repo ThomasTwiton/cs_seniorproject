@@ -54,3 +54,7 @@
     padding-left: 5px;
     margin: 0;
 }
+
+.selected {
+    background-color:cornflowerblue;
+}

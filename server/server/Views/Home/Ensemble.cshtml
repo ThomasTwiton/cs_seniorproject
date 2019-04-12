@@ -30,7 +30,7 @@
             @if (Model.isOwner == true)
             {
                 <div class="row">
-                    <a asp-action="Edit" asp-route-id="@Model.Ensemble.EnsembleId">Edit</a>
+                    <a asp-action="EditEnsemble" asp-route-id="@Model.Ensemble.EnsembleId">Edit</a>
                 </div>
                 <div class="row">
                     <a asp-action="Dashboard" asp-route-id="@Model.Ensemble.EnsembleId">Dashboard</a>
