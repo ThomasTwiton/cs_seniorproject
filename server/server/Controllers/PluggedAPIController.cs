@@ -268,8 +268,6 @@ namespace server.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            CloseAudition(int.Parse(applicant.AuditionId));
-
             return NoContent();
 
         }

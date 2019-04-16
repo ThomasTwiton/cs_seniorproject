@@ -123,3 +123,13 @@ function callAPI(apiStr, method, data, sucFun) {
 
     return dfd;
 }
+
+function callbackClosure(i, callback) {
+    return function (data) {
+        if (data == null) {
+            return callback(i);
+        }
+
+        return callback(i,data);
+    }
+}
