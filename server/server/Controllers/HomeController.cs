@@ -1065,7 +1065,7 @@ namespace server.Controllers
                     return NotFound();
                 }
 
-                var profile = await _context.Profiles.FindAsync(id);
+                var profile = _context.Profiles.Find(id);
 
                 if (profile == null)
                 {
@@ -1203,7 +1203,7 @@ namespace server.Controllers
                     return NotFound();
                 }
 
-                var ensemble = await _context.Ensembles.FindAsync(id);
+                var ensemble = _context.Ensembles.Find(id);
 
                 if (ensemble == null)
                 {
@@ -1271,7 +1271,7 @@ namespace server.Controllers
                     return NotFound();
                 }
 
-                var venue = await _context.Venues.FindAsync(id);
+                var venue = _context.Venues.Find(id);
 
                 if (venue== null)
                 {
