@@ -18,109 +18,109 @@ namespace PluggedIn_Tests
 
         private readonly PluggedContext LoadedContext;
 
-        [Fact]
-        public void Login_ProfileAssociatedWithUser_ReturnsRedirectToProfile()
-        {
-            /* Arrange */
+        //[Fact]
+        //public void Login_ProfileAssociatedWithUser_ReturnsRedirectToProfile()
+        //{
+        //    /* Arrange */
 
-            // The following convention will be used for users and passwords:
-            //                  email : FirstnameLastname@unit.test
-            //      unhashed password : FirstnameLastname
+        //    // The following convention will be used for users and passwords:
+        //    //                  email : FirstnameLastname@unit.test
+        //    //      unhashed password : FirstnameLastname
 
-            var userEmails = new List<string>() {
-                "ElijasReshmi@unit.test",
-                "EugeniaCornelius@unit.test",
-                "JaysonFerruccio@unit.test",
-                "HoratioRajendra@unit.test",
-                "SaraRachyl@unit.test"
-            };
+        //    var userEmails = new List<string>() {
+        //        "ElijasReshmi@unit.test",
+        //        "EugeniaCornelius@unit.test",
+        //        "JaysonFerruccio@unit.test",
+        //        "HoratioRajendra@unit.test",
+        //        "SaraRachyl@unit.test"
+        //    };
 
-            // Create the user DB with appropriate salts
-            var rawUData = new List<User>();
-            var uid = 1;
-            foreach (var email in userEmails)
-            {
-                // Create new user
-                User user = new User();
-                user.UserId = uid;
-                user.Email = email;
+        //    // Create the user DB with appropriate salts
+        //    var rawUData = new List<User>();
+        //    var uid = 1;
+        //    foreach (var email in userEmails)
+        //    {
+        //        // Create new user
+        //        User user = new User();
+        //        user.UserId = uid;
+        //        user.Email = email;
 
-                var pwd = email.Split("@")[0];
+        //        var pwd = email.Split("@")[0];
 
-                //Generate a cryptographic random number.
-                RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-                byte[] buff = new byte[32];
-                rng.GetBytes(buff);
+        //        //Generate a cryptographic random number.
+        //        RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+        //        byte[] buff = new byte[32];
+        //        rng.GetBytes(buff);
 
-                string salt = System.Convert.ToBase64String(buff);
+        //        string salt = System.Convert.ToBase64String(buff);
 
-                // Set the user's salt
-                user.Salt = salt;
+        //        // Set the user's salt
+        //        user.Salt = salt;
 
-                string saltAndPwd = pwd + salt;
-                byte[] bytes = Encoding.ASCII.GetBytes(saltAndPwd);
-                SHA512 shaM = new SHA512Managed();
-                byte[] hashedPwdbytes = shaM.ComputeHash(bytes);
-                string hashedPwd = System.Convert.ToBase64String(hashedPwdbytes);
-                user.Password = hashedPwd;
+        //        string saltAndPwd = pwd + salt;
+        //        byte[] bytes = Encoding.ASCII.GetBytes(saltAndPwd);
+        //        SHA512 shaM = new SHA512Managed();
+        //        byte[] hashedPwdbytes = shaM.ComputeHash(bytes);
+        //        string hashedPwd = System.Convert.ToBase64String(hashedPwdbytes);
+        //        user.Password = hashedPwd;
 
-                uid++;
+        //        uid++;
 
-                rawUData.Add(user);
+        //        rawUData.Add(user);
 
-            }
+        //    }
 
-            var uData = rawUData.AsQueryable();
+        //    var uData = rawUData.AsQueryable();
 
-            var pData = new List<Profile>
-            {
-                new Profile { ProfileId = 11, First_Name = "Elijas", Last_Name = "Reshmi", UserId = 1 },
-                new Profile { ProfileId = 12, First_Name = "Eugenia", Last_Name = "Cornelius", UserId = 2 },
-                new Profile { ProfileId = 13, First_Name = "Jayson", Last_Name = "Ferruccio", UserId = 3 },
-                new Profile { ProfileId = 14, First_Name = "Horatio", Last_Name = "Rajendra", UserId = 4 },
-                new Profile { ProfileId = 15, First_Name = "Sara", Last_Name = "Rachyl", UserId = 5 }
-            }.AsQueryable();
-
-
-            // Create Mocked DB Sets
-            var mockUsers = new Mock<DbSet<User>>();
-            mockUsers.As<IQueryable<User>>().Setup(u => u.Provider).Returns(uData.Provider);
-            mockUsers.As<IQueryable<User>>().Setup(m => m.Expression).Returns(uData.Expression);
-            mockUsers.As<IQueryable<User>>().Setup(m => m.ElementType).Returns(uData.ElementType);
-            mockUsers.As<IQueryable<User>>().Setup(m => m.GetEnumerator()).Returns(uData.GetEnumerator());
-
-            var mockProfile = new Mock<DbSet<Profile>>();
-            mockProfile.As<IQueryable<Profile>>().Setup(u => u.Provider).Returns(pData.Provider);
-            mockProfile.As<IQueryable<Profile>>().Setup(m => m.Expression).Returns(pData.Expression);
-            mockProfile.As<IQueryable<Profile>>().Setup(m => m.ElementType).Returns(pData.ElementType);
-            mockProfile.As<IQueryable<Profile>>().Setup(m => m.GetEnumerator()).Returns(pData.GetEnumerator());
-
-            // Create a Mocked DB
-            var mockDB = new Mock<PluggedContext>();
-
-            // Set up necessary Mocked DB methods
-            mockDB.Setup(x => x.Users)
-                .Returns(mockUsers.Object);
-
-            mockDB.Setup(x => x.Profiles)
-                .Returns(mockProfile.Object);
-
-            // Create a Mocked IHostingEnviornment
-            var mockHostEnv = new Mock<IHostingEnvironment>();
-
-            var controller = new HomeController(mockDB.Object, mockHostEnv.Object);
+        //    var pData = new List<Profile>
+        //    {
+        //        new Profile { ProfileId = 11, First_Name = "Elijas", Last_Name = "Reshmi", UserId = 1 },
+        //        new Profile { ProfileId = 12, First_Name = "Eugenia", Last_Name = "Cornelius", UserId = 2 },
+        //        new Profile { ProfileId = 13, First_Name = "Jayson", Last_Name = "Ferruccio", UserId = 3 },
+        //        new Profile { ProfileId = 14, First_Name = "Horatio", Last_Name = "Rajendra", UserId = 4 },
+        //        new Profile { ProfileId = 15, First_Name = "Sara", Last_Name = "Rachyl", UserId = 5 }
+        //    }.AsQueryable();
 
 
-            /* Act */
-            var result = controller.Login("ElijasReshmi@unit.test", "reshel01");
+        //    // Create Mocked DB Sets
+        //    var mockUsers = new Mock<DbSet<User>>();
+        //    mockUsers.As<IQueryable<User>>().Setup(u => u.Provider).Returns(uData.Provider);
+        //    mockUsers.As<IQueryable<User>>().Setup(m => m.Expression).Returns(uData.Expression);
+        //    mockUsers.As<IQueryable<User>>().Setup(m => m.ElementType).Returns(uData.ElementType);
+        //    mockUsers.As<IQueryable<User>>().Setup(m => m.GetEnumerator()).Returns(uData.GetEnumerator());
 
-            /* Assert */
-            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+        //    var mockProfile = new Mock<DbSet<Profile>>();
+        //    mockProfile.As<IQueryable<Profile>>().Setup(u => u.Provider).Returns(pData.Provider);
+        //    mockProfile.As<IQueryable<Profile>>().Setup(m => m.Expression).Returns(pData.Expression);
+        //    mockProfile.As<IQueryable<Profile>>().Setup(m => m.ElementType).Returns(pData.ElementType);
+        //    mockProfile.As<IQueryable<Profile>>().Setup(m => m.GetEnumerator()).Returns(pData.GetEnumerator());
 
-            Assert.Equal("Profile", redirectResult.ActionName);
-            Assert.Equal(11, redirectResult.RouteValues["id"]);
+        //    // Create a Mocked DB
+        //    var mockDB = new Mock<PluggedContext>();
 
-        }
+        //    // Set up necessary Mocked DB methods
+        //    mockDB.Setup(x => x.Users)
+        //        .Returns(mockUsers.Object);
+
+        //    mockDB.Setup(x => x.Profiles)
+        //        .Returns(mockProfile.Object);
+
+        //    // Create a Mocked IHostingEnviornment
+        //    var mockHostEnv = new Mock<IHostingEnvironment>();
+
+        //    var controller = new HomeController(mockDB.Object, mockHostEnv.Object);
+
+
+        //    /* Act */
+        //    var result = controller.Login("ElijasReshmi@unit.test", "reshel01");
+
+        //    /* Assert */
+        //    var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+
+        //    Assert.Equal("Profile", redirectResult.ActionName);
+        //    Assert.Equal(11, redirectResult.RouteValues["id"]);
+
+        //}
 
         [Fact]
         public void Login_EnsembleAssociatedWithUser_ReturnsRedirectToEnsemble() { }
