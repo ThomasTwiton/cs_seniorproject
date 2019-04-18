@@ -14,7 +14,8 @@
 
     <script src="~/js/ensemble.js" type="text/jsx">
     </script>
-    <script src="~/js/posts.js" type="text/jsx"></script>
+    <script src="~/js/posts.js" type="text/jsx">
+    </script>
     <script>
         var profileType = "@Model.ViewType";
     </script>
@@ -28,7 +29,7 @@
             @if (Model.isOwner == true)
             {
                 <div>
-                    <a asp-action="Edit" asp-route-id="@Model.Profile.ProfileId">Edit</a>
+                    <a asp-action="EditProfile" asp-route-id="@Model.Profile.ProfileId">Edit</a>
                 </div>
             }
 
@@ -45,7 +46,7 @@
             <div id="ensembles">
                 @foreach (var item in Model.Ensembles)
                 {
-                    <Member data-id="@item.EnsembleId" data-avatarURL="@item.Pic_Url" data-name="@item.Ensemble_Name" />
+                    <Member data-id="@item.EnsembleId" data-avatarURL="@item.Pic_Url" data-name="@item.Ensemble_Name" /> 
                 }
             </div>
         </div>
@@ -64,8 +65,8 @@
                                 </div>
                                 <div style="display:none">
                                     <input name="PosterType" type="text" value="profile" />
-                                    <input name = "Type" type ="text" value="post" />
-                                    <input name = "PosterIndex" type ="text" value="@Model.Profile.ProfileId" />
+                                    <input name="Type" type="text" value="post" />
+                                    <input name="PosterIndex" type="text" value="@Model.Profile.ProfileId" />
                                 </div>
 
                                 <div class="col-xs-11">
@@ -74,7 +75,7 @@
                                     <div id="postButtons" class="form-group">
                                         <button class="btn btn-primary">Post</button>
                                         <label class="btn btn-secondary">Attach Media <input asp-for="File" name="File" type="file" hidden /> </label>
-                                        
+
                                     </div>
 
                                 </div>
@@ -190,76 +191,77 @@
         @* If the profile is an profile, then we want to create ensembles *@
         <div id="createModal" class="modal">
 
-            <div class="modal-content">
-                <span class="close" onclick="hideModal()">&times;</span>
-                <form asp-controller="Home" asp-action="CreateEnsemble" method="post" class="container-fluid">
-                    <div style="display:none">
-                        <input name="userID" type="text" value="1" />
-                    </div>
-                    <h2 style="text-align:center;font-weight:bold;">Form a Group!</h2>
-                    <hr />
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="name">Name<span class="red-ast">*</span></label>
-                            <input type="text" class="form-control" name="name" placeholder="Enter the name of the group" required />
+                <div class="modal-content">
+                    <span class="close" onclick="hideModal()">&times;</span>
+                    <form asp-controller="Home" asp-action="CreateEnsemble" method="post" class="container-fluid">
+                        <div style="display:none">
+                            <input name="userID" type="text" value="@Model.Profile.UserId" />
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="formed_date">Formed<span class="red-ast">*</span></label>
-                                    <input type="date" name="formed_date" class="form-control" required />
+                        <h2 style="text-align:center;font-weight:bold;">Form a Group!</h2>
+                        <hr />
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="eName">Name<span class="red-ast">*</span></label>
+                                <input type="text" class="form-control" name="eName" placeholder="Enter the name of the group" required />
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="eFormed">Formed<span class="red-ast">*</span></label>
+                                        <input type="date" name="eFormed" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="eDisbanded">Disbanded</label>
+                                        <input type="date" name="eDisbanded" class="form-control" />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="disbanded_date">Disbanded</label>
-                                    <input type="date" name="disbanded_date" class="form-control" />
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="eGenre">Genre<span class="red-ast">*</span></label>
+                                        <input type="text" class="form-control" name="eGenre" placeholder="Jazz, Punk Rock, Symphony etc.." required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="eType">Group Type<span class="red-ast">*</span></label>
+                                        <input type="text" name="eType" class="form-control" placeholder="Brass Band, Jazz Combo, Cover Band etc..." />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="genre">Genre<span class="red-ast">*</span></label>
-                                    <input type="text" class="form-control" name="genre" placeholder="Jazz, Punk Rock, Symphony etc.." required />
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label for="eCity">City<span class="red-ast">*</span></label>
+                                        <input type="text" name="eCity" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="eState">State<span class="red-ast">*</span></label>
+                                        <input type="text" name="eState" class="form-control" required />
+
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="type">Group Type<span class="red-ast">*</span></label>
-                                    <input type="text" name="type" class="form-control" placeholder="Brass Band, Jazz Combo, Cover Band etc..." />
-                                </div>
+                            <div class="row" style="margin-top:20px;">
+                                <button style="width:50%;font-size:20px;" class="btn btn-danger center-block">Create Group</button>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <div class="form-group">
-                                    <label for="city">City<span class="red-ast">*</span></label>
-                                    <input type="text" name="city" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="state">State<span class="red-ast">*</span></label>
-                                    <input type="text" name="state" class="form-control" required />
-                                </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="eBio">Ensemble Bio</label>
+                                <textarea id="desc" name="eBio" class="form-control" placeholder="Tell us about you!"></textarea>
                             </div>
                         </div>
-                        <div class="row" style="margin-top:20px;">
-                            <button style="width:50%;font-size:20px;" class="btn btn-danger center-block">Create Group</button>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="description">Ensemble Bio</label>
-                            <textarea id="desc" name="bio" class="form-control" placeholder="Tell us about you!"></textarea>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+
+                </div>
 
             </div>
-
-        </div>
     }
 }
 

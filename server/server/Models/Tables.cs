@@ -4,12 +4,23 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace server.Models
 {
     public class PluggedContext : DbContext
     {
+        private static string CreatePasswordHash(string pwd, string salt)
+        {
+            string saltAndPwd = pwd + salt;
+            byte[] bytes = Encoding.ASCII.GetBytes(saltAndPwd);
+            SHA512 shaM = new SHA512Managed();
+            byte[] hashedPwdbytes = shaM.ComputeHash(bytes);
+            string hashedPwd = Convert.ToBase64String(hashedPwdbytes);
+            return hashedPwd;
+        }
 
         public PluggedContext() { }
 
@@ -29,18 +40,36 @@ namespace server.Models
         public virtual DbSet<Gig> Gigs { get; set; }
         public virtual DbSet<Booked_Gig> Booked_Gigs { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
-        //public DbSet<PostMedia> PostMedias { get; set; }
-        //public DbSet<E_Has_Media> E_Has_Medias { get; set; }
-        //public DbSet<P_Has_Media> P_Has_Medias { get; set; }
-        //public DbSet<V_Has_Media> V_Has_Medias { get; set; }
+        public virtual DbSet<AuditionProfile> AuditionProfiles { get; set; }
+        public virtual DbSet<GigApp> GigApps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email).IsUnique();
 
+            modelBuilder.Entity<Profile>()
+                .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+            modelBuilder.Entity<Ensemble>()
+                 .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+            modelBuilder.Entity<Venue>()
+                .Property(p => p.Pic_Url).HasDefaultValue("/images/uploads/default.png");
+
+            modelBuilder.Entity<Gig>()
+                .Property(g => g.Closed_Date).HasDefaultValue(System.DateTime.Now.AddMonths(1));
+            modelBuilder.Entity<Audition>()
+                .Property(g => g.Closed_Date).HasDefaultValue(System.DateTime.Now.AddMonths(1));
+            modelBuilder.Entity<Ensemble>()
+                .Property(e => e.Disbanded_Date).HasDefaultValue(new System.DateTime(9999, 12, 31));
+
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasKey(em => new { em.ProfileId, em.EnsembleId });
+
+            modelBuilder.Entity<AuditionProfile>()
+                .HasKey(em => new { em.AuditionId, em.ProfileId });
+
+            modelBuilder.Entity<GigApp>()
+                .HasKey(em => new { em.GigId, em.ViewId, em.ViewType });
 
             modelBuilder.Entity<ProfileEnsemble>()
                 .HasOne(em => em.Profile)
@@ -51,6 +80,11 @@ namespace server.Models
                 .HasOne(em => em.Ensemble)
                 .WithMany(c => c.ProfileEnsemble)
                 .HasForeignKey(em => em.EnsembleId);
+
+            modelBuilder.Entity<GigApp>()
+                .HasOne(em => em.Gig)
+                .WithMany(b => b.GigApp)
+                .HasForeignKey(em => em.GigId);
 
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
@@ -90,19 +124,19 @@ namespace server.Models
                 );
             //seed the database (for testing)
             modelBuilder.Entity<User>().HasData(
-                new User() { UserId = 1, Email = "miley@cyrus.com", Password = "bestObothWorlds" },
-                new User() { UserId = 2, Email = "billy@cyrus.com", Password = "bestDad" }
+                new User() { UserId = 1, Email = "tjtwiton@gmail.com", Password = CreatePasswordHash("faketom", "badpractice3"), Salt = "badpractice3" },
+                new User() { UserId = 2, Email = "tyler@conzett.cmon", Password = CreatePasswordHash("bestRA", "unsafe3"), Salt = "unsafe3" }
             );
             modelBuilder.Entity<Profile>().HasData(
                 new Profile()
                 {
                     ProfileId = 11,
                     UserId = 1,
-                    First_Name = "Miley",
-                    Last_Name = "Cyrus",
+                    First_Name = "Thomas",
+                    Last_Name = "Twiton",
                     Preferred_Name = "The Wrecking Ball",
-                    Pic_Url = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/170526-N-EO381-052_Miley_Cyrus_on_Today_show.jpg/330px-170526-N-EO381-052_Miley_Cyrus_on_Today_show.jpg",
-                    Bio = "Miley Ray Cyrus (born Destiny Hope Cyrus; November 23, 1992) is an American singer, songwriter, and actress.",
+                    Bio = "A senior at Luther College eager to get back into playing the piano",
+                    Pic_Url = "/images/uploads/default.png",
                     City = "Los Angeles",
                     State = "Caliornia"
                 },
@@ -110,11 +144,11 @@ namespace server.Models
                 {
                     ProfileId = 12,
                     UserId = 2,
-                    First_Name = "Billy Ray",
-                    Last_Name = "Cyrus",
-                    Preferred_Name = "Dad",
-                    Pic_Url = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Billy_Ray_Cyrus_2009_%28cropped%29.jpg/330px-Billy_Ray_Cyrus_2009_%28cropped%29.jpg",
-                    Bio = "William Ray Cyrus (born August 25, 1961)[1][2] is an American singer, songwriter and actor.",
+                    First_Name = "Tyler",
+                    Last_Name = "Conzett",
+                    Pic_Url = "/images/uploads/default.png",
+                    Preferred_Name = "Lord of the RAs",
+                    Bio = "One RA to rule them all, and in the darkness bind them",
                     City = "Flatwoods",
                     State = "Kentucky"
                 }
@@ -123,35 +157,88 @@ namespace server.Models
                 new Ensemble()
                 {
                     EnsembleId = 21,
-                    UserId = 1,
-                    Ensemble_Name = "Hannah Montana Show",
+                    UserId = 2,
+                    Ensemble_Name = "RA Show",
                     Formed_Date = new System.DateTime(2006, 3, 1),
                     Type = "TV Show",
                     Genre = "Pop",
+                    Pic_Url = "/images/uploads/default.png",
                     City = "Disneyworld",
                     State = "Disney",
-                    Bio = "Is it really the best of both worlds?",
-                    Pic_Url = "https://upload.wikimedia.org/wikipedia/en/2/2b/Hannah_Montana_Logo.PNG"
+                    Bio = "Is it real?",
                 },
                 new Ensemble()
                 {
                     EnsembleId = 22,
-                    UserId = 2,
-                    Ensemble_Name = "Cyrus Family Band",
+                    UserId = 1,
+                    Ensemble_Name = "Sad Pianos",
                     Formed_Date = new System.DateTime(2006, 3, 1),
-                    Type = "Family Band",
-                    Genre = "Country",
+                    Type = "Cover Band",
+                    Genre = "Alternative",
                     City = "Flatwoods",
                     State = "Kentucky",
-                    Pic_Url = "http://cdn.gospelherald.com/data/images/full/3611/miley-cyrus-and-billy-ray-cyrus.jpg"
+                    Pic_Url = "/images/uploads/default.png"
                 }
                 );
 
+            modelBuilder.Entity<Venue>().HasData(
+                new Venue()
+                {
+                    VenueId = 31,
+                    Venue_Name = "Marty's Grill",
+                    Pic_Url = "https://www.luther.edu/reason/images/802151.jpg",
+                    UserId = 1,
+                    Address1 = "400 College Dr.",
+                    Bio = "We do food.",
+                    City = "Decorah",
+                    State = "IA",
+                    Website = "https://www.luther.edu/dining/locations/martys/",
+                    Phone = "(563) 387-1395"
+                }
+                );
+
+            modelBuilder.Entity<Gig>().HasData(
+                new Gig()
+                {
+                    GigId = 41,
+                    Gig_Date = new System.DateTime(2019, 12, 1),
+                    Closed_Date = new System.DateTime(2006, 12, 30),
+                    Genre = "Jazz",
+                    Description = "We're looking for some live entertainment!",
+
+                    VenueId = 31
+                });
+
+            modelBuilder.Entity<Audition>().HasData(
+               new Audition()
+               {
+                   AuditionId = 1,
+                   Open_Date = new System.DateTime(2018, 12, 6),
+                   Audition_Location = "Marty's Grill",
+                   Audition_Description = "We need RAs... Musical RAs!",
+                   Instrument_Name = "Voice",
+                   InstrumentId = 2,
+                   EnsembleId = 21
+
+               }
+               );
+            
+            modelBuilder.Entity<AuditionProfile>().HasData(
+                new AuditionProfile() { AuditionId = 1, ProfileId = 11 },
+                new AuditionProfile() { AuditionId = 1, ProfileId = 12 }
+                );
+
+            modelBuilder.Entity<GigApp>().HasData(
+                new GigApp { GigId = 41, ViewType = "profile", ViewId = 11 },
+                new GigApp { GigId = 41, ViewType = "profile", ViewId = 12 },
+                new GigApp { GigId = 41, ViewType = "ensemble", ViewId = 21 },
+                new GigApp { GigId = 41, ViewType = "ensemble", ViewId = 22 }
+                );
+
             modelBuilder.Entity<Plays_Instrument>().HasData(
-                new Plays_Instrument() { Id = 1, ProfileId = 11, InstrumentId = 2 },
-                new Plays_Instrument() { Id = 2, ProfileId = 12, InstrumentId = 2 },
-                new Plays_Instrument() { Id = 3, ProfileId = 12, InstrumentId = 1 },
-                new Plays_Instrument() { Id = 4, ProfileId = 12, InstrumentId = 7 }
+                new Plays_Instrument() { Id = 1, ProfileId = 11, InstrumentId = 1 },
+                new Plays_Instrument() { Id = 2, ProfileId = 11, InstrumentId = 10 },
+                new Plays_Instrument() { Id = 3, ProfileId = 12, InstrumentId = 2 }
                 );
 
             modelBuilder.Entity<ProfileEnsemble>().HasData(
@@ -167,28 +254,9 @@ namespace server.Models
                     PostId = 1,
                     PosterType = "profile",
                     PosterIndex = 1,
-                    MediaType = "img",
-                    MediaUrl = "https://upload.wikimedia.org/wikipedia/en/0/06/Miley_Cyrus_-_Wrecking_Ball.jpg",
-                    Text = "No longer a Disney gal!"
+                    Text = "Hi everybody!"
                 },
-                new Post() { PostId = 2, PosterType = "profile", PosterIndex = 11, Text = "Screw you dad @BillyRayCyrus" },
-                new Post() { PostId = 3, PosterType = "profile", PosterIndex = 11, MediaType = "img", MediaUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg/255px-Miley_Cyrus_Gypsi_Tour_Acer_Arena_Sydney_%285872497845%29.jpg" },
-                new Post() { PostId = 4, PosterType = "ensemble", PosterIndex = 21, Type = "aud", Ref_Id = 1, Text = "We're looking for a new member!" }
-                );
-
-            modelBuilder.Entity<Audition>().HasData(
-                new Audition()
-                {
-                    AuditionId = 1,
-                    Open_Date = new System.DateTime(2018, 12, 6),
-                    Audition_Location = "Marty's Grill",
-                    Audition_Description = "She's a diva and left us... We need a new Hannah Montana! (Not required to be from Montana)",
-                    Instrument_Name = "Voice",
-                    InstrumentId = 2,
-                    EnsembleId = 21
-
-
-                }
+                new Post() { PostId = 2, PosterType = "ensemble", PosterIndex = 21, Type = "aud", Ref_Id = 1, Text = "We're looking for a new member!" }
                 );
         }
     }
@@ -202,6 +270,8 @@ namespace server.Models
 
         [Required]
         public string Password { get; set; }
+
+        public string Salt { get; set; }
 
         public ICollection<Profile> Profile { get; set; }
         public ICollection<Ensemble> Ensemble { get; set; }
@@ -325,6 +395,8 @@ namespace server.Models
         public int EnsembleId { get; set; }
         public Ensemble Ensemble { get; set; }
 
+        public ICollection<AuditionProfile> AuditionProfile { get; set; }
+
         //POSTS
     }
 
@@ -332,11 +404,15 @@ namespace server.Models
     {
         public int GigId { get; set; }
         public System.DateTime Gig_Date { get; set; }
+        public System.DateTime Closed_Date { get; set; }
+        public string Genre { get; set; }
+        public string Description { get; set; }
 
         public int VenueId { get; set; }
         public Venue Venue { get; set; }
 
-        public ICollection<Booked_Gig> Booked_Gig { get; set; }
+        public ICollection<GigApp> GigApp { get; set; }
+        //posts
     }
 
     public class Booked_Gig
@@ -368,52 +444,26 @@ namespace server.Models
         public int Ref_Id { get; set; }
 
         public Venue Venue { get; set; }
-        public Booked_Gig Booked_Gig { get; set; }
+        public Gig Gig { get; set; }
         public Ensemble Ensemble { get; set; }
         public Audition Audition { get; set; }
         public ProfileEnsemble Membership { get; set; }
         public Profile Profile { get; set; }
     }
 
-    /*
-    public ICollection<P_Has_Media> P_Has_Media { get; set; }
-    public ICollection<E_Has_Media> E_Has_Media { get; set; }
-    public ICollection<V_Has_Media> V_Has_Media { get; set; }
-}
+    public class AuditionProfile
+    {
+        public int AuditionId { get; set; }
+        public Audition Audition { get; set; }
+        public int ProfileId { get; set; }
+        public Profile Profile { get; set; }
+    }
 
-public class P_Has_Media
-{
-    public int Id { get; set; }
-
-    public int ProfileId { get; set; }
-    public Profile Profile { get; set; }
-
-    public int MediaId { get; set; }
-    public PostMedia Media { get; set; }
-}
-
-public class E_Has_Media
-{
-    public int Id { get; set; }
-
-    public int ProfileId { get; set; }
-    public Profile Profile { get; set; }
-
-    public int MediaId { get; set; }
-    public PostMedia Media { get; set; }
-}
-
-public class V_Has_Media
-{
-    public int Id { get; set; }
-
-    public int ProfileId { get; set; }
-    public Profile Profile { get; set; }
-
-    public int MediaId { get; set; }
-    public PostMedia Media { get; set; }
-}
-*/
-
-
+    public class GigApp
+    {
+        public int GigId { get; set; }
+        public Gig Gig { get; set; }
+        public string ViewType { get; set; }
+        public int ViewId { get; set; }
+    }
 }

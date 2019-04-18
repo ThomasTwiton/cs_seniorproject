@@ -1,4 +1,4 @@
-﻿
+﻿@model server.Models.VenueModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -15,7 +15,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <img id="banner" src="~/images/banner3.svg" alt="@Model.Venue.Venue_Name" />
+        <img id="banner" src="@Model.Venue.Pic_Url" alt="@Model.Venue.Venue_Name" />
     </div>
     <div class="row">
         <div id="profile" class="col-xs-3">
@@ -23,27 +23,33 @@
             <hr />
             <div id="bio">
                 @Model.Venue.Bio
+                <br />
+                @if (Model.isOwner == true)
+                {                    
+                    <a asp-action="EditVenue" asp-route-id="@Model.Venue.VenueId">Edit</a>
+                }
             </div>
+            
             <hr />
             <table id="info">
                 <tr>
                     <td>Phone:</td>
-                    <td>@*@Model.Venue.Phone*@</td>
+                    <td>@Model.Venue.Phone</td>
                 </tr>
                 <tr>
                     <td>Address:</td>
                     <td>
-                        @Model.Venue.Address1 <br />
-                        @Model.Venue.Address2 <br />
+                        @Model.Venue.Address1
+                        @Model.Venue.Address2 <br>
                         @Model.Venue.City, @Model.Venue.State
                     </td>
                 </tr>
                 <tr>
                     <td>Website:</td>
-                    <td><a href=@*@Model.Venue.Website*@>@Model.Venue.Venue_Name</a></td>
+                    <td><a href=@Model.Venue.Website>@Model.Venue.Venue_Name</a></td>
                 </tr>
             </table>
-            @if (Model.IsOwner == true)
+            @if (Model.isOwner == true)
             {
                 <button style="width:100%;" class="btn btn-warning" onclick="showModal()">Create a Gig</button>
             }
@@ -51,12 +57,12 @@
 
         <div id="posts" class="col-xs-9">
             <div class="row">
-                @if (Model.IsOwner == true)
+                @if (Model.isOwner == true)
                 {
                     <div id="createPost" class="container">
-                        <form class="row" asp-action="CreatePost">
+                        <form class="row" asp-action="CreatePost" enctype="multipart/form-data">
                             <div class="col-xs-1">
-                                <img class="tinyPic" src="https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiP__7uhYffAhWhmeAKHSsYCPoQjRx6BAgBEAU&url=https%3A%2F%2Fwww.facebook.com%2Funclemartysinc%2F&psig=AOvVaw33ofUSp-_HCNUuBjlmOwzx&ust=1544042803984002" />
+                                <img class="tinyPic" src="@Model.Venue.Pic_Url" />
                             </div>
 
                             <div style="display:none">
@@ -71,7 +77,7 @@
                                 <div id="postButtons" class="form-group">
                                     <button class="btn btn-primary">Post</button>
                                     <label class="btn btn-secondary">
-                                        Attach Media <input type="file" hidden>
+                                        Attach Media <input asp-for="File" name="File" type="file" hidden>
                                     </label>
                                 </div>
 
@@ -91,7 +97,7 @@
 
                     @if (p.Type == "gig")
                     {
-                        <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-hasmedia="@false" data-text="@p.Text" />
+                        <Post data-username="@Model.Venue.Venue_Name" data-type="@p.Type" data-avatar="@Model.Venue.Pic_Url" data-hasmedia="@false" data-text="@p.Text" data-gigid="@p.Gig.GigId" data-start="@p.Gig.Gig_Date" data-genre="@p.Gig.Genre" data-end="@p.Gig.Closed_Date"/>
                     }
                     else if (p.Type == "aud")
                     {
@@ -113,7 +119,7 @@
             </div>
         </div>
 
-        @if (Model.IsOwner == true)
+        @if (Model.isOwner == true)
         {
 
             <div id="createModal" class="modal">
@@ -121,6 +127,11 @@
                 <div class="modal-content">
                     <span class="close" onclick="hideModal()">&times;</span>
                     <form asp-controller="Home" asp-action="CreateGig" method="post" class="container-fluid">
+                        <div style="display:none">
+                            <input name="PosterType" type="text" value="venue" />
+                            <input name="Type" type="text" value="post" />
+                            <input name="PosterIndex" type="text" value="@Model.Venue.VenueId" />
+                        </div>
                         <h2 style="text-align:center;font-weight:bold;">Got a gig?</h2>
                         <hr />
                         <div class="col-sm-6">
@@ -140,7 +151,7 @@
                             </div>
                             <div class="row">
                                 <small class="form-text text-muted">
-                                    If the gig has no difinitive end date, you need not include one here.
+                                    If the gig has no definitive end date, you need not include one here.
                                 </small>
                             </div>
                             <hr />
@@ -161,8 +172,8 @@
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="type">What kind of entertainment are you looking for?<span class="red-ast">*</span></label>
-                                    <input type="text" name="type" class="form-control" placeholder="Cover Band, Jazz Combo etc..." required />
+                                    <label for="genre">What kind of entertainment are you looking for?<span class="red-ast">*</span></label>
+                                    <input type="text" name="genre" class="form-control" placeholder="Cover Band, Jazz Combo etc..." required />
                                 </div>
                             </div>
                             <div class="row" style="margin-top:20px;">

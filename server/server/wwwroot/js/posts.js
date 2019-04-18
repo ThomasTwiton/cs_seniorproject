@@ -16,7 +16,7 @@
 //         * different ids depending on whether a profile is an
 //         * ensemble, venue or profile.
 //        */
-        
+
 //        switch (profileType) {
 //            case "ensemble":
 //                this.getPostLink = "api/getAllPosts"
@@ -97,7 +97,7 @@ function Post(props) {
             <Avatar user={props.author} />
             <PostBody post={props.post} />
         </div>
-     );
+    );
 }
 
 function Avatar(props) {
@@ -140,7 +140,7 @@ function BasicBody(props) {
 
 function GigBody(props) {
     // The body of a type='gig' component.
-    const link = "Gig/" + props.post.info.id.toString();
+    const link = "/Home/Gig/" + props.post.info.id.toString();
     return (
         <div className="col-xs-11">
             <div className="textContainer">
@@ -158,20 +158,16 @@ function GigBody(props) {
                             <td>{props.post.info.end}</td>
                         </tr>
                         <tr>
-                            <td>Time:</td>
-                            <td>{props.post.info.time}</td>
+                            <td>Seeking:</td>
+                            <td>{props.post.info.genre}</td>
                         </tr>
-                        <tr>
-                            <td>Looking for:</td>
-                            <td>{props.post.info.seeking}</td>
-                        </tr></tbody>
+                    </tbody>
                 </table>
                 <a href={link} className="btn btn-danger">Plug-In</a>
             </div>
         </div>
     );
 }
-
 function AuditionBody(props) {
     // The body of a type='aud' component.
     const link = "/Home/Audition/" + props.post.info.id.toString();
@@ -231,10 +227,18 @@ function PostMedia(props) {
         );
     } else if (mediaType === "audio") {
         media = (
-            <audio
-                src={props.media.url}
-            />
+            <a href={props.media.url}>Listen!</a>
+            //<audio src={props.media.url}/>
         );
+    } else if (mediaType === "video") {
+        media = (
+            <a href={props.media.url}>Watch!</a>
+            //<video src={props.media.url} />
+        );
+    } else if (mediaType === "resume") {
+        media = (
+            <a href={props.media.url}>Resume</a>
+            );
     }
     return (
         <div className="mediaContainer">
@@ -261,7 +265,7 @@ function aggPosts() {
             post: {
                 text: m.dataset.text,
                 type: m.dataset.type,
-                
+
             }
         };
         let info
@@ -273,7 +277,7 @@ function aggPosts() {
                     start: m.dataset.start,
                     end: m.dataset.end,
                     time: m.dataset.time,
-                    seeking: m.dataset.pos
+                    genre: m.dataset.genre
                 };
                 props.post.info = info;
                 break;

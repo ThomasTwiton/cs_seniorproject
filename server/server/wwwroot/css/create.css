@@ -54,7 +54,7 @@
     padding-left: 5px;
     margin: 0;
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 8c954ab525892129c70c79570f1708407afdf593
+.selected {
+    background-color:cornflowerblue;
+}

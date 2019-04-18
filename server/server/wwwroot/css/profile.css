@@ -9,6 +9,7 @@
     border: var(--bkg-gold) solid 2px;
     border-radius: 5px;
     margin-bottom: 15px;
+    object-fit: cover;
 }
 
 #profile div {
@@ -18,10 +19,6 @@
 #name {
     text-align: center;
     margin-bottom: 15px;
-}
-
-.glyphicon-map-marker {
-    color: var(--bkg-teal);
 }
 
 #ensembleContainer {
@@ -35,6 +32,7 @@
     border-radius: 3px;
     margin: 5px;
     float: left;
+    object-fit: cover;
 }
 
 #ensembleContainer .row {
@@ -75,6 +73,27 @@
 #audInfo .bold {
     margin-left: 50%;
 }
+
+#openAuditions {
+    overflow-y: auto;
+    max-height: 150px;
+}
+
+#openAuditions .row {
+    vertical-align: middle;
+    padding: 5px;
+    margin: 0;
+    //background-color: powderblue;
+    align-content: center;
+}
+
+#openAuditions .row .col-xs-6 {
+    margin-bottom: 0;
+    vertical-align: middle;
+    height: 100%;
+
+}
+
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {

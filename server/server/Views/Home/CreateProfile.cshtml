@@ -1,4 +1,5 @@
-﻿
+﻿@model server.Models.ProfileModel;
+
 @{
     ViewData["Title"] = "Create Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,7 +13,7 @@
 @* Title Row *@
 <div id="titleRow" class="row">
     <h2 style="float:left;">Create Profile</h2>
-    <button style="float:right;" class="btn btn-danger" onclick="submitForm()">Create Profile</button>
+    <button style="float:right;" class="btn btn-danger" onclick="submitForm()">Create</button>
     <hr style="width:100%;" />
 </div>
 
@@ -28,7 +29,7 @@
             A personal profile
         </div>
     </div>
- 
+
     <div class="col-xs-4 e" onclick="switchView('ensemble')">
         <div class="col-xs-3">
             <span class="glyphicon glyphicon-cd"></span>
@@ -54,22 +55,22 @@
 @* Information Row *@
 <div id="infoRow" class="row">
     <!-- Profile form -->
-    <form id="profileForm" asp-action="CreateProfile">
+    <form id="profileForm" asp-action="CreateProfile" enctype="multipart/form-data">
         <div style="display:none">
             <input name="userID" type="text" value=@ViewData["id"] />
         </div>
         <div class="col-xs-6">
             <div class="form-group row">
                 <div class="col-xs-12">
-                    <label for="pName">Name<span class="red-ast">*</span></label>
+                    <label for="pName">First Name<span class="red-ast">*</span></label>
                     <input name="pName" type="text" class="form-control" placeholder="What is your name?" required />
                 </div>
             </div>
 
             <div class="form-group row">
                 <div class="col-xs-12">
-                    <label for="pBirthday">Birthdate</label>
-                    <input name="pBirthday" type="date" class="form-control" />
+                    <label for="pSurname">Last Name<span class="red-ast">*</span></label>
+                    <input name="pSurname" type="text" class="form-control" placeholder="What is your name?" required />
                 </div>
             </div>
 
@@ -83,21 +84,39 @@
                     <input name="pState" type="text" class="form-control" placeholder="Ss" required />
                 </div>
             </div>
+            <div class="form-group">
+                <label asp-for="File" class="control-label">Profile Picture</label>
+                <input asp-for="File" type="file" class="form-control" />
+            </div>
         </div>
 
         <div class="col-xs-6">
             <div class="row form-group">
                 <div class="col-xs-12">
-                    <label for="pInstruments">Instruments</label>
+                    <label asp-for="Instruments">Instruments</label>
                     <div name="pInstruments" id="instruments" class="form-control">
 
-                        @foreach (var ins in ViewData["Instruments"] as List<string>)
+                        @foreach (var ins in Model.Instruments)
                         {
-                            <label for="@ins" class="checkLabel">
-                                @ins
-                                <input id="@ins" name="@ins" type="checkbox" onchange="changeCheck(this)" />
-                            </label>
+                            if (ins.Selected)
+                            {
+                                <div class="checkLabel selected">
+                                    <label>
+                                        <input type="checkbox" name="SelectedInsIds" value="@ins.Value" checked onchange="changeCheck(this)"/> @ins.Text
+                                    </label>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="checkLabel">
+                                    <label>
+                                        <input type="checkbox" name="SelectedInsIds" value="@ins.Value" onchange="changeCheck(this)"/> @ins.Text
+                                    </label>
+                                </div>
+                            }
+
                         }
+
 
                     </div>
                 </div>
@@ -112,7 +131,7 @@
     </form>
 
     <!-- Ensemble form -->
-    <form id="ensembleForm" style="display:none" asp-action="CreateEnsemble">
+    <form id="ensembleForm" style="display:none" asp-action="CreateEnsemble" enctype="multipart/form-data">
         <div style="display:none">
             <input name="userID" type="text" value=@ViewData["id"] />
         </div>
@@ -145,6 +164,10 @@
                     <input name="eState" type="text" class="form-control" placeholder="Ss" required />
                 </div>
             </div>
+            <div class="form-group">
+                <label asp-for="File" class="control-label">Profile Picture</label>
+                <input asp-for="File" type="file" class="form-control" />
+            </div>
         </div>
 
         <div class="col-xs-6">
@@ -168,7 +191,7 @@
     </form>
 
     <!-- Venue form -->
-    <form id="venueForm" style="display:none" asp-action="CreateVenue">
+    <form id="venueForm" style="display:none" asp-action="CreateVenue" enctype="multipart/form-data">
         <div style="display:none">
             <input name="userID" type="text" value=@ViewData["id"] />
         </div>
@@ -182,15 +205,15 @@
 
             <div class="form-group row">
                 <div class="col-xs-12">
-                    <label for="vFormed">Established</label>
-                    <input name="vFormed" type="date" class="form-control" />
+                    <label for="vAddr1">Address<span class="red-ast">*</span></label>
+                    <input name="vAddr1" type="text" class="form-control" placeholder="Where is your business?" required />
                 </div>
             </div>
 
             <div class="form-group row">
                 <div class="col-xs-12">
-                    <label for="vAddr1">Address<span class="red-ast">*</span></label>
-                    <input name="vAddr1" type="text" class="form-control" placeholder="Where is your business?" required />
+                    <label for="vAddr2">Address Line 2</label>
+                    <input name="vAddr2" type="text" class="form-control" />
                 </div>
             </div>
 
@@ -203,6 +226,10 @@
                     <label for="vState">State<span class="red-ast">*</span></label>
                     <input name="vState" type="text" class="form-control" placeholder="Ss" required />
                 </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="File" class="control-label">Profile Picture</label>
+                <input asp-for="File" type="file" class="form-control" />
             </div>
         </div>
 

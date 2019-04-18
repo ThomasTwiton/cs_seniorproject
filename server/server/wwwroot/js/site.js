@@ -39,9 +39,9 @@ if (document.getElementById('createModal')) {
 function changeCheck(cb) {
     if (cb.checked == true) {
         // parentNode is the label containing the checkbox.
-        cb.parentNode.style.backgroundColor = "cornflowerblue";
+        cb.parentNode.parentNode.classList.add("selected")
     } else {
-        cb.parentNode.style.backgroundColor = "inherit";
+        cb.parentNode.parentNode.classList.remove("selected");
     }
 }
 
@@ -93,4 +93,33 @@ function submitForm() {
 
     }
     console.log("Done");
+}
+
+/* ================================================== */
+/* ============= Base API Call Function ============= */
+/* ================================================== */
+
+function callAPI(apiStr, method, data, sucFun) {
+    console.log("Calling API:", method, apiStr);
+
+    let dfd = new $.Deferred();
+    // creating a deferred object allows functions that
+    //  call this function not to hang and wait for a 
+    //  server response.
+
+    $.ajax({
+        url: "../../api/PluggedAPI/" + apiStr,
+        method: method,
+        data: JSON.stringify(data),
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: (data) => sucFun(data),
+        error: (error) => console.log("AJAX Error:", error)
+
+    }).done(function () {
+        dfd.resolve();  // Resolve the deferred object
+
+    });
+
+    return dfd;
 }

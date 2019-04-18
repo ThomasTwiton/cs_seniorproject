@@ -15,6 +15,24 @@
    Gold: #FF9F1C
    Grey: #CCCCCC */
 
+/* ================================================== */
+/* =============== Glyphicon Styling ================ */
+/* ================================================== */
+.glyphicon-map-marker {
+    color: var(--bkg-teal);
+}
+
+.glyphicon-pencil {
+    color: var(--bkg-gold);
+}
+
+.glyphicon-remove {
+    color: var(--bkg-red);
+}
+
+.glyphicon-ok {
+    color: var(--bkg-teal);
+}
 
 /* ================================================== */
 /* ================== Misc Styling ================== */
@@ -55,7 +73,11 @@ footer hr {
 }
 
 .red-ast {
-    color: red;
+    color: var(--bkg-red);
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 #search {
