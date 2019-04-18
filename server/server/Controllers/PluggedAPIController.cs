@@ -50,7 +50,7 @@ namespace server.Controllers
             return applicantProfiles;
         }
 
-
+        //Load all of the Profiles who are members of a given ensemble (id)
         [HttpGet("members/{id}")]
         public async Task<ActionResult<IEnumerable<Profile>>> GetMembers(int id)
         {
@@ -122,7 +122,7 @@ namespace server.Controllers
         public async Task<IActionResult> CloseAudition(int id)
         {
 
-            var audition = await _context.Auditions.FindAsync(id);
+            var audition =  _context.Auditions.Find(id); //April 11: Used to be FindAsync
 
             audition.Closed_Date = System.DateTime.Now;
 
@@ -138,7 +138,7 @@ namespace server.Controllers
         public async Task<IActionResult> OpenAudition(int id)
         {
 
-            var audition = await _context.Auditions.FindAsync(id);
+            var audition =  _context.Auditions.Find(id);
 
 
             System.DateTime today = System.DateTime.Now;
@@ -247,6 +247,7 @@ namespace server.Controllers
 
             var alreadyMember = _context.ProfileEnsembles.Where(p => p.EnsembleId == int.Parse(applicant.EnsembleId) && p.ProfileId == int.Parse(applicant.ProfileId)).ToList();
 
+
             if (alreadyMember.Count() >= 1)
             {
                 return NoContent();
@@ -274,6 +275,58 @@ namespace server.Controllers
 
         }
 
+
+
+        //get all open auditions for a particular ensemble
+        [HttpGet("getOpenAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getOpenAuditions(int id)
+        {
+            var ensemble = _context.Ensembles.Find(id);
+            var openlist = new List<Audition>();
+            var auditionlist = ensemble.Audition;
+            foreach(Audition aud in auditionlist)
+            {
+                if (aud.Closed_Date > System.DateTime.Now)
+                {
+                    openlist.Add(aud);
+                }
+            }
+
+            return openlist;
+        }
+
+        //get all closed auditions for a particular ensemble
+        [HttpGet("getClosedAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getClosedAuditions(int id)
+        {
+            var ensemble = _context.Ensembles.Find(id);
+            var donelist = new List<Audition>();
+            var auditionlist = ensemble.Audition;
+            foreach (Audition aud in auditionlist)
+            {
+                if (aud.Closed_Date < System.DateTime.Now)
+                {
+                    donelist.Add(aud);
+                }
+            }
+
+            return donelist;
+        }
+
+        //get all auditions for a particular ensemble
+        [HttpGet("getAllAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getAllAuditions(int id)
+        {
+            var ensemble = _context.Ensembles.Find(id);
+            var audlist = new List<Audition>();
+            var auditionlist = ensemble.Audition;
+            foreach (Audition aud in auditionlist)
+            {
+                audlist.Add(aud);         
+            }
+
+            return audlist;
+        }
 
 
         //Remove a profile from an ensemble.
