@@ -1,125 +1,135 @@
-﻿
-@model server.Models.SearchModel
+﻿@model server.Models.SearchModel
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div>
-    <div class=sidenav>
-        <button onclick=show("audquery")>Auditions (@Model.AuditionCount)</button>
-        <button onclick=show("gigquery")>Gigs (@Model.GigCount)</button>
-        <button onclick=show("profquery")>Profiles (@Model.ProfileCount)</button>
-        <button onclick=show("ensquery")>Ensembles (@Model.EnsembleCount)</button>
-        <button onclick=show("venquery")>Venues (@Model.VenueCount)</button>
+
+@section Stylesheets {
+    <link rel="stylesheet" href="~/css/search.css" />
+}
+
+@section Scripts {
+    <script src="~/js/search.js" type="text/javascript">
+    </script>
+}
+
+@section CustomSearch {
+    <input type="text" name="query" id="searchbar" class="form-control" placeholder="Search" value="@Model.Query">
+}
+
+@{
+    var l = new List<int>() {
+Model.AuditionCount,
+Model.GigCount,
+Model.ProfileCount,
+Model.EnsembleCount,
+Model.VenueCount
+};
+    var sel = l.FindIndex(x => x == l.Max());
+}
+
+<div class="container">
+    <div class="row">
+        <div id="sidenav" class="col-md-3">
+            <div class="row">
+                @if (sel == 0)
+                {
+                    <a id="navaud" class="selected" onclick="show('audquery')">Auditions (@Model.AuditionCount)</a>
+                }
+                else
+                {
+                    <a id="navaud" onclick="show('audquery')">Auditions (@Model.AuditionCount)</a>
+                }
+            </div>
+            <div class="row">
+                @if (sel == 1)
+                {
+                    <a id="navgig" class="selected" onclick="show('gigquery')">Gigs (@Model.GigCount)</a>
+                }
+                else
+                {
+                    <a id="navgig" onclick="show('gigquery')">Gigs (@Model.GigCount)</a>
+                }
+            </div>
+            <div class="row">
+                @if (sel == 2)
+                {
+                    <a id="navprof" class="selected" onclick="show('profquery')">Profiles (@Model.ProfileCount)</a>
+                }
+                else
+                {
+                    <a id="navprof" onclick="show('profquery')">Profiles (@Model.ProfileCount)</a>
+                }
+            </div>
+            <div class="row">
+                @if (sel == 3)
+                {
+                    <a id="navens" class="selected" onclick="show('ensquery')">Ensembles (@Model.EnsembleCount)</a>
+                }
+                else
+                {
+                    <a id="navens" onclick="show('ensquery')">Ensembles (@Model.EnsembleCount)</a>
+                }
+            </div>
+            <div class="row">
+                @if (sel == 4)
+                {
+                    <a id="navven" class="selected" onclick="show('venquery')">Venues (@Model.VenueCount)</a>
+                }
+                else
+                {
+                    <a id="navven" onclick="show('venquery')">Venues (@Model.VenueCount)</a>
+                }
+            </div>
+        </div>
+
+        <div id="results" class="col-md-9">
+            <div class="row">
+                <h1 id="query">Query Results</h1>
+            </div>
+
+            <div class="row">
+                <hr />
+            </div>
+
+            <div id="queryresults" class="row">
+                <ul id="audquery">
+                    @foreach (var aud in Model.Auditions)
+                    {
+                        <li><a href="../Home/Audition/@aud.AuditionId">@aud.Audition_Description </a></li>
+                    }
+                </ul>
+                <ul id="gigquery">
+                    @foreach (var gig in Model.Gigs)
+                    {
+                        <li><a href="../Home/Gig/@gig.GigId">@gig.Description</a></li>
+                    }
+                </ul>
+
+                <ul id="profquery">
+                    @foreach (var p in Model.Profiles)
+                    {
+                        <li><a href="../Home/Profile/@p.ProfileId">@p.First_Name @p.Last_Name</a></li>
+                    }
+                </ul>
+
+                <ul id="ensquery">
+                    @foreach (var e in Model.Ensembles)
+                    {
+                        <li><a href="../Home/Ensemble/@e.EnsembleId">@e.Ensemble_Name</a></li>
+                    }
+                </ul>
+
+                <ul id="venquery">
+                    @foreach (var v in Model.Venues)
+                    {
+                        <li><a href="../Home/Venue/@v.VenueId">@v.Venue_Name</a></li>
+                    }
+                </ul>
+            </div>
+
+        </div>
     </div>
+</div>
 
-    <h1>Query Results</h1>
-    <div id="queryresults">
-        <ul id="audquery">
-            @foreach (var aud in Model.Auditions)
-            {
-                <li><a href="../Home/Audition/@aud.AuditionId">@aud.Audition_Description </a></li>
-            }
-        </ul>
-        <ul id="gigquery">
-            @foreach (var gig in Model.Gigs)
-            {
-                <li><a href="../Home/Gig/@gig.GigId">@gig.Description</a></li>
-            }
-        </ul>
 
-        <ul id="profquery">
-            @foreach (var p in Model.Profiles)
-            {
-                <li><a href="../Home/Profile/@p.ProfileId">@p.First_Name @p.Last_Name</a></li>
-            }
-        </ul>
-
-        <ul id="ensquery">
-            @foreach (var e in Model.Ensembles)
-            {
-                <li><a href="../Home/Ensemble/@e.EnsembleId">@e.Ensemble_Name</a></li>
-            }
-        </ul>
-
-        <ul id="venquery">
-            @foreach (var v in Model.Venues)
-            {
-                <li><a href="../Home/Venue/@v.VenueId">@v.Venue_Name</a></li>
-            }
-        </ul>
-    </div>
-</div> 
-
-<script>
-    var searchbar = document.getElementById("searchbar")
-    searchbar.value = "@Model.Query"
-
-    var result_ids = ["audquery", "gigquery", "profquery", "ensquery", "venquery"];
-
-    function show(id) {
-        for (i = 0; i < result_ids.length; i++) {
-            results = document.getElementById(result_ids[i]);
-            if (id==result_ids[i]) {
-                results.style.display = "";
-            } else {
-                results.style.display = "none"
-            }
-        }
-    }
-
-    //display the query category with the highest count
-    var result_counts = [@Model.AuditionCount, @Model.GigCount, @Model.ProfileCount, @Model.EnsembleCount, @Model.VenueCount]
-    var index = 0;
-    var max = 0;
-    for (i = 0; i < result_counts.length; i++) {
-        if (result_counts[i] > max) {
-            max = result_counts[i];
-            index = i;
-        }
-    }
-    show(result_ids[index]);     
-           
-</script>
-
-<style>
-    /* The side navigation menu */
-    .sidenav {
-        height: 100%; /* 100% Full-height */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Stay on top */
-        top: 0; /* Stay at the top */
-        left: 0;
-        overflow-x: hidden; /* Disable horizontal scroll */
-        padding-top: 60px; /* Place content 60px from the top */
-        transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
-    }
-
-    /* The navigation menu links */
-        .sidenav button {
-            padding: 8px 16px 8px 16px;
-            width: 100%;
-            text-decoration: none;
-            font-size: 25px;
-            display: block;
-            transition: 0.3s;
-            border: none;
-            background: #2EC4B6;
-            color: white;
-        }
-
-    /* When you mouse over the navigation links, change their color */
-    .sidenav button:hover {
-        color: #E71D36;
-    }
-    .sidenav button:active {
-        color: #E71D36;
-    }
-
-    #queryresults li {
-        list-style: none;
-    }
-    #queryresults li a {
-        color: black;
-    }
-</style>
