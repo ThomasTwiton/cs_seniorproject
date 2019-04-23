@@ -99,8 +99,8 @@
     <Tabs defaultIndex={1}>
         <TabList>
             <Tab onClick={getClosedAuds}>Previous Auditions</Tab>
-            <Tab>Pending Auditions</Tab>
-            <Tab>Manage Members</Tab>
+            <Tab onClick={getActiveAuds}>Pending Auditions</Tab>
+            <Tab onClick={getMembers}>Manage Members</Tab>
         </TabList>
 
         <TabPanel>
@@ -110,13 +110,12 @@
                     <h2>Auditions</h2>
                 </div>
                 <div className="row">
-                    <table className="table nonfluid-table">
+                    <table id="closed" className="table nonfluid-table">
                         <tbody>
                             <tr>
                                 <th>Instrument</th>
                                 <th>Date Posted</th>
                                 <th>Closing Date</th>
-                                <th>Number Applicants</th>
                                 <th>View</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
@@ -127,7 +126,6 @@
                                     <td>@Model.AuditionList[i].Instrument_Name</td>
                                     <td>@Model.AuditionList[i].Open_Date</td>
                                     <td>@Model.AuditionList[i].Closed_Date</td>
-                                    <td>NotCalculated</td>
                                     <td><span title="View Applicants" className="glyphicon glyphicon-eye-open pointer" onClick={() => getProfiles(@Model.AuditionList[i].AuditionId)}></span></td>
                                     <td><span title="Edit Audition" className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
                                     <td><span title="Delete Audition" className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
@@ -157,13 +155,12 @@
                     <h2>Auditions</h2>
                 </div>
                 <div className="row">
-                    <table className="table nonfluid-table">
+                    <table id="pending" className="table nonfluid-table">
                         <tbody>
                             <tr>
                                 <th>Instrument</th>
                                 <th>Date Posted</th>
                                 <th>Closing Date</th>
-                                <th>Number Applicants</th>
                                 <th>View</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
@@ -174,7 +171,6 @@
                                     <td>@Model.AuditionList[i].Instrument_Name</td>
                                     <td>@Model.AuditionList[i].Open_Date</td>
                                     <td>@Model.AuditionList[i].Closed_Date</td>
-                                    <td>NotCalculated</td>
                                     <td><span title="View Applicants" className="glyphicon glyphicon-eye-open pointer" onClick={() => getProfiles(@Model.AuditionList[i].AuditionId)}></span></td>
                                     <td><span title="Edit Audition" className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
                                     <td><span title="Delete Audition" className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
@@ -207,7 +203,6 @@
                         <tbody>
                             <tr>
                                 <th>Name</th>
-                                <th>Instrument</th>
                                 <th>Date Joined</th>
                                 <th>Remove</th>
                             </tr>
@@ -216,7 +211,6 @@
                             {
                                 <tr>
                                     <td>@mem.Profile.First_Name @mem.Profile.Last_Name</td>
-                                    <td>How do we display mulitple entries? Is this necessary?</td>
                                     <td>@mem.Start_Date</td>
                                     <td><span className="glyphicon glyphicon-remove pointer" title="Remove Member" onClick={() => delMem(@mem.ProfileId)} ></span></td>
                                 </tr>
@@ -235,7 +229,7 @@
                             <h3>Add Member</h3>
                         </div>
                         <div className="row">
-                            <input id="addInput" type="text" /> <button className="btn btn-danger" type="button" onClick={() => addMember()}>Add</button>
+                            <input id="addInput" type="text" placeholder="Enter first and last name." /> <button className="btn btn-danger" type="button" onClick={() => addMember()}>Add</button>
                         </div>
                     </div>
                     <div className="col-sm-3 col-sm-offset-2">
@@ -243,7 +237,7 @@
                             <h3>Transfer Ownership</h3>
                         </div>
                         <div className="row">
-                            <input id="transInput" type="text" /> <button className="btn btn-danger" type="button" onClick={() => transOwner()}>Transfer</button>
+                            <input id="transInput" type="text"placeholder="Enter user email."/> <button className="btn btn-danger" type="button" onClick={() => transOwner()}>Transfer</button>
                         </div>
                     </div>
                 </div>

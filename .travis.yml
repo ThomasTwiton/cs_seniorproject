@@ -2,6 +2,7 @@ language: csharp
 solution: server/server.sln
 mono: none
 dotnet: 2.1
+dist: xenial
 install:
   - dotnet restore server/server.sln
 script:

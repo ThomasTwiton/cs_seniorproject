@@ -52,25 +52,53 @@ namespace server.Controllers
 
 
         [HttpGet("members/{id}")]
-        public async Task<ActionResult<IEnumerable<Profile>>> GetMembers(int id)
+        public async Task<ActionResult<IEnumerable<ProfileEnsemble>>> GetMembers(int id)
         {
-            Console.WriteLine("------------------------");
-            Console.WriteLine("------------------------");
-            Console.WriteLine("------------------------");
-            Console.WriteLine("------------------------");
-            Console.WriteLine(id);
-            var profileEnsemble = _context.ProfileEnsembles.Where(a => a.EnsembleId == id).ToList();
-
-            var memberProfiles = new List<Profile>();
-
-            foreach (ProfileEnsemble elem in profileEnsemble)
-            {
-                memberProfiles.Add(_context.Profiles.Find(elem.ProfileId));
-            }
+            var memberProfiles = _context.ProfileEnsembles.Include("Profile").Where(pe => pe.EnsembleId == id).ToList();
 
             return memberProfiles;
         }
 
+        [HttpPost("transferOwner")]
+        public async Task<ActionResult<TransferModel>> transferOwner(TransferOwner murderChildren)
+        {
+
+            var profiles = _context.Profiles.Include("User").Where(p => p.User.Email == murderChildren.Email).ToList();
+
+            /* If there are more than one person with the same first and last name,
+             * for the scope of this project, we will just say that you cannot transfer
+             * ensemble ownership due to the uncertainty of who you are transfering to.
+             * Additionally, if there are no matches we will also not allow them to
+             * transfer ownership.
+             * 
+             * This is not the ideal solution, but for the scope of our project, this is
+             * the solution we are going with.
+             * 
+             * The ideal solution would be to give the user a list of all the matching 
+             * results and allow them to select which one they would like to transfer to.
+             * 
+             */
+
+            var retModel = new TransferModel();
+
+            if (profiles.Count < 1)
+            {
+                retModel.Transferred = false;
+                retModel.Email = murderChildren.Email;
+
+                return retModel;
+            }
+
+            var ensemble = _context.Ensembles.Where(e => e.EnsembleId == murderChildren.EnsembleId).First();
+            ensemble.UserId = profiles[0].UserId;
+            await _context.SaveChangesAsync();
+
+            retModel.Transferred = true;
+            retModel.Email = murderChildren.Email;
+
+            return retModel;
+
+        }
 
         //Display all information about a given audition (id)
         [HttpGet("auditions/{id}")]
@@ -187,6 +215,18 @@ namespace server.Controllers
             public string ProfileId { get; set; }
         }
 
+        public class TransferOwner
+        {
+            public string Email { get; set; }
+            public int EnsembleId { get; set; }
+        }
+
+        public class TransferModel
+        {
+            public bool Transferred { get; set; }
+            public string Email { get; set; }
+        }
+
         //Add a profile to an ensemble
         [HttpPost("addProfile")]
         public async Task<IActionResult> addProfile(AddProfiletoEnsemble addition)
@@ -268,13 +308,33 @@ namespace server.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            CloseAudition(int.Parse(applicant.AuditionId));
-
             return NoContent();
 
         }
 
+        //get all open auditions for a particular ensemble
+        [HttpGet("getOpenAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getOpenAuditions(int id)
+        {
+            var auditionlist = _context.Auditions.Where(a => a.EnsembleId == id && a.Closed_Date > System.DateTime.Now).ToList();
+            return auditionlist;
+        }
 
+        //get all closed auditions for a particular ensemble
+        [HttpGet("getClosedAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getClosedAuditions(int id)
+        {
+            var auditionlist = _context.Auditions.Where(a => a.EnsembleId == id && a.Closed_Date <= System.DateTime.Now).ToList();
+            return auditionlist;
+        }
+
+        //get all auditions for a particular ensemble
+        [HttpGet("getAllAuditions/{id}")]
+        public async Task<ActionResult<IEnumerable<Audition>>> getAllAuditions(int id)
+        {
+            var auditionlist = _context.Auditions.Where(a => a.EnsembleId == id).ToList();
+            return auditionlist;
+        }
 
         //Remove a profile from an ensemble.
         [HttpPost("remProfile")]

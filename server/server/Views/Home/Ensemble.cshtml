@@ -22,33 +22,32 @@
 <div class="container">
     <div class="row">
         <div id="profile" class="col-md-3">
-            <div class="row">
-                <img id="profPic" src="@Model.Ensemble.Pic_Url" />
-            </div>
-
+            <img id="profPic" src="@Model.Ensemble.Pic_Url" />
 
             @if (Model.isOwner == true)
             {
-                <div class="row">
-                    <a asp-action="EditEnsemble" asp-route-id="@Model.Ensemble.EnsembleId">Edit</a>
-                </div>
-                <div class="row">
-                    <a asp-action="Dashboard" asp-route-id="@Model.Ensemble.EnsembleId">Dashboard</a>
+                <div class="row" style="max-width:250px">
+                    <div class="col-xs-6">
+                        <a class="btn btn-warning btn-option" asp-action="EditEnsemble" asp-route-id="@Model.Ensemble.EnsembleId">Edit</a>
+                    </div>
+                    <div class="col-xs-6">
+                        <a class="btn btn-primary btn-option" asp-action="Dashboard" asp-route-id="@Model.Ensemble.EnsembleId">Dashboard</a>
+                    </div>
                 </div>
             }
 
-            <div id="bio" class="row">
+            <div id="bio">
                 @Model.Ensemble.Bio
             </div>
-            <div id="location" class="row">
+            <div id="location">
                 <span class="glyphicon glyphicon-map-marker"></span>
                 @Model.Ensemble.City
             </div>
 
             @if (Model.Ensemble.Audition.Count > 0)
             {
-                <div class="row"><h4>Open Auditions:</h4></div>
-                <div id="openAuditions" class="row">
+                <div><h4>Open Auditions:</h4></div>
+                <div id="openAuditions">
 
                     @foreach (var ins in Model.Ensemble.Audition)
                     {
@@ -64,11 +63,9 @@
                 </div>
             }
 
-            <div class="row less-space">
-                <hr style="width:100%;" />
-            </div>
+            <hr style="width:100%;" />
 
-            <div id="ensembles" class="row">
+            <div id="ensembles">
                 @foreach (var item in Model.Profiles)
                 {
                     <Member data-id="@item.ProfileId" data-avatarurl="@item.Pic_Url" data-name="@item.First_Name @item.Last_Name" />
@@ -152,150 +149,68 @@
 {
     @* Only owners should be able to see the "createModal" *@
 
-    @if (Model.ViewType == "ensemble")
-    {
-        @* If the profile is an ensemble, then we want to hold auditions *@
-        <div id="createModal" class="modal">
+    @* If the profile is an ensemble, then we want to hold auditions *@
+    <div id="createModal" class="modal">
 
-            <div class="modal-content">
-                <span class="close" onclick="hideModal()">&times;</span>
-                <form asp-controller="Home" asp-action="CreateAudition" method="post" class="container-fluid">
-                    <div style="display:none">
-                        <input name="userID" type="text" value="1" />
-                        <input name="ensID" type="text" value ="@Model.Ensemble.EnsembleId" />
+        <div class="modal-content">
+            <span class="close" onclick="hideModal()">&times;</span>
+            <form asp-controller="Home" asp-action="CreateAudition" method="post" class="container-fluid">
+                <div style="display:none">
+                    <input name="userID" type="text" value="1" />
+                    <input name="ensID" type="text" value ="@Model.Ensemble.EnsembleId" />
+                </div>
+                <h2 style="text-align:center;font-weight:bold;">Hold an Audition!</h2>
+                <hr />
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="audition_date">Auditions Begin<span class="red-ast">*</span></label>
+                                <input type="date" name="audition_date" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="closed_date">Auditions Close<span class="red-ast">*</span></label>
+                                <input type="date" name="closed_date" class="form-control" required />
+                            </div>
+                        </div>
                     </div>
-                    <h2 style="text-align:center;font-weight:bold;">Hold an Audition!</h2>
+                    <div class="row">
+                        <small class="form-text text-muted col-xs-12">
+                            The closing date should be the day <em>after</em> the last day of auditions. No auditions should be held on the closed date.
+                        </small>
+                    </div>
                     <hr />
-                    <div class="col-sm-6">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="audition_date">Auditions Begin<span class="red-ast">*</span></label>
-                                    <input type="date" name="audition_date" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="closed_date">Auditions Close<span class="red-ast">*</span></label>
-                                    <input type="date" name="closed_date" class="form-control" required />
-                                </div>
-                            </div>
+                    <div class="row">
+                        <div class="form-group col-xs-12">
+                            <label for="location">Audition Location<span class="red-ast">*</span></label>
+                            <input type="text" class="form-control" name="location" placeholder="Nobal Recital Hall, 1234 N. West St., etc..." required />
                         </div>
-                        <div class="row">
-                            <small class="form-text text-muted col-xs-12">
-                                The closing date should be the day <em>after</em> the last day of auditions. No auditions should be held on the closed date.
-
-                            </small>
-                        </div>
-                        <hr />
-                        <div class="row">
-                            <div class="form-group col-xs-12">
-                                <label for="location">Audition Location<span class="red-ast">*</span></label>
-                                <input type="text" class="form-control" name="location" placeholder="Nobal Recital Hall, 1234 N. West St., etc..." required />
-                            </div>
-                            <div class="form-group col-xs-12">
-                                <label asp-for="Instruments">What instrument are you looking for?<span class="red-ast">*</span></label>
-                                <span asp-validation-for="Instruments" class="text-danger"></span>
+                        <div class="form-group col-xs-12">
+                            <label asp-for="Instruments">What instrument are you looking for?<span class="red-ast">*</span></label>
+                            <select id="Instruments" name="SelectedInsId" class="form-control">
+                                <option disabled selected>Select Instrument</option>
                                 @foreach (var ins in Model.Instruments)
                                 {
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="SelectedInsId" value="@ins.Value" /> @ins.Text
-                                        </label>
-                                    </div>
+                                    <option value="@ins.Value">@ins.Text</option>
                                 }
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:20px;">
-                            <button style="width:50%;font-size:20px;" class="btn btn-danger center-block">Post Audition</button>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="description">Audition Description</label>
-                            <textarea id="desc" name="description" class="form-control" placeholder="Prepared materials, contact information etc..."></textarea>
-                            <small class="form-text text-muted">Some useful information to include might be ways to sign up for an audition; What materials should be prepared; Your contact information; How long the audition slots are etc...</small>
-                        </div>
+                    <div class="row" style="margin-top:20px;">
+                        <button style="width:50%;font-size:20px;" class="btn btn-danger center-block">Post Audition</button>
                     </div>
-                </form>
-            </div>
-
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="description">Audition Description</label>
+                        <textarea id="desc" name="description" class="form-control" placeholder="Prepared materials, contact information etc..."></textarea>
+                        <small class="form-text text-muted">Some useful information to include might be ways to sign up for an audition; What materials should be prepared; Your contact information; How long the audition slots are etc...</small>
+                    </div>
+                </div>
+            </form>
         </div>
-    }
-    else if (Model.ViewType == "profile")
-    {
-        @* If the profile is an profile, then we want to create ensembles *@
-        <div id="createModal" class="modal">
 
-            <div class="modal-content">
-                <span class="close" onclick="hideModal()">&times;</span>
-                <form asp-controller="Home" asp-action="CreateEnsemble" method="post" class="container-fluid">
-                    <div style="display:none">
-                        <input name="userID" type="text" value="1" />
-                    </div>
-                    <h2 style="text-align:center;font-weight:bold;">Form a Group!</h2>
-                    <hr />
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="name">Name<span class="red-ast">*</span></label>
-                            <input type="text" class="form-control" name="name" placeholder="Enter the name of the group" required />
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="formed_date">Formed<span class="red-ast">*</span></label>
-                                    <input type="date" name="formed_date" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="disbanded_date">Disbanded</label>
-                                    <input type="date" name="disbanded_date" class="form-control" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="genre">Genre<span class="red-ast">*</span></label>
-                                    <input type="text" class="form-control" name="genre" placeholder="Jazz, Punk Rock, Symphony etc.." required />
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="type">Group Type<span class="red-ast">*</span></label>
-                                    <input type="text" name="type" class="form-control" placeholder="Brass Band, Jazz Combo, Cover Band etc..." />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="city">City<span class="red-ast">*</span></label>
-                                    <input type="text" name="city" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="state">State<span class="red-ast">*</span></label>
-                                    <input type="text" name="state" class="form-control" required />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:20px;">
-                            <button style="width:50%;font-size:20px;" class="btn btn-danger center-block">Create Group</button>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="description">Ensemble Bio</label>
-                            <textarea id="desc" name="bio" class="form-control" placeholder="Tell us about you!"></textarea>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-
-        </div>
-    }
+    </div>
 }
