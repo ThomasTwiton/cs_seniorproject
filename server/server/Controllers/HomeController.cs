@@ -220,15 +220,18 @@ namespace server.Controllers
                 //  then send them to the 'CreateProfile' page to make an entity
                 else
                 {
-                    var lst = new List<string>();
-                    foreach (Instrument i in _context.Instruments)
-                    {
-                        lst.Add(i.Instrument_Name);
-                    }
+                    ProfileModel createModel = new ProfileModel();
 
-                    ViewData["Instruments"] = lst;
+                    createModel.Instruments = new List<SelectListItem>();
+                    createModel.SelectedInsIds = new List<String>();
+                    foreach (Instrument i in _context.Instruments.ToList())
+                    {
+                        var ins_name = i.Instrument_Name;
+                        SelectListItem chk_ins = new SelectListItem { Text = i.Instrument_Name, Value = i.InstrumentId.ToString() };
+                        createModel.Instruments.Add(chk_ins);
+                    }
                     ViewData["id"] = user.UserId;
-                    return View("CreateProfile");
+                    return View("CreateProfile", createModel);
                 }
 
 
@@ -799,7 +802,7 @@ namespace server.Controllers
                         await _context.SaveChangesAsync();
                     }
 
-                    _context.Venues.Add(venue);
+                    _context.Add(venue);
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction("Venue", new { id = venue.VenueId });
