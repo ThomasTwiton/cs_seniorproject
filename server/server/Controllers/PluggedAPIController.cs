@@ -62,7 +62,6 @@ namespace server.Controllers
         [HttpPost("transferOwner")]
         public async Task<ActionResult<TransferModel>> transferOwner(TransferOwner murderChildren)
         {
-
             var profiles = _context.Profiles.Include("User").Where(p => p.User.Email == murderChildren.Email).ToList();
 
             /* If there are more than one person with the same first and last name,
