@@ -8,11 +8,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace PluggedIn_Tests
 {
+
     public class CreatePostActionTests
     {
+        //public Post returningAdd(List<Post> addedposts, Post post_toAdd)
+        //{
+        //    addedposts.Add(post_toAdd);
+        //    return post_toAdd;
+        //}
+
         [Fact]
         public void CreatePost_WhenGivenValidData_CreatesNewPost() {
 
@@ -73,7 +81,7 @@ namespace PluggedIn_Tests
 
             mockDB.Setup(x => x.Profiles)
                 .Returns(mockProfile.Object);
-            
+
             Post post = new Post();
             post.PostId = 3;
             post.Text = "Hello world";
@@ -81,21 +89,23 @@ namespace PluggedIn_Tests
             post.PosterIndex = 11;
 
             List<Post> addedPosts = new List<Post>();
-            addedPosts.Add(post);
-
+            
             mockDB.Setup(x => x.Posts)
                 .Returns(mockPost.Object);
-            mockDB.Setup(x => x.Posts.Find(It.IsAny<int>()))
-                .Returns(addedPosts[0]);
+
+            mockDB.Setup(x => x.Add(It.IsAny<Post>()))
+                .Callback<Post>(addedPosts.Add)
+                .Returns(mockDB.Object.Add(post));
             mockDB.Setup(x => x.Posts.Add(It.IsAny<Post>()))
-                .Returns(mockPost.Object.Add(post));
+                .Callback<Post>(addedPosts.Add)
+                .Returns(mockDB.Object.Add(post));
 
             var controllerMock = new Mock<HomeController>(mockDB.Object, mockHostEnv.Object);
 
             // Mock the request object and the resulting login information
             SessionModel fakeSM = new SessionModel();
-            fakeSM.IsLoggedIn = false;
-            fakeSM.UserID = 2;
+            fakeSM.IsLoggedIn = true;
+            fakeSM.UserID = 1;
 
             var controller = controllerMock.Object;
             controller.ControllerContext = new ControllerContext();
@@ -112,12 +122,11 @@ namespace PluggedIn_Tests
             var result = controller.createPost(post, model, post.PosterType, post.PosterIndex);
 
             /* Assert */
-            Post newPost = mockDB.Object.Posts.Find(3);
+            Post newPost = addedPosts.Last();
             Assert.Equal(3, newPost.PostId);
             Assert.Equal("Hello world", newPost.Text);
             Assert.Equal("profile", newPost.PosterType);
             Assert.Equal(11, newPost.PosterIndex);
-
         }
 
         [Fact]

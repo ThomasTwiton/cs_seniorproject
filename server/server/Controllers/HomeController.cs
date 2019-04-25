@@ -799,7 +799,7 @@ namespace server.Controllers
                         await _context.SaveChangesAsync();
                     }
 
-                    _context.Venues.Add(venue);
+                    _context.Add(venue);
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction("Venue", new { id = venue.VenueId });
