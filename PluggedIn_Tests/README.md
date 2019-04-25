@@ -75,8 +75,8 @@ var specifiedReq = controller.ControllerContext.HttpContext.Request;
 
 // Create the appropriate SessionModel to be returned by GetSessionInfo()
 SessionModel returnedSM = new SessionModel();
-fakeSM.IsLoggedIn = aLoggedIn;
-fakeSM.UserID = aUserId;
+returnedSM.IsLoggedIn = true; //true if the desired user should be logged in
+retunedSM.UserID = 1; // Desired user's id
 
 // Set up GetSessionInfo method
 controllerMock.Setup(x => x.GetSessionInfo(specifiedReq)).Returns(returnedSM);
