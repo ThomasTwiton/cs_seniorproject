@@ -174,11 +174,6 @@ namespace PluggedIn_Tests
             Assert.Equal("Venue", redirect.ActionName);
 
         }
-
-        [Fact]
-        public void CreateVenue_Always_HandlesDuplicateVenues() { }
-
-        [Fact]
-        public void CreateVnue_Always_HandlesMissingVenueData() { }
+        
     }
 }

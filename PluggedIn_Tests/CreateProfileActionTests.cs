@@ -274,11 +274,6 @@ namespace PluggedIn_Tests
             RedirectToActionResult redirect = (RedirectToActionResult)result.Result;
             Assert.Equal("Profile", redirect.ActionName);
         }
-
-        [Fact]
-        public void CreateProfile_Always_HandlesDuplicateProfiles() { }
-
-        [Fact]
-        public void CreateProfile_Always_HandlesMissingProfileData() { }
+        
     }
 }
