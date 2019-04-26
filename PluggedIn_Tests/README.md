@@ -112,6 +112,60 @@ click "Run All".
 To run tests via the command line, navigate to the 
 `PluggedIn_Tests\` directory and execute the following command:
 
-`
-$ dotnet test
-`
+```
+ dotnet test
+```
+
+## Viewing Code Coverage with Coverlet
+
+This project uses [Coverlet](https://github.com/tonerdo/coverlet) 
+to generate a test coverage report. 
+
+### Getting Started
+
+First, open a Windows Powershell terminal.
+
+Then navigate into the `PluggedIn_Tests/` directory.
+
+Finally, run the following command to install Coverlet:
+
+```
+dotnet add package coverlet.msbuild --version 2.1.0
+```
+
+Once completed, the Coverlet package has been added to this
+project.
+
+### Generate Coverage Report
+
+To generate a test coverage report on the entire repository,
+navigate to the `PluggedIn_Tests/` directory and execute 
+the command:
+
+```
+dotnet test /p:CollectCoverage=true
+```
+
+This will run a coverage test that includes all sub-directories 
+in the `server/` directory. Some of these sub-directories, such
+as `Migrations/`, `wwwroot`, and `obj`, are not being tested
+in our unit tests and should be excluded. 
+
+To generate a coverage report for the relevent parts of this
+project, navigate to the `PluggedIn_Test/` directory and 
+execute the following command:
+
+```
+./coverageReport.ps1
+```
+
+This will print a report to the console, and store the 
+information in a file called `coverage.json`.
+
+#### Keep In Mind
+
+If not all of the tests are passing, then Coverlet will not be 
+able to generate a report. It is recommended that the
+failing tests be fixed rather than simply removed as they will
+not count toward the test coverage percentage if they are 
+commented out or deleted.
