@@ -246,7 +246,7 @@ namespace server.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View("Login");
         }
 
         public IActionResult Logout()
