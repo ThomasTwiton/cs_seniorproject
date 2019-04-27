@@ -124,8 +124,8 @@
                             {
                                 <tr>
                                     <td>@Model.AuditionList[i].Instrument_Name</td>
-                                    <td>@Model.AuditionList[i].Open_Date</td>
-                                    <td>@Model.AuditionList[i].Closed_Date</td>
+                                    <td>@Model.AuditionList[i].Open_Date.ToString("M/d/yyyy")</td>
+                                    <td>@Model.AuditionList[i].Closed_Date.ToString("M/d/yyyy")</td>
                                     <td><span title="View Applicants" className="glyphicon glyphicon-eye-open pointer" onClick={() => getProfiles(@Model.AuditionList[i].AuditionId)}></span></td>
                                     <td><span title="Edit Audition" className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
                                     <td><span title="Delete Audition" className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
@@ -169,8 +169,8 @@
                             {
                                 <tr>
                                     <td>@Model.AuditionList[i].Instrument_Name</td>
-                                    <td>@Model.AuditionList[i].Open_Date</td>
-                                    <td>@Model.AuditionList[i].Closed_Date</td>
+                                    <td>@Model.AuditionList[i].Open_Date.ToString("M/d/yyyy")</td>
+                                    <td>@Model.AuditionList[i].Closed_Date.ToString("M/d/yyyy")</td>
                                     <td><span title="View Applicants" className="glyphicon glyphicon-eye-open pointer" onClick={() => getProfiles(@Model.AuditionList[i].AuditionId)}></span></td>
                                     <td><span title="Edit Audition" className="glyphicon glyphicon-pencil pointer" onClick={() => editAud(@Model.AuditionList[i].AuditionId)}></span></td>
                                     <td><span title="Delete Audition" className="glyphicon glyphicon-remove pointer" onClick={() => delAud(@Model.AuditionList[i].AuditionId)}></span></td>
