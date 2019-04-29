@@ -272,22 +272,15 @@ namespace server.Controllers
 
             ProfileModel model = new ProfileModel();
 
-            /* The following lines are the previous way in which we looked up a profile
-             *   from the user id that was provided in the url. We have switched over to
-             *   looking up a profile from the profile id provided. 
-             *   
-             * var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
-             * model.User = user;
-             * //join the user and profile tables to get the profile
-             * var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.UserId == id).ToList()[0];
-             * var profile = user_with_profile.Profile.ToList()[0];
-             * 
-             * We still need to make a way to get the viewer's information when looking at
-             *   a page. Currently, we are hardcoding that information for demonstration 
-             *   purposes as either UserId = 1 or isOwner = true;
-             */
+            var profiles = _context.Profiles.Where(u => u.ProfileId == id).ToList();
 
-            var profile = _context.Profiles.Where(u => u.ProfileId == id).ToList()[0];
+            // If a profile with the given id doesn't exist
+            if (profiles.Count <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var profile = profiles[0];
 
             model.Profile = profile;
 
@@ -345,7 +338,7 @@ namespace server.Controllers
 
             model.isLoggedIn = s.IsLoggedIn;
 
-            return View(model);
+            return View("Profile", model);
         }
 
         public IActionResult Ensemble(int? id)
