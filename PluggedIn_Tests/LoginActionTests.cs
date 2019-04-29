@@ -1,15 +1,14 @@
 ﻿using Moq;
 using Xunit;
 using System.Linq;
-using System.Text;
 using server.Models;
 using server.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+
 
 namespace PluggedIn_Tests
 {

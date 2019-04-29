@@ -822,7 +822,7 @@ namespace server.Controllers
 
         }
 
-        public async Task<IActionResult> Audition(int id)
+        public IActionResult Audition(int id)
         {
             SessionModel s = GetSessionInfo(Request);
 
@@ -830,7 +830,16 @@ namespace server.Controllers
             {
                 AuditionModel model = new AuditionModel();
 
-                var aud = _context.Auditions.Where(u => u.AuditionId == id).ToList()[0];
+                var audList = _context.Auditions.Where(u => u.AuditionId == id).ToList();
+
+                // If an audition doesn't exist
+                if (audList.Count <= 0)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                var aud = audList[0];
+
                 var ens = _context.Ensembles.Where(u => u.EnsembleId == aud.EnsembleId).ToList()[0];
 
                 aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
@@ -865,7 +874,7 @@ namespace server.Controllers
                 model.Ensemble = ens;
                 model.ViewType = "ensemble";
 
-                return View(model);
+                return View("Audition", model);
 
             }
 
