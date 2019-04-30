@@ -119,16 +119,6 @@ namespace server.Controllers
             return View("Index");
         }
 
-        public IActionResult Privacy()
-        {
-            /* This action method is the page that displays our privacy
-             *  policy. Currently, it has no view and is not accessible
-             *  from links on our site, however, people can type the url
-             *  in.
-             */
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
