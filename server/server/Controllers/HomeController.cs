@@ -477,7 +477,14 @@ namespace server.Controllers
             SessionModel s = GetSessionInfo(Request);
             VenueModel model = new VenueModel();
 
-            var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
+            var venues = _context.Venues.Where(u => u.VenueId == id).ToList();
+
+            if (venues.Count <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var venue = venues[0];
 
             HashSet<Post> posts = new HashSet<Post>();
             foreach (Post post in _context.Posts.OrderByDescending(p=>p.PostId))
@@ -509,7 +516,7 @@ namespace server.Controllers
 
             model.isLoggedIn = s.IsLoggedIn;
 
-            return View(model);
+            return View("Venue", model);
         }
 
         [HttpPost]
