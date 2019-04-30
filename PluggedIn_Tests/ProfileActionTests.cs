@@ -589,7 +589,5 @@ namespace PluggedIn_Tests
             Assert.Equal("Profile", viewResult.ViewName);
             Assert.Equal(2, viewModel.Posts.Count);
         }
-
-
     }
 }
