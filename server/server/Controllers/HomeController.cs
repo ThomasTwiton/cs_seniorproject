@@ -371,7 +371,14 @@ namespace server.Controllers
              */
 
             //TO DO ON MONDAY: populate audition data in EnsembleModel by querying _context for all auditions which have the given ensemble id
-            var ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).ToList()[0];
+            var ensembles = _context.Ensembles.Where(u => u.EnsembleId == id).ToList();
+
+            if (ensembles.Count <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var ensemble = ensembles[0];
 
             model.Ensemble = ensemble;
 
@@ -462,7 +469,7 @@ namespace server.Controllers
 
             model.isLoggedIn = s.IsLoggedIn;
 
-            return View(model);
+            return View("Ensemble", model);
         }
 
         public IActionResult Venue(int? id)
