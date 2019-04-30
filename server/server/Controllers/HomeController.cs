@@ -893,7 +893,12 @@ namespace server.Controllers
                 
                 Profile profile = _context.Profiles.Where(p => p.UserId == s.UserID).First();
                 application.ProfileId = profile.ProfileId;
-                _context.Add(application);
+
+                if(_context.AuditionProfiles.Count(ap => ap.AuditionId == application.AuditionId && ap.ProfileId==application.ProfileId) == 0)
+                {
+                    _context.Add(application);
+                }
+                
                 await _context.SaveChangesAsync();
                
 
