@@ -1443,6 +1443,8 @@ namespace server.Controllers
 
         }
         
+        //type is an unused paramater at the moment
+        //The original idea was that a user could specify what they were searching for (looking for auditions, gigs, profiles, etc...)
          public IActionResult Search(string type, string query)
         {
             Console.WriteLine("***");
