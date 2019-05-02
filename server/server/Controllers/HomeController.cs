@@ -890,22 +890,38 @@ namespace server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ApplyAudition(AuditionModel model) {
+        public IActionResult ApplyAudition(AuditionModel model) {
             SessionModel s = GetSessionInfo(Request);
 
             if (s.IsLoggedIn) {
                 AuditionProfile application = new AuditionProfile();
-                application.AuditionId = model.Audition.AuditionId;
-                
-                Profile profile = _context.Profiles.Where(p => p.UserId == s.UserID).First();
-                application.ProfileId = profile.ProfileId;
+
+                List<Audition> auds = _context.Auditions.Where(a => a.AuditionId == model.Audition.AuditionId).ToList();
+
+                if (auds.Count < 1)
+                {
+                    // If there is not an audition with the given ID
+                    return RedirectToAction("Index");
+                }
+
+                application.AuditionId = auds[0].AuditionId;
+
+                List<Profile> profiles = _context.Profiles.Where(p => p.UserId == s.UserID).ToList();
+
+                if (profiles.Count < 1)
+                {
+                    // If there is not a profile with the given ID
+                    return RedirectToAction("Index");
+                }
+
+                application.ProfileId = profiles[0].ProfileId;
 
                 if(_context.AuditionProfiles.Count(ap => ap.AuditionId == application.AuditionId && ap.ProfileId==application.ProfileId) == 0)
                 {
                     _context.Add(application);
                 }
                 
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                
 
                 return RedirectToAction("Audition", new { id = model.Audition.AuditionId });
