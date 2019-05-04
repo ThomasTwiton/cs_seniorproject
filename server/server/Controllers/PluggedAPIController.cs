@@ -253,7 +253,7 @@ namespace server.Controllers
                 return NoContent();
             }
 
-            var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
+            var profile = _context.Profiles.Where(p => p.ProfileId == int.Parse(applicant.ProfileId)).ToList()[0];
 
             ProfileEnsemble profens = new ProfileEnsemble();
             profens.Start_Date = System.DateTime.Now;

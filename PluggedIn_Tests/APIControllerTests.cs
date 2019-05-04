@@ -575,7 +575,7 @@ namespace PluggedIn_Tests
             Assert.True(System.DateTime.Now < audition.Closed_Date);
 
         }
-        /*
+        
         [Fact]
         public void addProfile_WhenCalled_AddsProfile()
         {
@@ -603,11 +603,189 @@ namespace PluggedIn_Tests
                 new Profile { ProfileId = 13, First_Name = "Elwood", Last_Name = "Birch", UserId = 3 }
             }.AsQueryable();
 
-            var apData = new List<ProfileEnsemble>
+            List<ProfileEnsemble> addedProfileEnsembles = new List<ProfileEnsemble>();
+
+            // Create a Mocked DB set
+            var mockProfiles = new Mock<DbSet<Profile>>();
+            mockProfiles.As<IQueryable<Profile>>().Setup(u => u.Provider).Returns(pData.Provider);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.Expression).Returns(pData.Expression);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.ElementType).Returns(pData.ElementType);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.GetEnumerator()).Returns(pData.GetEnumerator());
+
+            var mockEnsembles = new Mock<DbSet<Ensemble>>();
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(u => u.Provider).Returns(eData.Provider);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.Expression).Returns(eData.Expression);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.ElementType).Returns(eData.ElementType);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.GetEnumerator()).Returns(eData.GetEnumerator());
+
+            var mockAuditions = new Mock<DbSet<Audition>>();
+            mockAuditions.As<IQueryable<Audition>>().Setup(u => u.Provider).Returns(audData.Provider);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.Expression).Returns(audData.Expression);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.ElementType).Returns(audData.ElementType);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.GetEnumerator()).Returns(audData.GetEnumerator());
+
+            // Create a Mocked DB
+            var mockDB = new Mock<PluggedContext>();
+
+            mockDB.Setup(x => x.Add(It.IsAny<ProfileEnsemble>())).Callback<ProfileEnsemble>(addedProfileEnsembles.Add);
+
+            // Set up necessary Mocked DB methods
+            mockDB.Setup(x => x.Profiles)
+                .Returns(mockProfiles.Object);
+
+            mockDB.Setup(x => x.Auditions)
+                .Returns(mockAuditions.Object);
+
+            mockDB.Setup(x => x.Ensembles)
+                .Returns(mockEnsembles.Object);
+
+            //mockDB.Setup(x => x.ProfileEnsembles.Find(It.IsAny<int>())).Returns(mockProfileEnsembles.Object.FirstOrDefault(a => a.ProfileId == 13));
+
+            var controller = new PluggedAPIController(mockDB.Object);
+
+
+            var addprof = new server.Controllers.PluggedAPIController.AddProfiletoEnsemble();
+            addprof.EnsembleId = "1";
+            addprof.name = "Elwood Birch";
+
+
+            //Act
+
+            controller.addProfile(addprof);
+
+            //Assert
+
+            ProfileEnsemble addedProfile = addedProfileEnsembles.Last();
+            Assert.Equal(1, addedProfile.EnsembleId);
+            Assert.Equal(13, addedProfile.ProfileId);
+            //var audition = audData.Where()
+            //Assert.NotNull(audition);
+            //Assert.Equal("Hello", audition.Audition_Description);
+
+        }
+
+        [Fact]
+        public void addApplicant_WhenCalled_AddsApplicant()
+        {
+            //get people who have applied and not those who haven't 
+
+            //ensemble, list of audition, auditionprofile
+
+            //Arrange
+            var eData = new List<Ensemble>
             {
-                new ProfileEnsemble{EnsembleId = 2, ProfileId = 11},
-                new ProfileEnsemble{EnsembleId = 3, ProfileId = 13}
+                new Ensemble { EnsembleId = 1, Ensemble_Name = "Luther Dan", UserId = 5}
+
             }.AsQueryable();
+
+            var audData = new List<Audition>
+            {
+                new Audition {AuditionId = 2, EnsembleId = 1, InstrumentId = 3, Audition_Description = "Goodbye"},
+                new Audition {AuditionId = 3}
+            }.AsQueryable();
+
+            var pData = new List<Profile>
+            {
+                new Profile { ProfileId = 11, First_Name = "Elijas", Last_Name = "Reshmi", UserId = 1},
+                new Profile { ProfileId = 12, First_Name = "Eugenia", Last_Name = "Cornelius", UserId = 2},
+                new Profile { ProfileId = 13, First_Name = "Elwood", Last_Name = "Birch", UserId = 3 }
+            }.AsQueryable();
+
+            List<AuditionProfile> addedAuditionProfiles = new List<AuditionProfile>();
+
+            // Create a Mocked DB set
+            var mockProfiles = new Mock<DbSet<Profile>>();
+            mockProfiles.As<IQueryable<Profile>>().Setup(u => u.Provider).Returns(pData.Provider);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.Expression).Returns(pData.Expression);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.ElementType).Returns(pData.ElementType);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.GetEnumerator()).Returns(pData.GetEnumerator());
+
+            var mockEnsembles = new Mock<DbSet<Ensemble>>();
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(u => u.Provider).Returns(eData.Provider);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.Expression).Returns(eData.Expression);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.ElementType).Returns(eData.ElementType);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.GetEnumerator()).Returns(eData.GetEnumerator());
+
+            var mockAuditions = new Mock<DbSet<Audition>>();
+            mockAuditions.As<IQueryable<Audition>>().Setup(u => u.Provider).Returns(audData.Provider);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.Expression).Returns(audData.Expression);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.ElementType).Returns(audData.ElementType);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.GetEnumerator()).Returns(audData.GetEnumerator());
+
+            // Create a Mocked DB
+            var mockDB = new Mock<PluggedContext>();
+
+            mockDB.Setup(x => x.Add(It.IsAny<AuditionProfile>())).Callback<AuditionProfile>(addedAuditionProfiles.Add);
+
+            // Set up necessary Mocked DB methods
+            mockDB.Setup(x => x.Profiles)
+                .Returns(mockProfiles.Object);
+
+            mockDB.Setup(x => x.Auditions)
+                .Returns(mockAuditions.Object);
+
+            mockDB.Setup(x => x.Ensembles)
+                .Returns(mockEnsembles.Object);
+
+            //mockDB.Setup(x => x.ProfileEnsembles.Find(It.IsAny<int>())).Returns(mockProfileEnsembles.Object.FirstOrDefault(a => a.ProfileId == 13));
+
+            var controller = new PluggedAPIController(mockDB.Object);
+
+
+            var addprof = new server.Controllers.PluggedAPIController.AddProfiletoAudition();
+            addprof.AuditionId = "2";
+            addprof.ProfileId = "13";
+
+
+            //Act
+
+            controller.addApplicant(addprof);
+
+            //Assert
+
+            AuditionProfile addedProfile = addedAuditionProfiles.Last();
+            Assert.Equal(2, addedProfile.AuditionId);
+            Assert.Equal(13, addedProfile.ProfileId);
+            //var audition = audData.Where()
+            //Assert.NotNull(audition);
+            //Assert.Equal("Hello", audition.Audition_Description);
+
+        }
+
+        [Fact]
+        public void acceptNewApplicant_WhenCalledOnNewProfile_AddsApplicanttoEnsemble()
+        {
+            //get people who have applied and not those who haven't 
+
+            //ensemble, list of audition, auditionprofile
+
+            //Arrange
+            var eData = new List<Ensemble>
+            {
+                new Ensemble { EnsembleId = 1, Ensemble_Name = "Luther Dan", UserId = 5}
+
+            }.AsQueryable();
+
+            var audData = new List<Audition>
+            {
+                new Audition {AuditionId = 2, EnsembleId = 1, InstrumentId = 3, Audition_Description = "Goodbye"},
+                new Audition {AuditionId = 3}
+            }.AsQueryable();
+
+            var pData = new List<Profile>
+            {
+                new Profile { ProfileId = 11, First_Name = "Elijas", Last_Name = "Reshmi", UserId = 1},
+                new Profile { ProfileId = 12, First_Name = "Eugenia", Last_Name = "Cornelius", UserId = 2},
+                new Profile { ProfileId = 13, First_Name = "Elwood", Last_Name = "Birch", UserId = 3 }
+            }.AsQueryable();
+
+            var peData = new List<ProfileEnsemble>
+            {
+                new ProfileEnsemble{EnsembleId = 1, ProfileId = 11},
+                new ProfileEnsemble{EnsembleId = 1, ProfileId = 12}
+            }.AsQueryable();
+
+            List<ProfileEnsemble> addedProfileEnsembles = new List<ProfileEnsemble>();
 
             // Create a Mocked DB set
             var mockProfiles = new Mock<DbSet<Profile>>();
@@ -629,12 +807,15 @@ namespace PluggedIn_Tests
             mockAuditions.As<IQueryable<Audition>>().Setup(m => m.GetEnumerator()).Returns(audData.GetEnumerator());
 
             var mockProfileEnsembles = new Mock<DbSet<ProfileEnsemble>>();
-            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(u => u.Provider).Returns(apData.Provider);
-            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.Expression).Returns(apData.Expression);
-            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.ElementType).Returns(apData.ElementType);
-            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.GetEnumerator()).Returns(apData.GetEnumerator());
+            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(u => u.Provider).Returns(peData.Provider);
+            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.Expression).Returns(peData.Expression);
+            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.ElementType).Returns(peData.ElementType);
+            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.GetEnumerator()).Returns(peData.GetEnumerator());
+
             // Create a Mocked DB
             var mockDB = new Mock<PluggedContext>();
+
+            mockDB.Setup(x => x.Add(It.IsAny<ProfileEnsemble>())).Callback<ProfileEnsemble>(addedProfileEnsembles.Add);
 
             // Set up necessary Mocked DB methods
             mockDB.Setup(x => x.Profiles)
@@ -649,36 +830,133 @@ namespace PluggedIn_Tests
             mockDB.Setup(x => x.ProfileEnsembles)
                 .Returns(mockProfileEnsembles.Object);
 
-            mockDB.Setup(x => x.ProfileEnsembles.Find(It.IsAny<int>())).Returns(mockProfileEnsembles.Object.FirstOrDefault(a => a.ProfileId == 13));
+            //mockDB.Setup(x => x.ProfileEnsembles.Find(It.IsAny<int>())).Returns(mockProfileEnsembles.Object.FirstOrDefault(a => a.ProfileId == 13));
 
             var controller = new PluggedAPIController(mockDB.Object);
 
 
-            var addprof = new server.Controllers.PluggedAPIController.AddProfiletoEnsemble();
+            var addprof = new server.Controllers.PluggedAPIController.AcceptApplicant();
+            addprof.AuditionId = "2";
+            addprof.ProfileId = "13";
             addprof.EnsembleId = "1";
-            addprof.name = "Elwood Birch";
 
 
             //Act
 
-            controller.addProfile(addprof);
+            controller.acceptApplicant(addprof);
 
             //Assert
 
-
-            var profilens = mockDB.Object.ProfileEnsembles.ToList();
-            foreach (ProfileEnsemble aud in profilens)
-            {
-                if (aud.EnsembleId == 1 && aud.ProfileId == 13)
-                {
-                    Assert.True(2+2==4);
-                }
-            }
+            ProfileEnsemble addedProfile = addedProfileEnsembles.Last();
+            Assert.Equal(1, addedProfile.EnsembleId);
+            Assert.Equal(13, addedProfile.ProfileId);
             //var audition = audData.Where()
             //Assert.NotNull(audition);
             //Assert.Equal("Hello", audition.Audition_Description);
 
         }
-        */
+
+        [Fact]
+        public void acceptNewApplicant_WhenCalledOnOldProfile_ReturnsNoContent()
+        {
+            //get people who have applied and not those who haven't 
+
+            //ensemble, list of audition, auditionprofile
+
+            //Arrange
+            var eData = new List<Ensemble>
+            {
+                new Ensemble { EnsembleId = 1, Ensemble_Name = "Luther Dan", UserId = 5}
+
+            }.AsQueryable();
+
+            var audData = new List<Audition>
+            {
+                new Audition {AuditionId = 2, EnsembleId = 1, InstrumentId = 3, Audition_Description = "Goodbye"},
+                new Audition {AuditionId = 3}
+            }.AsQueryable();
+
+            var pData = new List<Profile>
+            {
+                new Profile { ProfileId = 11, First_Name = "Elijas", Last_Name = "Reshmi", UserId = 1},
+                new Profile { ProfileId = 12, First_Name = "Eugenia", Last_Name = "Cornelius", UserId = 2},
+                new Profile { ProfileId = 13, First_Name = "Elwood", Last_Name = "Birch", UserId = 3 }
+            }.AsQueryable();
+
+            var peData = new List<ProfileEnsemble>
+            {
+                new ProfileEnsemble{EnsembleId = 1, ProfileId = 11},
+                new ProfileEnsemble{EnsembleId = 1, ProfileId = 12}
+            }.AsQueryable();
+
+            List<ProfileEnsemble> addedProfileEnsembles = new List<ProfileEnsemble>();
+
+            // Create a Mocked DB set
+            var mockProfiles = new Mock<DbSet<Profile>>();
+            mockProfiles.As<IQueryable<Profile>>().Setup(u => u.Provider).Returns(pData.Provider);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.Expression).Returns(pData.Expression);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.ElementType).Returns(pData.ElementType);
+            mockProfiles.As<IQueryable<Profile>>().Setup(m => m.GetEnumerator()).Returns(pData.GetEnumerator());
+
+            var mockEnsembles = new Mock<DbSet<Ensemble>>();
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(u => u.Provider).Returns(eData.Provider);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.Expression).Returns(eData.Expression);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.ElementType).Returns(eData.ElementType);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.GetEnumerator()).Returns(eData.GetEnumerator());
+
+            var mockAuditions = new Mock<DbSet<Audition>>();
+            mockAuditions.As<IQueryable<Audition>>().Setup(u => u.Provider).Returns(audData.Provider);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.Expression).Returns(audData.Expression);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.ElementType).Returns(audData.ElementType);
+            mockAuditions.As<IQueryable<Audition>>().Setup(m => m.GetEnumerator()).Returns(audData.GetEnumerator());
+
+            var mockProfileEnsembles = new Mock<DbSet<ProfileEnsemble>>();
+            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(u => u.Provider).Returns(peData.Provider);
+            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.Expression).Returns(peData.Expression);
+            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.ElementType).Returns(peData.ElementType);
+            mockProfileEnsembles.As<IQueryable<ProfileEnsemble>>().Setup(m => m.GetEnumerator()).Returns(peData.GetEnumerator());
+
+            // Create a Mocked DB
+            var mockDB = new Mock<PluggedContext>();
+
+            mockDB.Setup(x => x.Add(It.IsAny<ProfileEnsemble>())).Callback<ProfileEnsemble>(addedProfileEnsembles.Add);
+
+            // Set up necessary Mocked DB methods
+            mockDB.Setup(x => x.Profiles)
+                .Returns(mockProfiles.Object);
+
+            mockDB.Setup(x => x.Auditions)
+                .Returns(mockAuditions.Object);
+
+            mockDB.Setup(x => x.Ensembles)
+                .Returns(mockEnsembles.Object);
+
+            mockDB.Setup(x => x.ProfileEnsembles)
+                .Returns(mockProfileEnsembles.Object);
+
+            //mockDB.Setup(x => x.ProfileEnsembles.Find(It.IsAny<int>())).Returns(mockProfileEnsembles.Object.FirstOrDefault(a => a.ProfileId == 13));
+
+            var controller = new PluggedAPIController(mockDB.Object);
+
+
+            var addprof = new server.Controllers.PluggedAPIController.AcceptApplicant();
+            addprof.AuditionId = "2";
+            addprof.ProfileId = "11";
+            addprof.EnsembleId = "1";
+
+
+            //Act
+
+            Task<IActionResult> result = controller.acceptApplicant(addprof);
+
+            //Assert
+
+            //ProfileEnsemble addedProfile = addedProfileEnsembles.Last();
+            Assert.IsType<Microsoft.AspNetCore.Mvc.NoContentResult>(result.Result);
+            //var audition = audData.Where()
+            //Assert.NotNull(audition);
+            //Assert.Equal("Hello", audition.Audition_Description);
+
+        }
     }
 }
