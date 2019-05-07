@@ -227,12 +227,15 @@ function PostMedia(props) {
         );
     } else if (mediaType === "audio") {
         media = (
-            <a href={props.media.url}>Listen!</a>
-            //<audio src={props.media.url}/>
+            <div className="col-xs-11">
+                <a className="resume" href={props.media.url}><span className="glyphicon glyphicon-download"></span> Resume</a>
+            </div>
         );
     } else if (mediaType === "video") {
         media = (
-            <a href={props.media.url}>Watch!</a>
+            <div className="col-xs-11">
+                <a className="resume" href={props.media.url}><span className="glyphicon glyphicon-download"></span> Watch!</a>
+            </div>
             //<video src={props.media.url} />
         );
     } else if (mediaType === "resume") {
