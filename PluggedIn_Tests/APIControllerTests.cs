@@ -959,7 +959,113 @@ namespace PluggedIn_Tests
 
         }
 
-        /*
+
+        [Fact]
+        public void getOpenAuditions_WhenCalled_ReturnsOpenAuditions()
+        {
+            //get people who have applied and not those who haven't 
+
+            //ensemble, list of audition, auditionprofile
+            //Arrange
+            var eData = new List<Ensemble>
+            {
+                new Ensemble { EnsembleId = 1, Ensemble_Name = "Luther Dan", UserId = 5, Audition=new List<Audition>{new Audition {AuditionId = 2, EnsembleId = 1, InstrumentId = 3, Audition_Description = "Goodbye", Open_Date = DateTime.ParseExact("2019-01-20", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), Closed_Date = DateTime.ParseExact("2019-01-21", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)}, } },
+                new Ensemble { EnsembleId = 2, Ensemble_Name = "Derp Group", UserId = 6, Audition=new List<Audition>{new Audition {AuditionId = 3, EnsembleId = 2, InstrumentId = 2, Audition_Description = "loop", Open_Date = DateTime.ParseExact("2019-01-20", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), Closed_Date = DateTime.ParseExact("2019-01-20", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)}, new Audition {AuditionId = 4, EnsembleId = 2, InstrumentId = 5, Audition_Description = "loop2", Open_Date = DateTime.ParseExact("2018-02-12", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), Closed_Date = DateTime.ParseExact("2020-01-20", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)} } }
+                //new Ensemble { EnsembleId = 1, Ensemble_Name = "Luther Dan", UserId = 5, Audition=new List<Audition>{new Audition()} },
+                //new Ensemble { EnsembleId = 2, Ensemble_Name = "Derp Group", UserId = 6, Audition=new List<Audition>{new Audition(), new Audition()} }
+
+            }.AsQueryable();
+
+            // Create a Mocked DB set
+
+            var mockEnsembles = new Mock<DbSet<Ensemble>>();
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(u => u.Provider).Returns(eData.Provider);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.Expression).Returns(eData.Expression);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.ElementType).Returns(eData.ElementType);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.GetEnumerator()).Returns(eData.GetEnumerator());
+
+
+            // Create a Mocked DB
+            var mockDB = new Mock<PluggedContext>();
+
+            // Set up necessary Mocked DB methods
+
+            mockDB.Setup(x => x.Ensembles)
+                .Returns(mockEnsembles.Object);
+
+            mockDB.Setup(x => x.Ensembles.Find(It.IsAny<int>())).Returns(mockEnsembles.Object.FirstOrDefault(a => a.EnsembleId == 2));
+            //mockDB.Setup(x => x.ProfileEnsembles.Find(It.IsAny<int>())).Returns(mockProfileEnsembles.Object.FirstOrDefault(a => a.ProfileId == 13));
+
+            var controller = new PluggedAPIController(mockDB.Object);
+
+
+
+            //Act
+
+            Task<ActionResult<IEnumerable<Audition>>> result = controller.getOpenAuditions(2);
+
+            //Assert
+
+            var answer = result.Result.Value.ToList();
+
+            Assert.IsType<List<server.Models.Audition>>(answer);
+            Assert.Equal(1, answer.Count);
+            Assert.Equal(4, answer[0].AuditionId);
+        }
+
+        [Fact]
+        public void getClosedAuditions_WhenCalled_ReturnsClosedAuditions()
+        {
+            //get people who have applied and not those who haven't 
+
+            //ensemble, list of audition, auditionprofile
+            //Arrange
+            var eData = new List<Ensemble>
+            {
+                new Ensemble { EnsembleId = 1, Ensemble_Name = "Luther Dan", UserId = 5, Audition=new List<Audition>{new Audition {AuditionId = 2, EnsembleId = 1, InstrumentId = 3, Audition_Description = "Goodbye", Open_Date = DateTime.ParseExact("2019-01-20", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), Closed_Date = DateTime.ParseExact("2019-01-21", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)}, } },
+                new Ensemble { EnsembleId = 2, Ensemble_Name = "Derp Group", UserId = 6, Audition=new List<Audition>{new Audition {AuditionId = 3, EnsembleId = 2, InstrumentId = 2, Audition_Description = "loop", Open_Date = DateTime.ParseExact("2019-01-20", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), Closed_Date = DateTime.ParseExact("2019-01-20", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)}, new Audition {AuditionId = 4, EnsembleId = 2, InstrumentId = 5, Audition_Description = "loop2", Open_Date = DateTime.ParseExact("2018-02-12", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), Closed_Date = DateTime.ParseExact("2020-01-20", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)} } }
+                //new Ensemble { EnsembleId = 1, Ensemble_Name = "Luther Dan", UserId = 5, Audition=new List<Audition>{new Audition()} },
+                //new Ensemble { EnsembleId = 2, Ensemble_Name = "Derp Group", UserId = 6, Audition=new List<Audition>{new Audition(), new Audition()} }
+
+            }.AsQueryable();
+
+            // Create a Mocked DB set
+
+            var mockEnsembles = new Mock<DbSet<Ensemble>>();
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(u => u.Provider).Returns(eData.Provider);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.Expression).Returns(eData.Expression);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.ElementType).Returns(eData.ElementType);
+            mockEnsembles.As<IQueryable<Ensemble>>().Setup(m => m.GetEnumerator()).Returns(eData.GetEnumerator());
+
+
+            // Create a Mocked DB
+            var mockDB = new Mock<PluggedContext>();
+
+            // Set up necessary Mocked DB methods
+
+            mockDB.Setup(x => x.Ensembles)
+                .Returns(mockEnsembles.Object);
+
+            mockDB.Setup(x => x.Ensembles.Find(It.IsAny<int>())).Returns(mockEnsembles.Object.FirstOrDefault(a => a.EnsembleId == 2));
+            //mockDB.Setup(x => x.ProfileEnsembles.Find(It.IsAny<int>())).Returns(mockProfileEnsembles.Object.FirstOrDefault(a => a.ProfileId == 13));
+
+            var controller = new PluggedAPIController(mockDB.Object);
+
+
+
+            //Act
+
+            Task<ActionResult<IEnumerable<Audition>>> result = controller.getClosedAuditions(2);
+
+            //Assert
+
+            var answer = result.Result.Value.ToList();
+
+            Assert.IsType<List<server.Models.Audition>>(answer);
+            Assert.Equal(1, answer.Count);
+            Assert.Equal(3, answer[0].AuditionId);
+        }
+
         [Fact]
         public void getAllAuditions_WhenCalled_ReturnsAllAuditions()
         {
@@ -993,7 +1099,7 @@ namespace PluggedIn_Tests
             mockDB.Setup(x => x.Ensembles)
                 .Returns(mockEnsembles.Object);
 
-
+            mockDB.Setup(x => x.Ensembles.Find(It.IsAny<int>())).Returns(mockEnsembles.Object.FirstOrDefault(a => a.EnsembleId == 2));
             //mockDB.Setup(x => x.ProfileEnsembles.Find(It.IsAny<int>())).Returns(mockProfileEnsembles.Object.FirstOrDefault(a => a.ProfileId == 13));
 
             var controller = new PluggedAPIController(mockDB.Object);
@@ -1006,11 +1112,14 @@ namespace PluggedIn_Tests
 
             //Assert
 
-            var answer = result;
+            var answer = result.Result.Value.ToList();
 
-
+            Assert.IsType<List<server.Models.Audition>>(answer);
+            Assert.Equal(2, answer.Count);
+            Assert.Equal(3, answer[0].AuditionId);
+            Assert.Equal(4, answer[1].AuditionId);
         }
-        */
+
         /*
         public void removeNoReturn(Object O)
         {
@@ -1119,7 +1228,7 @@ namespace PluggedIn_Tests
 
         }
         */
-    
+
 
 
     }
