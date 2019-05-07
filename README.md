@@ -1,5 +1,5 @@
 # PluggedIn
-PluggedIn is a social media network that connects musicans, 
+PluggedIn is a social media network that connects musicians, 
 ensembles, and venues making it easier to network and find 
 out about people, auditions, and gigs in your area. PluggedIn
 was created as a Senior Computer Science Project.
@@ -89,7 +89,7 @@ Studio, works really well with
 [Azure](https://azure.microsoft.com/en-us/). Other 
 options might be available, but your mileage may vary.
 
-Using Visual Studio you can easily deploy by:
+Using Visual Studio, you can easily deploy by:
 * Make a free account with [Azure](https://azure.microsoft.com) 
 * In Powershell, navigate into the server folder
 * Run the script `.\deployscript.ps1`

@@ -151,7 +151,7 @@ in the `server/` directory. Some of these sub-directories, such
 as `Migrations/`, `wwwroot`, and `obj`, are not being tested
 in our unit tests and should be excluded. 
 
-To generate a coverage report for the relevent parts of this
+To generate a coverage report for the relevant parts of this
 project, navigate to the `PluggedIn_Test/` directory and 
 execute the following command:
 
