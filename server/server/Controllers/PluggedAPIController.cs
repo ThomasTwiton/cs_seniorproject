@@ -33,7 +33,7 @@ namespace server.Controllers
             return await _context.Posts.ToListAsync();
         }
 
-        
+
         //Load all of the Profiles who have applied for a given audition (id)
         [HttpGet("applicants/{id}")]
         public async Task<ActionResult<IEnumerable<Profile>>> GetApplicants(int id)
@@ -42,7 +42,7 @@ namespace server.Controllers
 
             var applicantProfiles = new List<Profile>();
 
-            foreach(AuditionProfile elem in auditionprofile)
+            foreach (AuditionProfile elem in auditionprofile)
             {
                 applicantProfiles.Add(_context.Profiles.Find(elem.ProfileId));
             }
@@ -62,7 +62,6 @@ namespace server.Controllers
         [HttpPost("transferOwner")]
         public async Task<ActionResult<TransferModel>> transferOwner(TransferOwner murderChildren)
         {
-
             var profiles = _context.Profiles.Include("User").Where(p => p.User.Email == murderChildren.Email).ToList();
 
             /* If there are more than one person with the same first and last name,
@@ -128,7 +127,7 @@ namespace server.Controllers
         [HttpPost("auditions/{id}")]
         public async Task<IActionResult> PostAudition(int id, ChangeAudition aud)
         {
-            var audition =  _context.Auditions.Find(id);
+            var audition = _context.Auditions.Find(id);
             audition.Audition_Description = aud.audition_Description;
             audition.Audition_Location = aud.audition_Location;
             audition.Closed_Date = DateTime.ParseExact(aud.closed_Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
@@ -234,7 +233,7 @@ namespace server.Controllers
             var name = addition.name.Split();
             var Profiles = _context.Profiles.Where(p => p.First_Name == name[0] && p.Last_Name == name[1]).ToList();
 
-            foreach(Profile profile in Profiles)
+            foreach (Profile profile in Profiles)
             {
                 ProfileEnsemble profens = new ProfileEnsemble();
                 profens.Start_Date = System.DateTime.Now;
@@ -292,7 +291,7 @@ namespace server.Controllers
                 return NoContent();
             }
 
-            var profile = _context.Profiles.Find(int.Parse(applicant.ProfileId));
+            var profile = _context.Profiles.Where(p => p.ProfileId == int.Parse(applicant.ProfileId)).ToList()[0];
 
             ProfileEnsemble profens = new ProfileEnsemble();
             profens.Start_Date = System.DateTime.Now;
@@ -382,7 +381,6 @@ namespace server.Controllers
         {
             return new string[] { "value1", "value2" };
         }
-
         // GET api/<controller>/5
         [HttpGet("{id}")]
         public string Get(int id)
