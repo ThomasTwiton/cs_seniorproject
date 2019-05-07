@@ -1390,6 +1390,7 @@ namespace server.Controllers
                         img_extensions.Add("jpg");
                         img_extensions.Add("gif");
                         audio_extensions.Add("mp3");
+                        audio_extensions.Add("wav");
                         video_extensions.Add("mp4");
                         video_extensions.Add("mov");
                         resume_extensions.Add("pdf");
