@@ -53,9 +53,9 @@ function DetailRow(props) {
                         <div className="row">
                             <span className="glyphicon glyphicon-map-marker"></span> {props.profile.loc}
                         </div>
-                        <div className="row instruments">
+                        {/*<div className="row instruments">
                             <b>Instruments:</b> 
-                        </div>
+                        </div>*/}
                     </div>
 
                     <div className="col-xs-5">
