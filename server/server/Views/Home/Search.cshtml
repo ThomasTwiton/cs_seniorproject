@@ -35,6 +35,7 @@ Model.VenueCount
                 @if (sel == 0)
                 {
                     <a id="navaud" class="selected" onclick="show('audquery')">Auditions (@Model.AuditionCount)</a>
+                    <script type="text/javascript">window.onload = function () { show("audquery") };</script>
                 }
                 else
                 {
@@ -45,6 +46,7 @@ Model.VenueCount
                 @if (sel == 1)
                 {
                     <a id="navgig" class="selected" onclick="show('gigquery')">Gigs (@Model.GigCount)</a>
+                    <script type="text/javascript">window.onload = function () { show("gigquery") };</script>
                 }
                 else
                 {
@@ -55,6 +57,7 @@ Model.VenueCount
                 @if (sel == 2)
                 {
                     <a id="navprof" class="selected" onclick="show('profquery')">Profiles (@Model.ProfileCount)</a>
+                    <script type="text/javascript">window.onload = function () { show("profquery") };</script>
                 }
                 else
                 {
@@ -65,6 +68,7 @@ Model.VenueCount
                 @if (sel == 3)
                 {
                     <a id="navens" class="selected" onclick="show('ensquery')">Ensembles (@Model.EnsembleCount)</a>
+                    <script type="text/javascript">window.onload = function () { show("ensquery") };</script>
                 }
                 else
                 {
@@ -75,6 +79,7 @@ Model.VenueCount
                 @if (sel == 4)
                 {
                     <a id="navven" class="selected" onclick="show('venquery')">Venues (@Model.VenueCount)</a>
+                    <script type="text/javascript">window.onload = function () { show("venquery") };</script>
                 }
                 else
                 {
