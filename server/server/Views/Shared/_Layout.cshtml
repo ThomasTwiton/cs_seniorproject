@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     </environment>
     @RenderSection("Stylesheets", required: false)
 </head>
@@ -35,9 +35,9 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#"><span class="glyphicon glyphicon-bell"></span></a>
-                    </li>
+                    <!--<li>
+            <a href="#"><span class="glyphicon glyphicon-bell"></span></a>
+        </li>-->
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span></a>
 
@@ -52,12 +52,15 @@
                         </ul>
                     </li>
                 </ul>
+
                 <form class="navbar-form" id="search" role="search">
                     <div class="form-group">
-                        <input type="text" name="query" id="searchbar" class="form-control" placeholder="Search">
+                        @if (IsSectionDefined(name: "CustomSearch")) { @RenderSection("CustomSearch") }
+                        else { <input type="text" name="query" id="searchbar" class="form-control" placeholder="Search"> }
                         <button class="btn btn-primary" asp-action="Search"><span class="glyphicon glyphicon-search"></span></button>
                     </div>
                 </form>
+
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -68,7 +71,7 @@
         @RenderBody()
         <footer>
             <hr />
-            <p>&copy; 2018 - PluggedIn</p>
+            <p>&copy; @DateTime.Now.Year - PluggedIn</p>
         </footer>
     </div>
 

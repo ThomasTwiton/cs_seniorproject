@@ -9,8 +9,11 @@
 # We do not want the Migrations anymore.
 [Mm]igrations/
 
+# We do not need to put overage report files on Github
+/PluggedIn_Tests/coverage.json
+
 # We do not want uploaded media
-wwwroot/images/uploads/*
+*/wwwroot/images/uploads/*
 
 # User-specific files
 *.suo

@@ -91,6 +91,24 @@ form.row {
 }
 
 .mediaContainer img{
-    max-width:90%;
+    max-width: 90%;
     max-height: 400px;
+}
+
+.resume {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-weight: normal;
+    color: #FFF;
+    cursor: pointer;
+    border: 1px solid;
+    border-radius: 4px;
+    background-color: var(--bkg-red);
+}
+
+.resume:hover {
+    text-decoration: none;
+    background-color: #FFF;
+    color: var(--bkg-red);
 }

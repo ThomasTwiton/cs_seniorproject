@@ -107,19 +107,45 @@ function callAPI(apiStr, method, data, sucFun) {
     //  call this function not to hang and wait for a 
     //  server response.
 
-    $.ajax({
-        url: "../../api/PluggedAPI/" + apiStr,
-        method: method,
-        data: JSON.stringify(data),
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        success: (data) => sucFun(data),
-        error: (error) => console.log("AJAX Error:", error)
+    if (data == null) {
+        $.ajax({
+            url: "../../api/PluggedAPI/" + apiStr,
+            method: method,
+            contentType: "application/json;charset=utf-8",
+            success: (resData) => sucFun(resData),
+            error: (error) => console.log("AJAX Error:", error)
 
-    }).done(function () {
-        dfd.resolve();  // Resolve the deferred object
+        }).done(function () {
+            dfd.resolve();  // Resolve the deferred object
 
-    });
+        });
+
+    } else {
+
+        $.ajax({
+            url: "../../api/PluggedAPI/" + apiStr,
+            method: method,
+            data: JSON.stringify(data),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: (resData) => sucFun(resData),
+            error: (error) => console.log("AJAX Error:", error)
+
+        }).done(function () {
+            dfd.resolve();  // Resolve the deferred object
+
+        });
+    }
 
     return dfd;
+}
+
+function callbackClosure(i, callback) {
+    return function (data) {
+        if (data == null) {
+            return callback(i);
+        }
+
+        return callback(i,data);
+    }
 }

@@ -1,0 +1,1 @@
+dotnet test /p:CollectCoverage=true /p:Exclude="[*]*Migrations/*%2c[*]*Startup*%2c[*]*Views/*%2c[*]*wwwroot/*%2c[*]*Program*[*]*Properties/*%2c[*]*obj/*"

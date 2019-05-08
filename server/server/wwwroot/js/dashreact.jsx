@@ -1,4 +1,12 @@
-﻿function DetailContainer(props) {
+﻿function NullDetails(props) {
+    return (
+        <div className="detCont">
+            Select an audition above to display applicants.
+        </div>
+    );
+}
+
+function DetailContainer(props) {
     return (
         <div className="detCont">
             {props.res.map((r,i) => <DetailRow key={i} profile={r.profile} collapseID={r.collapseID} />)}
@@ -45,9 +53,9 @@ function DetailRow(props) {
                         <div className="row">
                             <span className="glyphicon glyphicon-map-marker"></span> {props.profile.loc}
                         </div>
-                        <div className="row instruments">
+                        {/*<div className="row instruments">
                             <b>Instruments:</b> 
-                        </div>
+                        </div>*/}
                     </div>
 
                     <div className="col-xs-5">
@@ -79,27 +87,36 @@ const p0 = {
 /* ================================================== */
 
 function popApplicants(data) {
-    let res = [];
-    let colID = 0;
-    for (let a of data) {
-        console.log(a);
-        res.push({
-            collapseID: "collapse" + colID.toString(),
-            profile: {
-                type: "profile",
-                id: a.profileId,
-                name: a.first_Name + " " + a.last_Name,
-                pic: a.pic_Url,
-                inst: a.plays_Instrument,
-                bio: a.bio,
-                loc: a.city + ", " + a.state
-            }
-        });
-        colID++;
-    }
 
-    ReactDOM.render(
-        <DetailContainer res={res} />,
-        document.getElementById('profiles')
-    );
+    if (data == null) {
+        ReactDOM.render(
+            <NullDetails />,
+            document.getElementById('profiles')
+        );
+    } else {
+
+        let res = [];
+        let colID = 0;
+        for (let a of data) {
+            console.log(a);
+            res.push({
+                collapseID: "collapse" + colID.toString(),
+                profile: {
+                    type: "profile",
+                    id: a.profileId,
+                    name: a.first_Name + " " + a.last_Name,
+                    pic: a.pic_Url,
+                    inst: a.plays_Instrument,
+                    bio: a.bio,
+                    loc: a.city + ", " + a.state
+                }
+            });
+            colID++;
+        }
+
+        ReactDOM.render(
+            <DetailContainer res={res} />,
+            document.getElementById('profiles')
+        );
+    }
 }

@@ -151,11 +151,11 @@ function GigBody(props) {
                 <table className="postTable">
                     <tbody><tr>
                         <td>Start:</td>
-                        <td>{props.post.info.start}</td>
+                        <td>{new Date(props.post.info.start).toLocaleDateString()}</td>
                     </tr>
                         <tr>
                             <td>End:</td>
-                            <td>{props.post.info.end}</td>
+                            <td>{new Date(props.post.info.end).toLocaleDateString()}</td>
                         </tr>
                         <tr>
                             <td>Seeking:</td>
@@ -185,7 +185,7 @@ function AuditionBody(props) {
                     </tr>
                         <tr>
                             <td>Time:</td>
-                            <td>{props.post.info.time}</td>
+                            <td>{new Date(props.post.info.time).toLocaleDateString()}</td>
                         </tr>
                         <tr>
                             <td>Location:</td>
@@ -227,18 +227,23 @@ function PostMedia(props) {
         );
     } else if (mediaType === "audio") {
         media = (
-            <a href={props.media.url}>Listen!</a>
-            //<audio src={props.media.url}/>
+            <div className="col-xs-11">
+                <a className="resume" href={props.media.url}><span className="glyphicon glyphicon-download"></span> Resume</a>
+            </div>
         );
     } else if (mediaType === "video") {
         media = (
-            <a href={props.media.url}>Watch!</a>
+            <div className="col-xs-11">
+                <a className="resume" href={props.media.url}><span className="glyphicon glyphicon-download"></span> Watch!</a>
+            </div>
             //<video src={props.media.url} />
         );
     } else if (mediaType === "resume") {
         media = (
-            <a href={props.media.url}>Resume</a>
-            );
+            <div className="col-xs-11">
+                <a className="resume" href={props.media.url}><span className="glyphicon glyphicon-download"></span> Resume</a>
+            </div>
+        );
     }
     return (
         <div className="mediaContainer">
