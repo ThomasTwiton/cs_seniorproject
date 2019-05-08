@@ -8,7 +8,7 @@ function EnsembleContainer(props) {
     const membersList = props.members;
     const memberItems = membersList.map((m) => <Member info={m} />);
     return (
-        <div id="ensembleContainer" className="container">
+        <div id="ensembleContainer">
             {memberItems}
             <ExtraOption />
         </div>

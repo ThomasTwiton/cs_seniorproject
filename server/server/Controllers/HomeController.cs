@@ -25,13 +25,10 @@ namespace server.Controllers
         private const string CookieUserId = "_UserID";
         private const string CookiePrevAct = "_PrevAction";
 
-        public SessionModel GetSessionInfo(HttpRequest s)
+        public virtual SessionModel GetSessionInfo(HttpRequest s)
         {
             SessionModel ret = new SessionModel();
 
-            Console.WriteLine("=================");
-            Console.WriteLine(s.Cookies);
-            Console.WriteLine(s.ContentType);
             // Get the encrypted values
             string uidString = s.Cookies[CookieUserId];
 
@@ -120,16 +117,6 @@ namespace server.Controllers
             }
 
             return View("Index");
-        }
-
-        public IActionResult Privacy()
-        {
-            /* This action method is the page that displays our privacy
-             *  policy. Currently, it has no view and is not accessible
-             *  from links on our site, however, people can type the url
-             *  in.
-             */
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -223,15 +210,18 @@ namespace server.Controllers
                 //  then send them to the 'CreateProfile' page to make an entity
                 else
                 {
-                    var lst = new List<string>();
-                    foreach (Instrument i in _context.Instruments)
-                    {
-                        lst.Add(i.Instrument_Name);
-                    }
+                    ProfileModel createModel = new ProfileModel();
 
-                    ViewData["Instruments"] = lst;
+                    createModel.Instruments = new List<SelectListItem>();
+                    createModel.SelectedInsIds = new List<String>();
+                    foreach (Instrument i in _context.Instruments.ToList())
+                    {
+                        var ins_name = i.Instrument_Name;
+                        SelectListItem chk_ins = new SelectListItem { Text = i.Instrument_Name, Value = i.InstrumentId.ToString() };
+                        createModel.Instruments.Add(chk_ins);
+                    }
                     ViewData["id"] = user.UserId;
-                    return View("CreateProfile");
+                    return View("CreateProfile", createModel);
                 }
 
 
@@ -246,7 +236,7 @@ namespace server.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View("Login");
         }
 
         public IActionResult Logout()
@@ -272,22 +262,15 @@ namespace server.Controllers
 
             ProfileModel model = new ProfileModel();
 
-            /* The following lines are the previous way in which we looked up a profile
-             *   from the user id that was provided in the url. We have switched over to
-             *   looking up a profile from the profile id provided. 
-             *   
-             * var user = _context.Users.Where(u => u.UserId == id).ToList()[0];
-             * model.User = user;
-             * //join the user and profile tables to get the profile
-             * var user_with_profile = _context.Users.Include(p => p.Profile).Where(u => u.UserId == id).ToList()[0];
-             * var profile = user_with_profile.Profile.ToList()[0];
-             * 
-             * We still need to make a way to get the viewer's information when looking at
-             *   a page. Currently, we are hardcoding that information for demonstration 
-             *   purposes as either UserId = 1 or isOwner = true;
-             */
+            var profiles = _context.Profiles.Where(u => u.ProfileId == id).ToList();
 
-            var profile = _context.Profiles.Where(u => u.ProfileId == id).ToList()[0];
+            // If a profile with the given id doesn't exist
+            if (profiles.Count <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var profile = profiles[0];
 
             model.Profile = profile;
 
@@ -345,7 +328,7 @@ namespace server.Controllers
 
             model.isLoggedIn = s.IsLoggedIn;
 
-            return View(model);
+            return View("Profile", model);
         }
 
         public IActionResult Ensemble(int? id)
@@ -378,7 +361,14 @@ namespace server.Controllers
              */
 
             //TO DO ON MONDAY: populate audition data in EnsembleModel by querying _context for all auditions which have the given ensemble id
-            var ensemble = _context.Ensembles.Where(u => u.EnsembleId == id).ToList()[0];
+            var ensembles = _context.Ensembles.Where(u => u.EnsembleId == id).ToList();
+
+            if (ensembles.Count <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var ensemble = ensembles[0];
 
             model.Ensemble = ensemble;
 
@@ -469,7 +459,7 @@ namespace server.Controllers
 
             model.isLoggedIn = s.IsLoggedIn;
 
-            return View(model);
+            return View("Ensemble", model);
         }
 
         public IActionResult Venue(int? id)
@@ -484,7 +474,14 @@ namespace server.Controllers
             SessionModel s = GetSessionInfo(Request);
             VenueModel model = new VenueModel();
 
-            var venue = _context.Venues.Where(u => u.VenueId == id).ToList()[0];
+            var venues = _context.Venues.Where(u => u.VenueId == id).ToList();
+
+            if (venues.Count <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var venue = venues[0];
 
             HashSet<Post> posts = new HashSet<Post>();
             foreach (Post post in _context.Posts.OrderByDescending(p=>p.PostId))
@@ -516,7 +513,7 @@ namespace server.Controllers
 
             model.isLoggedIn = s.IsLoggedIn;
 
-            return View(model);
+            return View("Venue", model);
         }
 
         [HttpPost]
@@ -703,7 +700,7 @@ namespace server.Controllers
 
             }
             // If not a valid model state
-            return View("Create Profile");
+            return View("CreateProfile");
 
         }
 
@@ -802,7 +799,7 @@ namespace server.Controllers
                         await _context.SaveChangesAsync();
                     }
 
-                    _context.Venues.Add(venue);
+                    _context.Add(venue);
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction("Venue", new { id = venue.VenueId });
@@ -822,7 +819,7 @@ namespace server.Controllers
 
         }
 
-        public async Task<IActionResult> Audition(int id)
+        public IActionResult Audition(int id)
         {
             SessionModel s = GetSessionInfo(Request);
 
@@ -830,7 +827,16 @@ namespace server.Controllers
             {
                 AuditionModel model = new AuditionModel();
 
-                var aud = _context.Auditions.Where(u => u.AuditionId == id).ToList()[0];
+                var audList = _context.Auditions.Where(u => u.AuditionId == id).ToList();
+
+                // If an audition doesn't exist
+                if (audList.Count <= 0)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                var aud = audList[0];
+
                 var ens = _context.Ensembles.Where(u => u.EnsembleId == aud.EnsembleId).ToList()[0];
 
                 aud.Instrument = _context.Instruments.Find(aud.InstrumentId);
@@ -865,7 +871,7 @@ namespace server.Controllers
                 model.Ensemble = ens;
                 model.ViewType = "ensemble";
 
-                return View(model);
+                return View("Audition", model);
 
             }
 
@@ -880,6 +886,57 @@ namespace server.Controllers
             return RedirectToAction("Login");
             
             
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ApplyAudition(AuditionModel model) {
+            SessionModel s = GetSessionInfo(Request);
+
+            if (s.IsLoggedIn) {
+                AuditionProfile application = new AuditionProfile();
+
+                List<Audition> auds = _context.Auditions.Where(a => a.AuditionId == model.Audition.AuditionId).ToList();
+
+                if (auds.Count < 1)
+                {
+                    // If there is not an audition with the given ID
+                    return RedirectToAction("Index");
+                }
+
+                application.AuditionId = auds[0].AuditionId;
+
+                List<Profile> profiles = _context.Profiles.Where(p => p.UserId == s.UserID).ToList();
+
+                if (profiles.Count < 1)
+                {
+                    // If there is not a profile with the given ID
+                    return RedirectToAction("Index");
+                }
+
+                application.ProfileId = profiles[0].ProfileId;
+
+                if(_context.AuditionProfiles.Count(ap => ap.AuditionId == application.AuditionId && ap.ProfileId==application.ProfileId) == 0)
+                {
+                    _context.Add(application);
+                }
+                
+                _context.SaveChanges();
+               
+
+                return RedirectToAction("Audition", new { id = model.Audition.AuditionId });
+
+            }
+
+            string encPA = "/Home/Audition/" + model.Audition.AuditionId.ToString();
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(1);
+            option.IsEssential = true;
+            Response.Cookies.Append(CookiePrevAct, encPA, option);
+
+            return RedirectToAction("Login");
+
         }
 
         public async Task<IActionResult> Gig(int id)
@@ -1038,7 +1095,7 @@ namespace server.Controllers
                     return NotFound();
                 }
 
-                var profile = await _context.Profiles.FindAsync(id);
+                var profile = _context.Profiles.Find(id);
 
                 if (profile == null)
                 {
@@ -1176,7 +1233,7 @@ namespace server.Controllers
                     return NotFound();
                 }
 
-                var ensemble = await _context.Ensembles.FindAsync(id);
+                var ensemble = _context.Ensembles.Find(id);
 
                 if (ensemble == null)
                 {
@@ -1244,7 +1301,7 @@ namespace server.Controllers
                     return NotFound();
                 }
 
-                var venue = await _context.Venues.FindAsync(id);
+                var venue = _context.Venues.Find(id);
 
                 if (venue== null)
                 {
@@ -1333,6 +1390,7 @@ namespace server.Controllers
                         img_extensions.Add("jpg");
                         img_extensions.Add("gif");
                         audio_extensions.Add("mp3");
+                        audio_extensions.Add("wav");
                         video_extensions.Add("mp4");
                         video_extensions.Add("mov");
                         resume_extensions.Add("pdf");
@@ -1408,6 +1466,8 @@ namespace server.Controllers
 
         }
         
+        //type is an unused paramater at the moment
+        //The original idea was that a user could specify what they were searching for (looking for auditions, gigs, profiles, etc...)
          public IActionResult Search(string type, string query)
         {
             Console.WriteLine("***");
