@@ -360,6 +360,7 @@ namespace server.Controllers
 
         }
 
+        
         // GET: api/PluggedAPI/posts/5
         [HttpGet("posts/{id}")]
         public async Task<ActionResult<Post>> GetPost(int id)
@@ -373,6 +374,7 @@ namespace server.Controllers
 
             return post;
         }
+        
 
         /*
         // GET: api/<controller>
@@ -394,7 +396,7 @@ namespace server.Controllers
         }
         */
 
-
+        
         // POST api/PluggedAPI/posts
         [HttpPost("posts")]
         public async Task<ActionResult<Post>> Postpost(Post post)
@@ -404,6 +406,9 @@ namespace server.Controllers
 
             return CreatedAtAction(nameof(GetPost), new { id = post.PostId }, post);
         }
+        
+
+        /*
         // PUT api/<controller>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
@@ -415,5 +420,6 @@ namespace server.Controllers
         public void Delete(int id)
         {
         }
+        */
     }
 }
